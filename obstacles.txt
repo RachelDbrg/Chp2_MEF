@@ -1,0 +1,340 @@
+# ROAD 1
+scalaire                    fct_obstacle_bas_1      if(y=0.580836 & x>=0.590342 & x<=0.861844, 1, 0)
+critere_fct_caracteristique obstacle_bas_1          [fct_obstacle_bas_1, 0]
+cree_entite_avec_critere    bas_obstacle_1          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_1)
+
+scalaire                    fct_obstacle_haut_1     if(y=0.630325 & x>=0.590342 & x<=0.861844, 1, 0)
+critere_fct_caracteristique obstacle_haut_1         [fct_obstacle_haut_1, 0]
+cree_entite_avec_critere    haut_obstacle_1         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_1)
+
+scalaire                    fct_obstacle_gauche_1   if(x=0.590342 & y>=0.580836 & y<=0.630325, 1, 0)
+critere_fct_caracteristique obstacle_gauche_1       [fct_obstacle_gauche_1, 0]
+cree_entite_avec_critere    gauche_obstacle_1       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_1)
+
+scalaire                    fct_obstacle_droite_1   if(x=0.861844 & y>=0.580836 & y<=0.630325, 1, 0)
+critere_fct_caracteristique obstacle_droite_1       [fct_obstacle_droite_1, 0]
+cree_entite_avec_critere    droite_obstacle_1       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_1)
+
+# ROAD 2
+scalaire                    fct_obstacle_bas_2      if(y=0.683907 & x>=0.800646 & x<=0.991569, 1, 0)
+critere_fct_caracteristique obstacle_bas_2          [fct_obstacle_bas_2, 0]
+cree_entite_avec_critere    bas_obstacle_2          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_2)
+
+scalaire                    fct_obstacle_haut_2     if(y=0.749008 & x>=0.800646 & x<=0.991569, 1, 0)
+critere_fct_caracteristique obstacle_haut_2         [fct_obstacle_haut_2, 0]
+cree_entite_avec_critere    haut_obstacle_2         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_2)
+
+scalaire                    fct_obstacle_gauche_2   if(x=0.800646 & y>=0.683907 & y<=0.749008, 1, 0)
+critere_fct_caracteristique obstacle_gauche_2       [fct_obstacle_gauche_2, 0]
+cree_entite_avec_critere    gauche_obstacle_2       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_2)
+
+scalaire                    fct_obstacle_droite_2   if(x=0.991569 & y>=0.683907 & y<=0.749008, 1, 0)
+critere_fct_caracteristique obstacle_droite_2       [fct_obstacle_droite_2, 0]
+cree_entite_avec_critere    droite_obstacle_2       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_2)
+
+# ROAD 3
+scalaire                    fct_obstacle_bas_3      if(y=0.157115 & x>=0.641376 & x<=0.969141, 1, 0)
+critere_fct_caracteristique obstacle_bas_3          [fct_obstacle_bas_3, 0]
+cree_entite_avec_critere    bas_obstacle_3          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_3)
+
+scalaire                    fct_obstacle_haut_3     if(y=0.322639 & x>=0.641376 & x<=0.969141, 1, 0)
+critere_fct_caracteristique obstacle_haut_3         [fct_obstacle_haut_3, 0]
+cree_entite_avec_critere    haut_obstacle_3         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_3)
+
+scalaire                    fct_obstacle_gauche_3   if(x=0.641376 & y>=0.157115 & y<=0.322639, 1, 0)
+critere_fct_caracteristique obstacle_gauche_3       [fct_obstacle_gauche_3, 0]
+cree_entite_avec_critere    gauche_obstacle_3       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_3)
+
+scalaire                    fct_obstacle_droite_3   if(x=0.969141 & y>=0.157115 & y<=0.322639, 1, 0)
+critere_fct_caracteristique obstacle_droite_3       [fct_obstacle_droite_3, 0]
+cree_entite_avec_critere    droite_obstacle_3       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_3)
+
+# ROAD 4
+scalaire                    fct_obstacle_bas_4      if(y=0.355987 & x>=0.010749 & x<=0.153461, 1, 0)
+critere_fct_caracteristique obstacle_bas_4          [fct_obstacle_bas_4, 0]
+cree_entite_avec_critere    bas_obstacle_4          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_4)
+
+scalaire                    fct_obstacle_haut_4     if(y=0.546397 & x>=0.010749 & x<=0.153461, 1, 0)
+critere_fct_caracteristique obstacle_haut_4         [fct_obstacle_haut_4, 0]
+cree_entite_avec_critere    haut_obstacle_4         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_4)
+
+scalaire                    fct_obstacle_gauche_4   if(x=0.010749 & y>=0.355987 & y<=0.546397, 1, 0)
+critere_fct_caracteristique obstacle_gauche_4       [fct_obstacle_gauche_4, 0]
+cree_entite_avec_critere    gauche_obstacle_4       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_4)
+
+scalaire                    fct_obstacle_droite_4   if(x=0.153461 & y>=0.355987 & y<=0.546397, 1, 0)
+critere_fct_caracteristique obstacle_droite_4       [fct_obstacle_droite_4, 0]
+cree_entite_avec_critere    droite_obstacle_4       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_4)
+
+# ROAD 5
+scalaire                    fct_obstacle_bas_5      if(y=0.112800 & x>=0.090815 & x<=0.251437, 1, 0)
+critere_fct_caracteristique obstacle_bas_5          [fct_obstacle_bas_5, 0]
+cree_entite_avec_critere    bas_obstacle_5          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_5)
+
+scalaire                    fct_obstacle_haut_5     if(y=0.831695 & x>=0.090815 & x<=0.251437, 1, 0)
+critere_fct_caracteristique obstacle_haut_5         [fct_obstacle_haut_5, 0]
+cree_entite_avec_critere    haut_obstacle_5         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_5)
+
+scalaire                    fct_obstacle_gauche_5   if(x=0.090815 & y>=0.112800 & y<=0.831695, 1, 0)
+critere_fct_caracteristique obstacle_gauche_5       [fct_obstacle_gauche_5, 0]
+cree_entite_avec_critere    gauche_obstacle_5       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_5)
+
+scalaire                    fct_obstacle_droite_5   if(x=0.251437 & y>=0.112800 & y<=0.831695, 1, 0)
+critere_fct_caracteristique obstacle_droite_5       [fct_obstacle_droite_5, 0]
+cree_entite_avec_critere    droite_obstacle_5       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_5)
+
+# ROAD 6
+scalaire                    fct_obstacle_bas_6      if(y=0.827204 & x>=0.444232 & x<=0.902061, 1, 0)
+critere_fct_caracteristique obstacle_bas_6          [fct_obstacle_bas_6, 0]
+cree_entite_avec_critere    bas_obstacle_6          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_6)
+
+scalaire                    fct_obstacle_haut_6     if(y=0.966420 & x>=0.444232 & x<=0.902061, 1, 0)
+critere_fct_caracteristique obstacle_haut_6         [fct_obstacle_haut_6, 0]
+cree_entite_avec_critere    haut_obstacle_6         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_6)
+
+scalaire                    fct_obstacle_gauche_6   if(x=0.444232 & y>=0.827204 & y<=0.966420, 1, 0)
+critere_fct_caracteristique obstacle_gauche_6       [fct_obstacle_gauche_6, 0]
+cree_entite_avec_critere    gauche_obstacle_6       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_6)
+
+scalaire                    fct_obstacle_droite_6   if(x=0.902061 & y>=0.827204 & y<=0.966420, 1, 0)
+critere_fct_caracteristique obstacle_droite_6       [fct_obstacle_droite_6, 0]
+cree_entite_avec_critere    droite_obstacle_6       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_6)
+
+# ROAD 7
+scalaire                    fct_obstacle_bas_7      if(y=0.355583 & x>=0.744865 & x<=0.878583, 1, 0)
+critere_fct_caracteristique obstacle_bas_7          [fct_obstacle_bas_7, 0]
+cree_entite_avec_critere    bas_obstacle_7          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_7)
+
+scalaire                    fct_obstacle_haut_7     if(y=0.517937 & x>=0.744865 & x<=0.878583, 1, 0)
+critere_fct_caracteristique obstacle_haut_7         [fct_obstacle_haut_7, 0]
+cree_entite_avec_critere    haut_obstacle_7         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_7)
+
+scalaire                    fct_obstacle_gauche_7   if(x=0.744865 & y>=0.355583 & y<=0.517937, 1, 0)
+critere_fct_caracteristique obstacle_gauche_7       [fct_obstacle_gauche_7, 0]
+cree_entite_avec_critere    gauche_obstacle_7       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_7)
+
+scalaire                    fct_obstacle_droite_7   if(x=0.878583 & y>=0.355583 & y<=0.517937, 1, 0)
+critere_fct_caracteristique obstacle_droite_7       [fct_obstacle_droite_7, 0]
+cree_entite_avec_critere    droite_obstacle_7       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_7)
+
+# ROAD 8
+scalaire                    fct_obstacle_bas_8      if(y=0.353133 & x>=0.241757 & x<=0.731337, 1, 0)
+critere_fct_caracteristique obstacle_bas_8          [fct_obstacle_bas_8, 0]
+cree_entite_avec_critere    bas_obstacle_8          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_8)
+
+scalaire                    fct_obstacle_haut_8     if(y=0.546473 & x>=0.241757 & x<=0.731337, 1, 0)
+critere_fct_caracteristique obstacle_haut_8         [fct_obstacle_haut_8, 0]
+cree_entite_avec_critere    haut_obstacle_8         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_8)
+
+scalaire                    fct_obstacle_gauche_8   if(x=0.241757 & y>=0.353133 & y<=0.546473, 1, 0)
+critere_fct_caracteristique obstacle_gauche_8       [fct_obstacle_gauche_8, 0]
+cree_entite_avec_critere    gauche_obstacle_8       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_8)
+
+scalaire                    fct_obstacle_droite_8   if(x=0.731337 & y>=0.353133 & y<=0.546473, 1, 0)
+critere_fct_caracteristique obstacle_droite_8       [fct_obstacle_droite_8, 0]
+cree_entite_avec_critere    droite_obstacle_8       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_8)
+
+# ROAD 9
+scalaire                    fct_obstacle_bas_9      if(y=0.160802 & x>=0.470767 & x<=0.581263, 1, 0)
+critere_fct_caracteristique obstacle_bas_9          [fct_obstacle_bas_9, 0]
+cree_entite_avec_critere    bas_obstacle_9          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_9)
+
+scalaire                    fct_obstacle_haut_9     if(y=0.333264 & x>=0.470767 & x<=0.581263, 1, 0)
+critere_fct_caracteristique obstacle_haut_9         [fct_obstacle_haut_9, 0]
+cree_entite_avec_critere    haut_obstacle_9         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_9)
+
+scalaire                    fct_obstacle_gauche_9   if(x=0.470767 & y>=0.160802 & y<=0.333264, 1, 0)
+critere_fct_caracteristique obstacle_gauche_9       [fct_obstacle_gauche_9, 0]
+cree_entite_avec_critere    gauche_obstacle_9       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_9)
+
+scalaire                    fct_obstacle_droite_9   if(x=0.581263 & y>=0.160802 & y<=0.333264, 1, 0)
+critere_fct_caracteristique obstacle_droite_9       [fct_obstacle_droite_9, 0]
+cree_entite_avec_critere    droite_obstacle_9       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_9)
+
+# ROAD 10
+scalaire                    fct_obstacle_bas_10      if(y=0.612807 & x>=0.372962 & x<=0.840143, 1, 0)
+critere_fct_caracteristique obstacle_bas_10          [fct_obstacle_bas_10, 0]
+cree_entite_avec_critere    bas_obstacle_10          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_10)
+
+scalaire                    fct_obstacle_haut_10     if(y=0.814239 & x>=0.372962 & x<=0.840143, 1, 0)
+critere_fct_caracteristique obstacle_haut_10         [fct_obstacle_haut_10, 0]
+cree_entite_avec_critere    haut_obstacle_10         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_10)
+
+scalaire                    fct_obstacle_gauche_10   if(x=0.372962 & y>=0.612807 & y<=0.814239, 1, 0)
+critere_fct_caracteristique obstacle_gauche_10       [fct_obstacle_gauche_10, 0]
+cree_entite_avec_critere    gauche_obstacle_10       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_10)
+
+scalaire                    fct_obstacle_droite_10   if(x=0.840143 & y>=0.612807 & y<=0.814239, 1, 0)
+critere_fct_caracteristique obstacle_droite_10       [fct_obstacle_droite_10, 0]
+cree_entite_avec_critere    droite_obstacle_10       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_10)
+
+# ROAD 11
+scalaire                    fct_obstacle_bas_11      if(y=0.884567 & x>=0.345306 & x<=0.533114, 1, 0)
+critere_fct_caracteristique obstacle_bas_11          [fct_obstacle_bas_11, 0]
+cree_entite_avec_critere    bas_obstacle_11          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_11)
+
+scalaire                    fct_obstacle_haut_11     if(y=0.986176 & x>=0.345306 & x<=0.533114, 1, 0)
+critere_fct_caracteristique obstacle_haut_11         [fct_obstacle_haut_11, 0]
+cree_entite_avec_critere    haut_obstacle_11         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_11)
+
+scalaire                    fct_obstacle_gauche_11   if(x=0.345306 & y>=0.884567 & y<=0.986176, 1, 0)
+critere_fct_caracteristique obstacle_gauche_11       [fct_obstacle_gauche_11, 0]
+cree_entite_avec_critere    gauche_obstacle_11       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_11)
+
+scalaire                    fct_obstacle_droite_11   if(x=0.533114 & y>=0.884567 & y<=0.986176, 1, 0)
+critere_fct_caracteristique obstacle_droite_11       [fct_obstacle_droite_11, 0]
+cree_entite_avec_critere    droite_obstacle_11       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_11)
+
+# ROAD 12
+scalaire                    fct_obstacle_bas_12      if(y=0.633105 & x>=0.286254 & x<=0.549127, 1, 0)
+critere_fct_caracteristique obstacle_bas_12          [fct_obstacle_bas_12, 0]
+cree_entite_avec_critere    bas_obstacle_12          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_12)
+
+scalaire                    fct_obstacle_haut_12     if(y=0.759031 & x>=0.286254 & x<=0.549127, 1, 0)
+critere_fct_caracteristique obstacle_haut_12         [fct_obstacle_haut_12, 0]
+cree_entite_avec_critere    haut_obstacle_12         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_12)
+
+scalaire                    fct_obstacle_gauche_12   if(x=0.286254 & y>=0.633105 & y<=0.759031, 1, 0)
+critere_fct_caracteristique obstacle_gauche_12       [fct_obstacle_gauche_12, 0]
+cree_entite_avec_critere    gauche_obstacle_12       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_12)
+
+scalaire                    fct_obstacle_droite_12   if(x=0.549127 & y>=0.633105 & y<=0.759031, 1, 0)
+critere_fct_caracteristique obstacle_droite_12       [fct_obstacle_droite_12, 0]
+cree_entite_avec_critere    droite_obstacle_12       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_12)
+
+# ROAD 13
+scalaire                    fct_obstacle_bas_13      if(y=0.804003 & x>=0.307779 & x<=0.632694, 1, 0)
+critere_fct_caracteristique obstacle_bas_13          [fct_obstacle_bas_13, 0]
+cree_entite_avec_critere    bas_obstacle_13          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_13)
+
+scalaire                    fct_obstacle_haut_13     if(y=0.815065 & x>=0.307779 & x<=0.632694, 1, 0)
+critere_fct_caracteristique obstacle_haut_13         [fct_obstacle_haut_13, 0]
+cree_entite_avec_critere    haut_obstacle_13         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_13)
+
+scalaire                    fct_obstacle_gauche_13   if(x=0.307779 & y>=0.804003 & y<=0.815065, 1, 0)
+critere_fct_caracteristique obstacle_gauche_13       [fct_obstacle_gauche_13, 0]
+cree_entite_avec_critere    gauche_obstacle_13       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_13)
+
+scalaire                    fct_obstacle_droite_13   if(x=0.632694 & y>=0.804003 & y<=0.815065, 1, 0)
+critere_fct_caracteristique obstacle_droite_13       [fct_obstacle_droite_13, 0]
+cree_entite_avec_critere    droite_obstacle_13       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_13)
+
+# ROAD 14
+scalaire                    fct_obstacle_bas_14      if(y=0.055317 & x>=0.319702 & x<=0.426773, 1, 0)
+critere_fct_caracteristique obstacle_bas_14          [fct_obstacle_bas_14, 0]
+cree_entite_avec_critere    bas_obstacle_14          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_14)
+
+scalaire                    fct_obstacle_haut_14     if(y=0.245453 & x>=0.319702 & x<=0.426773, 1, 0)
+critere_fct_caracteristique obstacle_haut_14         [fct_obstacle_haut_14, 0]
+cree_entite_avec_critere    haut_obstacle_14         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_14)
+
+scalaire                    fct_obstacle_gauche_14   if(x=0.319702 & y>=0.055317 & y<=0.245453, 1, 0)
+critere_fct_caracteristique obstacle_gauche_14       [fct_obstacle_gauche_14, 0]
+cree_entite_avec_critere    gauche_obstacle_14       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_14)
+
+scalaire                    fct_obstacle_droite_14   if(x=0.426773 & y>=0.055317 & y<=0.245453, 1, 0)
+critere_fct_caracteristique obstacle_droite_14       [fct_obstacle_droite_14, 0]
+cree_entite_avec_critere    droite_obstacle_14       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_14)
+
+# ROAD 15
+scalaire                    fct_obstacle_bas_15      if(y=0.676651 & x>=0.084310 & x<=0.126478, 1, 0)
+critere_fct_caracteristique obstacle_bas_15          [fct_obstacle_bas_15, 0]
+cree_entite_avec_critere    bas_obstacle_15          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_15)
+
+scalaire                    fct_obstacle_haut_15     if(y=0.928898 & x>=0.084310 & x<=0.126478, 1, 0)
+critere_fct_caracteristique obstacle_haut_15         [fct_obstacle_haut_15, 0]
+cree_entite_avec_critere    haut_obstacle_15         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_15)
+
+scalaire                    fct_obstacle_gauche_15   if(x=0.084310 & y>=0.676651 & y<=0.928898, 1, 0)
+critere_fct_caracteristique obstacle_gauche_15       [fct_obstacle_gauche_15, 0]
+cree_entite_avec_critere    gauche_obstacle_15       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_15)
+
+scalaire                    fct_obstacle_droite_15   if(x=0.126478 & y>=0.676651 & y<=0.928898, 1, 0)
+critere_fct_caracteristique obstacle_droite_15       [fct_obstacle_droite_15, 0]
+cree_entite_avec_critere    droite_obstacle_15       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_15)
+
+# ROAD 16
+scalaire                    fct_obstacle_bas_16      if(y=0.057063 & x>=0.540910 & x<=0.775304, 1, 0)
+critere_fct_caracteristique obstacle_bas_16          [fct_obstacle_bas_16, 0]
+cree_entite_avec_critere    bas_obstacle_16          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_16)
+
+scalaire                    fct_obstacle_haut_16     if(y=0.058579 & x>=0.540910 & x<=0.775304, 1, 0)
+critere_fct_caracteristique obstacle_haut_16         [fct_obstacle_haut_16, 0]
+cree_entite_avec_critere    haut_obstacle_16         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_16)
+
+scalaire                    fct_obstacle_gauche_16   if(x=0.540910 & y>=0.057063 & y<=0.058579, 1, 0)
+critere_fct_caracteristique obstacle_gauche_16       [fct_obstacle_gauche_16, 0]
+cree_entite_avec_critere    gauche_obstacle_16       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_16)
+
+scalaire                    fct_obstacle_droite_16   if(x=0.775304 & y>=0.057063 & y<=0.058579, 1, 0)
+critere_fct_caracteristique obstacle_droite_16       [fct_obstacle_droite_16, 0]
+cree_entite_avec_critere    droite_obstacle_16       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_16)
+
+# ROAD 17
+scalaire                    fct_obstacle_bas_17      if(y=0.096906 & x>=0.529346 & x<=0.880357, 1, 0)
+critere_fct_caracteristique obstacle_bas_17          [fct_obstacle_bas_17, 0]
+cree_entite_avec_critere    bas_obstacle_17          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_17)
+
+scalaire                    fct_obstacle_haut_17     if(y=0.150095 & x>=0.529346 & x<=0.880357, 1, 0)
+critere_fct_caracteristique obstacle_haut_17         [fct_obstacle_haut_17, 0]
+cree_entite_avec_critere    haut_obstacle_17         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_17)
+
+scalaire                    fct_obstacle_gauche_17   if(x=0.529346 & y>=0.096906 & y<=0.150095, 1, 0)
+critere_fct_caracteristique obstacle_gauche_17       [fct_obstacle_gauche_17, 0]
+cree_entite_avec_critere    gauche_obstacle_17       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_17)
+
+scalaire                    fct_obstacle_droite_17   if(x=0.880357 & y>=0.096906 & y<=0.150095, 1, 0)
+critere_fct_caracteristique obstacle_droite_17       [fct_obstacle_droite_17, 0]
+cree_entite_avec_critere    droite_obstacle_17       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_17)
+
+# ROAD 18
+scalaire                    fct_obstacle_bas_18      if(y=0.236001 & x>=0.631823 & x<=0.942962, 1, 0)
+critere_fct_caracteristique obstacle_bas_18          [fct_obstacle_bas_18, 0]
+cree_entite_avec_critere    bas_obstacle_18          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_18)
+
+scalaire                    fct_obstacle_haut_18     if(y=0.529255 & x>=0.631823 & x<=0.942962, 1, 0)
+critere_fct_caracteristique obstacle_haut_18         [fct_obstacle_haut_18, 0]
+cree_entite_avec_critere    haut_obstacle_18         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_18)
+
+scalaire                    fct_obstacle_gauche_18   if(x=0.631823 & y>=0.236001 & y<=0.529255, 1, 0)
+critere_fct_caracteristique obstacle_gauche_18       [fct_obstacle_gauche_18, 0]
+cree_entite_avec_critere    gauche_obstacle_18       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_18)
+
+scalaire                    fct_obstacle_droite_18   if(x=0.942962 & y>=0.236001 & y<=0.529255, 1, 0)
+critere_fct_caracteristique obstacle_droite_18       [fct_obstacle_droite_18, 0]
+cree_entite_avec_critere    droite_obstacle_18       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_18)
+
+# ROAD 19
+scalaire                    fct_obstacle_bas_19      if(y=0.125162 & x>=0.424283 & x<=0.502600, 1, 0)
+critere_fct_caracteristique obstacle_bas_19          [fct_obstacle_bas_19, 0]
+cree_entite_avec_critere    bas_obstacle_19          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_19)
+
+scalaire                    fct_obstacle_haut_19     if(y=0.362352 & x>=0.424283 & x<=0.502600, 1, 0)
+critere_fct_caracteristique obstacle_haut_19         [fct_obstacle_haut_19, 0]
+cree_entite_avec_critere    haut_obstacle_19         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_19)
+
+scalaire                    fct_obstacle_gauche_19   if(x=0.424283 & y>=0.125162 & y<=0.362352, 1, 0)
+critere_fct_caracteristique obstacle_gauche_19       [fct_obstacle_gauche_19, 0]
+cree_entite_avec_critere    gauche_obstacle_19       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_19)
+
+scalaire                    fct_obstacle_droite_19   if(x=0.502600 & y>=0.125162 & y<=0.362352, 1, 0)
+critere_fct_caracteristique obstacle_droite_19       [fct_obstacle_droite_19, 0]
+cree_entite_avec_critere    droite_obstacle_19       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_19)
+
+# ROAD 20
+scalaire                    fct_obstacle_bas_20      if(y=0.853145 & x>=0.170738 & x<=0.427720, 1, 0)
+critere_fct_caracteristique obstacle_bas_20          [fct_obstacle_bas_20, 0]
+cree_entite_avec_critere    bas_obstacle_20          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_20)
+
+scalaire                    fct_obstacle_haut_20     if(y=0.980015 & x>=0.170738 & x<=0.427720, 1, 0)
+critere_fct_caracteristique obstacle_haut_20         [fct_obstacle_haut_20, 0]
+cree_entite_avec_critere    haut_obstacle_20         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_20)
+
+scalaire                    fct_obstacle_gauche_20   if(x=0.170738 & y>=0.853145 & y<=0.980015, 1, 0)
+critere_fct_caracteristique obstacle_gauche_20       [fct_obstacle_gauche_20, 0]
+cree_entite_avec_critere    gauche_obstacle_20       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_20)
+
+scalaire                    fct_obstacle_droite_20   if(x=0.427720 & y>=0.853145 & y<=0.980015, 1, 0)
+critere_fct_caracteristique obstacle_droite_20       [fct_obstacle_droite_20, 0]
+cree_entite_avec_critere    droite_obstacle_20       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_20)
+

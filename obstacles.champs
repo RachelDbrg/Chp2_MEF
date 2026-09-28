@@ -1,0 +1,124 @@
+# ROAD 1
+scalaire                    fct_obstacle_bas_1      if(y=0.018460 & x>=0.520395 & x<=0.879185, 1, 0)
+critere_fct_caracteristique obstacle_bas_1          [fct_obstacle_bas_1, 0]
+cree_entite_avec_critere    bas_obstacle_1          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_1)
+
+scalaire                    fct_obstacle_haut_1     if(y=0.148806 & x>=0.520395 & x<=0.879185, 1, 0)
+critere_fct_caracteristique obstacle_haut_1         [fct_obstacle_haut_1, 0]
+cree_entite_avec_critere    haut_obstacle_1         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_1)
+
+scalaire                    fct_obstacle_gauche_1   if(x=0.520395 & y>=0.018460 & y<=0.148806, 1, 0)
+critere_fct_caracteristique obstacle_gauche_1       [fct_obstacle_gauche_1, 0]
+cree_entite_avec_critere    gauche_obstacle_1       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_1)
+
+scalaire                    fct_obstacle_droite_1   if(x=0.879185 & y>=0.018460 & y<=0.148806, 1, 0)
+critere_fct_caracteristique obstacle_droite_1       [fct_obstacle_droite_1, 0]
+cree_entite_avec_critere    droite_obstacle_1       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_1)
+
+# ------------------------------------------------------------
+# Obstacle entier 1
+# ------------------------------------------------------------
+scalaire                    fct_obstacle_1           if(x>=0.520395 & x<=0.879185 & y>=0.018460 & y<=0.148806, 1, 0)
+critere_fct_caracteristique fct_car_obstacle_1       [fct_obstacle_1, 0]
+cree_entite_avec_critere    obstacle_1               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_1)
+
+# ROAD 2
+scalaire                    fct_obstacle_bas_2      if(y=0.167388 & x>=0.005995 & x<=0.182515, 1, 0)
+critere_fct_caracteristique obstacle_bas_2          [fct_obstacle_bas_2, 0]
+cree_entite_avec_critere    bas_obstacle_2          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_2)
+
+scalaire                    fct_obstacle_haut_2     if(y=0.881630 & x>=0.005995 & x<=0.182515, 1, 0)
+critere_fct_caracteristique obstacle_haut_2         [fct_obstacle_haut_2, 0]
+cree_entite_avec_critere    haut_obstacle_2         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_2)
+
+scalaire                    fct_obstacle_gauche_2   if(x=0.005995 & y>=0.167388 & y<=0.881630, 1, 0)
+critere_fct_caracteristique obstacle_gauche_2       [fct_obstacle_gauche_2, 0]
+cree_entite_avec_critere    gauche_obstacle_2       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_2)
+
+scalaire                    fct_obstacle_droite_2   if(x=0.182515 & y>=0.167388 & y<=0.881630, 1, 0)
+critere_fct_caracteristique obstacle_droite_2       [fct_obstacle_droite_2, 0]
+cree_entite_avec_critere    droite_obstacle_2       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_2)
+
+# ------------------------------------------------------------
+# Obstacle entier 2
+# ------------------------------------------------------------
+scalaire                    fct_obstacle_2           if(x>=0.005995 & x<=0.182515 & y>=0.167388 & y<=0.881630, 1, 0)
+critere_fct_caracteristique fct_car_obstacle_2       [fct_obstacle_2, 0]
+cree_entite_avec_critere    obstacle_2               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_2)
+
+# ROAD 3
+scalaire                    fct_obstacle_bas_3      if(y=0.192274 & x>=0.090374 & x<=0.769214, 1, 0)
+critere_fct_caracteristique obstacle_bas_3          [fct_obstacle_bas_3, 0]
+cree_entite_avec_critere    bas_obstacle_3          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_3)
+
+scalaire                    fct_obstacle_haut_3     if(y=0.291703 & x>=0.090374 & x<=0.769214, 1, 0)
+critere_fct_caracteristique obstacle_haut_3         [fct_obstacle_haut_3, 0]
+cree_entite_avec_critere    haut_obstacle_3         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_3)
+
+scalaire                    fct_obstacle_gauche_3   if(x=0.090374 & y>=0.192274 & y<=0.291703, 1, 0)
+critere_fct_caracteristique obstacle_gauche_3       [fct_obstacle_gauche_3, 0]
+cree_entite_avec_critere    gauche_obstacle_3       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_3)
+
+scalaire                    fct_obstacle_droite_3   if(x=0.769214 & y>=0.192274 & y<=0.291703, 1, 0)
+critere_fct_caracteristique obstacle_droite_3       [fct_obstacle_droite_3, 0]
+cree_entite_avec_critere    droite_obstacle_3       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_3)
+
+# ------------------------------------------------------------
+# Obstacle entier 3
+# ------------------------------------------------------------
+scalaire                    fct_obstacle_3           if(x>=0.090374 & x<=0.769214 & y>=0.192274 & y<=0.291703, 1, 0)
+critere_fct_caracteristique fct_car_obstacle_3       [fct_obstacle_3, 0]
+cree_entite_avec_critere    obstacle_3               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_3)
+
+# ROAD 4
+scalaire                    fct_obstacle_bas_4      if(y=0.765363 & x>=0.734430 & x<=0.819714, 1, 0)
+critere_fct_caracteristique obstacle_bas_4          [fct_obstacle_bas_4, 0]
+cree_entite_avec_critere    bas_obstacle_4          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_4)
+
+scalaire                    fct_obstacle_haut_4     if(y=0.963366 & x>=0.734430 & x<=0.819714, 1, 0)
+critere_fct_caracteristique obstacle_haut_4         [fct_obstacle_haut_4, 0]
+cree_entite_avec_critere    haut_obstacle_4         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_4)
+
+scalaire                    fct_obstacle_gauche_4   if(x=0.734430 & y>=0.765363 & y<=0.963366, 1, 0)
+critere_fct_caracteristique obstacle_gauche_4       [fct_obstacle_gauche_4, 0]
+cree_entite_avec_critere    gauche_obstacle_4       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_4)
+
+scalaire                    fct_obstacle_droite_4   if(x=0.819714 & y>=0.765363 & y<=0.963366, 1, 0)
+critere_fct_caracteristique obstacle_droite_4       [fct_obstacle_droite_4, 0]
+cree_entite_avec_critere    droite_obstacle_4       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_4)
+
+# ------------------------------------------------------------
+# Obstacle entier 4
+# ------------------------------------------------------------
+scalaire                    fct_obstacle_4           if(x>=0.734430 & x<=0.819714 & y>=0.765363 & y<=0.963366, 1, 0)
+critere_fct_caracteristique fct_car_obstacle_4       [fct_obstacle_4, 0]
+cree_entite_avec_critere    obstacle_4               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_4)
+
+# ROAD 5
+scalaire                    fct_obstacle_bas_5      if(y=0.547696 & x>=0.395383 & x<=0.837984, 1, 0)
+critere_fct_caracteristique obstacle_bas_5          [fct_obstacle_bas_5, 0]
+cree_entite_avec_critere    bas_obstacle_5          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_5)
+
+scalaire                    fct_obstacle_haut_5     if(y=0.851700 & x>=0.395383 & x<=0.837984, 1, 0)
+critere_fct_caracteristique obstacle_haut_5         [fct_obstacle_haut_5, 0]
+cree_entite_avec_critere    haut_obstacle_5         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_5)
+
+scalaire                    fct_obstacle_gauche_5   if(x=0.395383 & y>=0.547696 & y<=0.851700, 1, 0)
+critere_fct_caracteristique obstacle_gauche_5       [fct_obstacle_gauche_5, 0]
+cree_entite_avec_critere    gauche_obstacle_5       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_5)
+
+scalaire                    fct_obstacle_droite_5   if(x=0.837984 & y>=0.547696 & y<=0.851700, 1, 0)
+critere_fct_caracteristique obstacle_droite_5       [fct_obstacle_droite_5, 0]
+cree_entite_avec_critere    droite_obstacle_5       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_5)
+
+# ------------------------------------------------------------
+# Obstacle entier 5
+# ------------------------------------------------------------
+scalaire                    fct_obstacle_5           if(x>=0.395383 & x<=0.837984 & y>=0.547696 & y<=0.851700, 1, 0)
+critere_fct_caracteristique fct_car_obstacle_5       [fct_obstacle_5, 0]
+cree_entite_avec_critere    obstacle_5               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_5)
+
+# ------------------------------------------------------------
+# Sous-domaine sans obstacles
+# ------------------------------------------------------------
+cree_entite sous_domaine contour_domaine - obstacle_1 - obstacle_2 - obstacle_3 - obstacle_4 - obstacle_5

@@ -1,0 +1,120 @@
+  ### ----------------------------- Termes de diffusion simple
+  ## on veut resoudre l'equation de la diffusion seulement dans le domaine qui n'est pas l'obstacle (sous-domaine)
+  #tfdiffusion                    tfDiffusionC                                   [champgeo, C, C, DC, schema_intg, defaut::sous_domaine_cropped]
+  #tfdiffusion                    tfDiffusionC                                  [champgeo, C, C, DC, schema_intg]
+
+
+  scalaire petit_diff 1e-1
+  empilementto2 no_diff_C    [petit_diff,petit_diff,petit_diff, Zero, Zero, Zero]
+
+  tfdiffusion                    tfDiffusionC                                  [champgeo,  C, C, no_diff_C, schema_intg, defaut::sous_domaine_cropped]
+  #tfdiffusion                    tfDiffusionC                                  [champgeo,  C, C, no_diff_C, schema_intg]
+  
+
+  ### ----------------------------- Termes de diffusion croisée
+  ## Selection d'habitat: M1
+  #tftransportconvectifscalaire   transportM1_C                                 [champgeo, C, C, gradM1_C, mult_c, schema_intg, false, defaut::sous_domaine_cropped]
+  #tfmassegenscal                 tftransport_bis_M1_C                          [champgeo, C, C, terme_masse_adv_C_hab_sel, schema_intg, defaut::sous_domaine_cropped]
+
+
+  ## Selection d'habitat: M2
+  #tftransportconvectifscalaire   transportM2_C                                 [champgeo, C, C, gradM2_C, mult_c, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M2_C                          [champgeo, C, C, terme_masse_adv_C_div_sel, schema_intg]
+
+
+  ## Presence de congeneres (local average): M3
+  ## Sc1 - moyenne de C
+  #tftransportconvectifscalaire   transportM3_C                                  [champgeo, C, C, gradM3_C, mult_c, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M3_C                           [champgeo, C, C, terme_masse_adv_C_cons_sel, schema_intg]
+
+
+  ## Presence autre espece de proie (local average): M4
+  #tftransportconvectifscalaire   transportM4_C                                 [champgeo, C, C, gradM4_C, mult_c, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M4_C                          [champgeo, C, C, terme_masse_adv_C_other_prey_sel, schema_intg]
+
+  #formulation_transport_diffusion_source_inst   transportM4_C                   [schema_intg, gradM4_C, (C, DC, mult_c, terme_masse_adv_C_other_prey_sel)]
+
+  ## Presence predateur (local average): M5
+  #tftransportconvectifscalaire   transportM5_C                                 [champgeo, C, C, gradM5_C, mult_c, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M5_C                          [champgeo, C, C, terme_masse_adv_C_pred_sel, schema_intg]
+
+
+
+### ----------------------------- Termes de cross-diffusion 
+
+  #### M1 - Habitat selection
+  #tftransportconvectifscalaire   transportM1_M                                [champgeo, M, M, gradM1_M, mult_m, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M1_M                         [champgeo, M, M, terme_masse_adv_M_hab_sel, schema_intg]
+
+  ## Selection d'habitat: M2
+  #tftransportconvectifscalaire   transportM2_M                                [champgeo, M, M, gradM2_M, mult_m, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M2_M                         [champgeo, M, M, terme_masse_adv_C_div_sel, schema_intg]
+
+
+  ## Selection d'habitat: M3
+  #tftransportconvectifscalaire   transportM3_M                                [champgeo, M, M, gradM3_M, mult_m, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M3_M                         [champgeo, M, M, terme_masse_adv_M_cons_sel, schema_intg]
+  
+
+  ## Presence autre espece de proie: M4
+  #tftransportconvectifscalaire   transportM4_M                                [champgeo, M, M, gradM4_M, mult_m, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M4_M                         [champgeo, M, M, terme_masse_adv_M_other_prey_sel, schema_intg]
+
+  ## Presence predateur: M5
+  #tftransportconvectifscalaire   transportM5_M                                [champgeo, M, M, gradM5_M, mult_m, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M5_M                         [champgeo, M, M, terme_masse_adv_M_pred_sel, schema_intg]
+
+
+  ### ----------------------------- Termes de cross-diffusion 
+  ## TODO: checker si vraiment pertinent pour le predateur?
+  ## Selection d'habitat: M1
+  #tftransportconvectifscalaire   transportM1_P                                 [champgeo, P, P, gradM1_P, mult_p, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M1_P                          [champgeo, P, P, terme_masse_adv_P_hab_sel, schema_intg]
+
+  ## TODO: checker si vraiment pertinent pour le predateur?
+  ## Selection d'habitat: M2
+  #tftransportconvectifscalaire   transportM2_P                                 [champgeo, P, P, gradM2_P, mult_p, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M2_P                          [champgeo, P, P, terme_masse_adv_P_div_sel, schema_intg]
+
+
+  ## Presence conspecifiques: M3
+  #tftransportconvectifscalaire   transportM3_P                                [champgeo, P, P, gradM3_P, mult_p, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M3_P                         [champgeo, P, P, terme_masse_adv_P_cons_sel, schema_intg]
+  
+
+  ## Presence d'sp de proie1: M4 (avec caribou)
+  #tftransportconvectifscalaire   transportM4_P                                [champgeo, P, P, gradM4_P, mult_p, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M4_P                         [champgeo, P, P, terme_masse_adv_P_caribou_sel, schema_intg]
+
+
+  ## Presence d'sp de proie2: M5 (avec moose)
+  #tftransportconvectifscalaire   transportM5_P                                [champgeo, P, P, gradM5_P, mult_p, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M5_P                         [champgeo, P, P, terme_masse_adv_P_moose_sel, schema_intg]
+
+
+
+
+### ----------------------------- Termes de cross-diffusion 
+
+  #### M1 - Habitat selection
+  #tftransportconvectifscalaire   transportM1_D1                                [champgeo, D1, D1, gradM1_M, mult_d, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M1_M                         [champgeo, D1, D1, terme_masse_adv_M_hab_sel, schema_intg]
+
+  ## Selection d'habitat: M2
+  #tftransportconvectifscalaire   transportM2_M                                [champgeo, D1, D1, gradM2_M, mult_d, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M2_M                         [champgeo, D1, D1, terme_masse_adv_C_div_sel, schema_intg]
+
+
+  ## Presence conspecifiques: M3
+  #tftransportconvectifscalaire   transportM3_M                                [champgeo, M, M, gradM3_M, mult_d, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M3_M                         [champgeo, M, M, terme_masse_adv_M_cons_sel, schema_intg]
+  
+
+  ## Presence autre espece de proie: M4
+  #tftransportconvectifscalaire   transportM4_M                                [champgeo, M, M, gradM4_M, mult_d, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M4_M                         [champgeo, M, M, terme_masse_adv_M_other_prey_sel, schema_intg]
+
+  ## Presence predateur: M5
+  #tftransportconvectifscalaire   transportM5_M                                [champgeo, M, M, gradM5_M, mult_d, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M5_M                         [champgeo, M, M, terme_masse_adv_M_pred_sel, schema_intg]
+

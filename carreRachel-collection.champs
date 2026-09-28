@@ -1,0 +1,25 @@
+## Creation du .mail
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/landscapes/gradient_lichen/landscape_1_combined.csv, GRILLESOMMETCSV, 2, Lin]
+
+
+## For the SM1
+#convertisseurversgiref carreRachel [UD_caribou_wolf_2022.csv, GRILLESOMMETCSV, 2, Lin]
+
+## For the SM1
+convertisseurversgiref carreRachel [UD_monthly_caribou_wolf_mars_2022.csv, GRILLESOMMETCSV, 2, Lin]
+
+## For the SM2
+#convertisseurversgiref carreRachel [UD_caribou_moose_2023.csv, GRILLESOMMETCSV, 2, Lin]
+
+## Extraction des metadata de ce pour ce paysage
+#include "metadata_landscape.champs"
+
+## Initialisation du champs L (qui est re-ecrit par Python normalement)
+#scalaire L 1
+
+
+# ----------- NO LONGER NEEDED WHEN RUN WITH PYTHON ----------------
+
+# Le maillage utilise provient d'un .csv converti en maillage (.mail) par le programme:
+#/cluster/logiciels/GIREF/GIREF.2024-07-29.AppImage ConversionMaillage "1_10_3.csv" GRILLEBARYCSV 2 Lin carreRachel
+#/cluster/logiciels/GIREF/GIREF.2024-07-29.AppImage ConversionMaillage "1_10_3.csv" GRILLESOMMETCSV 2 Lin carreRachel

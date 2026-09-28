@@ -1,0 +1,6 @@
+### Rayons de perception empiriques (km)
+
+#scalaire rayon_perception_C 4.7
+#scalaire rayon_perception_M 1
+#scalaire rayon_perception_P 0.2
+#scalaire rayon_perception_D 1

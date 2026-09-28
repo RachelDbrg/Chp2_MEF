@@ -1,0 +1,8 @@
+# Ignore all .out files
+*.out
+
+# Ignore all files ending with err.txt
+*err.txt
+
+# Ignore all the chrono files
+*chrono.txt

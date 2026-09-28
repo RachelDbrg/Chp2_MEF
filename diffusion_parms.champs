@@ -1,0 +1,72 @@
+
+## Definition des coefficients de diffusion (scalaires), determines de facon empirique 
+## Unite: km2/an 
+
+#include fitted_parameters.champs
+
+## Initialisation des champs
+
+scalaire c1 1
+scalaire c2 1
+scalaire c3 1
+scalaire c4 1
+scalaire c5 1
+scalaire m1 1
+scalaire m2 1
+scalaire m3 1
+scalaire m4 1
+scalaire m5 1
+scalaire p3 1
+scalaire p4 1
+scalaire p5 1
+
+## Coefficients de diffusion empiriques (km2/an) - ceux qui sont constants
+scalaire scalDC   1073.1
+scalaire scalDM   142.35 
+scalaire scalDD1  scalDM
+
+## Coefficient de diffusion de P dépendant de l'espace
+scalaire "DP_paysage" 1051.25
+## Coeff de diffusion sur la route est plus grand que celui dans la foret (x1.8)
+scalaire "DP_route" 1051.25*1.8
+
+## Definition du coefficient de diffusion de P par rapport à l'obstacle: 
+scalaire scalDP DP_paysage
+#scalaire    scalDP      if(y>=0.3 & y<=0.7 & x>=0.1 & x<=0.2 | y>=0.3 & y<=0.7 & x>=0.8 & x<=0.9,  DP_route, DP_paysage) 
+
+#scalaire scalDP if(y>=0.3 & y<=0.7 & x>=0.1 & x<=0.2, DP_route, if(y>=0.3 & y<=0.7 & x>=0.5 & x<=0.6, DP_route, if(y>=0.3 & y<=0.7 & x>=0.8 & x<=0.9, DP_route, DP_paysage)))
+
+
+## Coefficients de diffusion adimensionnel
+scalaire coeff_diffusion_C_norm   1
+
+
+## Adimensionnalisation du coefficient de diffusion
+#scalaire "coeff_diffusion_C_norm" f(scalDC, L)=scalDC/L^2
+scalaire "coeff_diffusion_M_norm" f(scalDC, scalDM)=scalDM/scalDC
+scalaire "coeff_diffusion_P_norm" f(scalDC, scalDP)=scalDP/scalDC
+scalaire "coeff_diffusion_D_norm" f(scalDC, scalDD1)=scalDD1/scalDC
+
+
+# -----------------------------------------------------------
+### Definition des coefficients de pondération de chacun des mécanismes: estimes par Nelder Mead ou bien variables dans le script python!
+
+## Caribou
+
+## Si le terme est négatif, divergence! 
+scalaire mult_c 2 * coeff_diffusion_C_norm
+
+
+## Moose
+
+## Biz car ne fait pas ca pour les autrees especes
+scalaire mult_m 2 * coeff_diffusion_M_norm
+
+
+
+## Predator
+## Si le terme est négatif, divergence! 
+scalaire mult_p 2*coeff_diffusion_P_norm
+
+## Deer
+scalaire mult_d1 -2* coeff_diffusion_D_norm

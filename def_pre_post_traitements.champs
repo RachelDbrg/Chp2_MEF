@@ -1,0 +1,55 @@
+#==========================================================================================================================================================================
+# ================================================= 2.3 Definition des Pré et Post PostTraitements      ===================================================================
+
+# On définit ici les fonctions (~actions), qui seront roulées en court de résolution des PDE. On décide ensuite l'ordre de leur execution a la fin du script. 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.3.2 Moyennage locaux                  -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Etape 0: discretisation des champs espèces car il faut un ChampScalConstElem pour que le pp_filtrage_moyenne fonctionne
+## pp_reinterpole a pour effet de passer un champ de continu a discret
+## La syntaxe du pp_reinterpole est:                                    [champ_destination, champ_source]
+
+pp_reinterpole                      pp_reinterpole_mec_tot_C                   [mec_tot_C_reinterpol,      mec_tot_C]
+pp_reinterpole                      pp_reinterpole_mec_tot_M                   [mec_tot_M_reinterpol,      mec_tot_M]
+pp_reinterpole                      pp_reinterpole_mec_tot_P                   [mec_tot_P_reinterpol,      mec_tot_P]
+
+
+
+## Etape 1: normalisation des rayons de perception selon la taille L du paysage
+## Ici, on applique une expression algébrique pour normaliser le rayon par rapport a la taille du paysage (entree) et on store la valeur obtenue
+## dans un scalaire "rayon_perception_X_norm"
+## La reinterpolation est necessaire pour passer du resultat d'une exp_alg a un scalaire ChampScalAConstant: le scalaire obtenu
+## est ensuite utilise comme rayon de convolution
+## La syntaxe du pp_reinterpole est:                                    [   champ_destination,       champ_source]
+#pp_reinterpole                      pp_reinterpole_rayon_norm_C         [rayon_perception_C_norm, alg_rayon_perception_C_norm]
+#pp_reinterpole                      pp_reinterpole_rayon_norm_M         [rayon_perception_M_norm, alg_rayon_perception_M_norm]
+#pp_reinterpole                      pp_reinterpole_rayon_norm_P         [rayon_perception_P_norm, alg_rayon_perception_P_norm]
+#pp_reinterpole                      pp_reinterpole_rayon_norm_D         [rayon_perception_D_norm, alg_rayon_perception_D_norm]
+
+
+
+
+### Etape 2: Application du pp_filtrage_moyenne, qui moyenne les champs selon le rayon de perception voulu
+## La syntaxe du pp_filtrage_moyenne est:                               [champ_source, champ_destination, rayon d'action]
+## ou le champ de destination averaged_XY reflete la moyenne (discrete) de l'espece Y en fonction de la perception de l'espece X
+
+### Moyennage type vegetation (mecanisme 1)
+## TODO: remplacer le 0.1 par le vrai rayon_perception_!!!
+## Si SM1, alors 
+
+pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_C               [mec_tot_C_reinterpol,  averaged_mec_tot_C,        0.1]
+pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_M               [mec_tot_M_reinterpol,  averaged_mec_tot_M,        0.1]
+pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_P               [mec_tot_P_reinterpol,  averaged_mec_tot_P,        0.1]
+
+
+
+
+### Etape 3: Conversion de discret en continu
+## Projection L2 pour convertir discret en continu
+## La syntaxe du pp_projection_l2 est:                                  [champ_source, champ_destination, schema integration]
+
+pp_projection_l2                    projection_l2_tot_mec_C              [averaged_mec_tot_C,   averaged_mec_tot_C_cont,   schema_intg]
+pp_projection_l2                    projection_l2_tot_mec_M              [averaged_mec_tot_M,   averaged_mec_tot_M_cont,   schema_intg]
+pp_projection_l2                    projection_l2_tot_mec_P              [averaged_mec_tot_P,   averaged_mec_tot_P_cont,   schema_intg]

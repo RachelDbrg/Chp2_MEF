@@ -1,0 +1,29 @@
+## Definition des entites (contours) du paysage
+# BAS
+scalaire fct_critere_bas if(y=0, 1, 0)
+critere_fct_caracteristique critere_bas [fct_critere_bas, 0]
+cree_entite_avec_critere bas  ENTITE_TOUTES_COMPOSANTES(critere_bas)
+
+# HAUT
+scalaire fct_critere_haut if(y=1, 1, 0)
+critere_fct_caracteristique critere_haut [fct_critere_haut, 0]
+cree_entite_avec_critere haut  ENTITE_TOUTES_COMPOSANTES(critere_haut)
+
+# GAUCHE
+scalaire fct_critere_gauche if(x=0, 1, 0)
+critere_fct_caracteristique critere_gauche [fct_critere_gauche, 0]
+cree_entite_avec_critere gauche  ENTITE_TOUTES_COMPOSANTES(critere_gauche)
+
+# DROITE
+scalaire fct_critere_droite if(x=1, 1, 0)
+critere_fct_caracteristique critere_droite [fct_critere_droite, 0]
+cree_entite_avec_critere droite  ENTITE_TOUTES_COMPOSANTES(critere_droite)
+
+## Definition domaine entier (interieur)
+#scalaire fct_bornes_domaine if(x>=0 & x<=0.1 & x>=0.3 & x<=1 & y>=0 & y<=0.3 & y>=0.7 & y<= 1, 1, 0)
+scalaire fct_bornes_domaine if(x>=0 & x<=1 & y>=0 & y<= 1, 1, 0)
+critere_fct_caracteristique critere_bornes_domaine [fct_bornes_domaine, 0]
+cree_entite_avec_critere contour_domaine  ENTITE_TOUTES_COMPOSANTES(critere_bornes_domaine)
+
+
+cree_entite_avec_critere sous_domaine  ENTITE_TOUTES_COMPOSANTES(critere_bornes_domaine)

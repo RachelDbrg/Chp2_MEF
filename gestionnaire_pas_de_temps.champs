@@ -1,0 +1,28 @@
+
+# Liste d'informations utiles au solveur:
+# Comprend le critère de convergence, le nombre d'itérations maximal ainsi que le temps initial.
+#scalaire ToleranceNlin 1e-7
+scalaire ToleranceNlin 1e-1
+scalaire MaxItNlin 40
+
+## Definition du temps initial
+scalaire t0 0
+
+# Il y a plusieurs façon d'exprimer le solveur instationnai re. L'une d'elle est d'exprimer
+# le nombre de pas de temps total voulu ainsi que la valeur de chaque pas.
+
+## Definition du pas de temps
+scalaire delta_t 0.0001
+
+## Definition du nombre de pas de temps
+#scalaire nombre_de_pas_de_temps 3300 
+scalaire nombre_de_pas_de_temps 1
+
+## pour faire simulation de 4mois -- mais rend simulation trop longue et diffusion domine trop 
+
+## pour faire simulation de 10 jours (pour Nelder Mead)
+#scalaire nombre_de_pas_de_temps 274
+
+
+#scalaire nombre_de_pas_de_temps 50
+

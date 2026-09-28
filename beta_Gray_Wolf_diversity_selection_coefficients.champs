@@ -1,0 +1,8 @@
+scalaire P_diversity1 -0.548601
+scalaire P_diversity2 -0.0928622
+scalaire P_diversity4 -0.0168139
+scalaire P_diversity5 0.16459
+scalaire P_diversity6 -11.659
+
+## Set P_diversity3 preference to 0 becauser this layer was used as the reference for iSSA
+scalaire P_diversity3 0 

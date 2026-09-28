@@ -1,0 +1,21 @@
+#ConversionMaillage "/home/rdubourg/scratch/Chp2/Chp2/1_10_3.csv" GRILLESOMMETCSV 2 Lin carreRachel
+
+
+#convertisseurversgiref carreRachel [/users/rdubourg/Documents/RAD/Chp2/MEF_RAD/iSSA_results/BWCA21607/cropped_landscape.csv,GRILLESOMMETCSV,2,Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/cropped_landscape.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/PDE_landscape.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/1_10_4.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/5_10_3.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/1_10_3.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/landscapes/gradient_lichen/landscape_1_combined.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/1_10_5.csv, GRILLESOMMETCSV, 2, Lin]
+
+#convertisseurversgiref carreRachel [/home/rdubourg/scratch/Chp2/Chp2/3_10_2.csv, GRILLESOMMETCSV, 2, Lin]
+

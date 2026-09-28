@@ -1,0 +1,37 @@
+{ probDida
+
+
+# ------------------------------------ Frontieres de paysage ------------------------------------------------------------------------------------------------------------
+
+## On impose une Neumann sur les bords du paysage Omega, pour assurer qu'aucune quantité ne rentre 
+## ni ne sorte (integrales = 1)
+
+## Neumann: impose une valeur a la derivee normale par rapport a l'entite ((ie caracterise le flux))
+scalaire flux_frontiere 0
+
+neumann scalaire "bas"      "C" "flux_frontiere" "schema_intg"
+neumann scalaire "haut"     "C" "flux_frontiere" "schema_intg"
+neumann scalaire "gauche"   "C" "flux_frontiere" "schema_intg"
+neumann scalaire "droite"   "C" "flux_frontiere" "schema_intg"
+
+neumann scalaire "bas"      "M" "flux_frontiere" "schema_intg"
+neumann scalaire "haut"     "M" "flux_frontiere" "schema_intg"
+neumann scalaire "gauche"   "M" "flux_frontiere" "schema_intg"
+neumann scalaire "droite"   "M" "flux_frontiere" "schema_intg"
+
+neumann scalaire "bas"      "P" "flux_frontiere" "schema_intg"
+neumann scalaire "haut"     "P" "flux_frontiere" "schema_intg"
+neumann scalaire "gauche"   "P" "flux_frontiere" "schema_intg"
+neumann scalaire "droite"   "P" "flux_frontiere" "schema_intg"
+
+neumann scalaire "bas"     "D1" "flux_frontiere" "schema_intg"
+neumann scalaire "haut"    "D1" "flux_frontiere" "schema_intg"
+neumann scalaire "gauche"  "D1" "flux_frontiere" "schema_intg"
+neumann scalaire "droite"  "D1" "flux_frontiere" "schema_intg"
+
+
+## Dirichlet: impose une valeur aux limites du paysage
+  # scalaire beaucoup 3000
+  # dirichlet scalaire "bas" "H1" "beaucoup"
+
+}

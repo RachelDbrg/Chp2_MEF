@@ -1,0 +1,221 @@
+### Expression algébrique pour normaliser le rayon selon la taille du paysage
+#scalaire "alg_rayon_perception_C_norm" f(rayon_perception_C,L)=rayon_perception_C/L
+#scalaire "alg_rayon_perception_M_norm" f(rayon_perception_M,L)=rayon_perception_M/L
+#scalaire "alg_rayon_perception_P_norm" f(rayon_perception_P,L)=rayon_perception_P/L
+#scalaire "alg_rayon_perception_D_norm" f(rayon_perception_D,L)=rayon_perception_D/L
+
+
+### Initialisation du scalaire de perception normalise
+scalaire L 1
+scalaire rayon_perception_C_norm 1 
+scalaire rayon_perception_M_norm 1 
+scalaire rayon_perception_P_norm 1 
+scalaire rayon_perception_D1_norm 1 
+
+
+### Initialisation des champs de sorties du pp filtrage moyenne
+#scalconstelem averaged_CZ1 0
+#scalconstelem averaged_CZ2 0
+#scalconstelem averaged_CZ3 0
+#scalconstelem averaged_CZ4 0
+#scalconstelem averaged_CZ5 0
+#scalconstelem averaged_CZ6 0
+#scalconstelem averaged_CZ7 0
+#scalconstelem averaged_CZ8 0
+#scalconstelem averaged_CZ9 0
+#scalconstelem averaged_CZ10 0
+#scalconstelem averaged_CZ11 0
+#scalconstelem averaged_CZ12 0
+
+scalconstelem mec_tot_C_reinterpol 0
+scalconstelem mec_tot_M_reinterpol 0
+scalconstelem mec_tot_P_reinterpol 0
+
+scalconstelem mec_tot_C_reinterpol_scallin
+scalconstelem mec_tot_C_reinterpol_scalquad
+
+
+scalconstelem averaged_mec_tot_C 0
+scalconstelem averaged_mec_tot_M 0
+scalconstelem averaged_mec_tot_P 0
+
+
+#scalconstelem averaged_MZ1 0
+#scalconstelem averaged_MZ2 0
+#scalconstelem averaged_MZ3 0
+#scalconstelem averaged_MZ4 0
+#scalconstelem averaged_MZ5 0
+#scalconstelem averaged_MZ6 0
+#scalconstelem averaged_MZ7 0
+#scalconstelem averaged_MZ8 0
+#scalconstelem averaged_MZ9 0
+#scalconstelem averaged_MZ10 0
+#scalconstelem averaged_MZ11 0
+#scalconstelem averaged_MZ12 0
+
+#scalconstelem averaged_D1Z1 0
+#scalconstelem averaged_D1Z2 0
+#scalconstelem averaged_D1Z3 0
+#scalconstelem averaged_D1Z4 0
+#scalconstelem averaged_D1Z5 0
+#scalconstelem averaged_D1Z6 0
+#scalconstelem averaged_D1Z7 0
+#scalconstelem averaged_D1Z8 0
+#scalconstelem averaged_D1Z9 0
+#scalconstelem averaged_D1Z10 0
+#scalconstelem averaged_D1Z11 0
+#scalconstelem averaged_D1Z12 0
+
+#scalconstelem averaged_CY1 0
+#scalconstelem averaged_CY2 0
+#scalconstelem averaged_CY3 0
+#scalconstelem averaged_CY4 0
+#scalconstelem averaged_CY5 0
+#scalconstelem averaged_CY6 0
+
+#scalconstelem averaged_MY1 0
+#scalconstelem averaged_MY2 0
+#scalconstelem averaged_MY3 0
+#scalconstelem averaged_MY4 0
+#scalconstelem averaged_MY5 0
+#scalconstelem averaged_MY6 0
+
+
+#scalconstelem averaged_D1Y1 0
+#scalconstelem averaged_D1Y2 0
+#scalconstelem averaged_D1Y3 0
+#scalconstelem averaged_D1Y4 0
+#scalconstelem averaged_D1Y5 0
+#scalconstelem averaged_D1Y6 0
+
+
+
+#scalconstelem Z1_reinterpol 0
+#scalconstelem Z2_reinterpol 0
+#scalconstelem Z3_reinterpol 0
+#scalconstelem Z4_reinterpol 0
+#scalconstelem Z5_reinterpol 0
+#scalconstelem Z6_reinterpol 0
+#scalconstelem Z7_reinterpol 0
+#scalconstelem Z8_reinterpol 0
+#scalconstelem Z9_reinterpol 0
+#scalconstelem Z10_reinterpol 0
+#scalconstelem Z11_reinterpol 0
+#scalconstelem Z12_reinterpol 0
+
+#scalconstelem Y1_reinterpol 0
+#scalconstelem Y2_reinterpol 0
+#scalconstelem Y3_reinterpol 0
+#scalconstelem Y4_reinterpol 0
+#scalconstelem Y5_reinterpol 0
+#scalconstelem Y6_reinterpol 0
+
+
+#scalconstelem averaged_CC 0 
+#scalconstelem averaged_CM 0 
+#scalconstelem averaged_CP 0 
+#scalconstelem averaged_CD 0 
+#scalconstelem C_reinterpol 0
+
+#scalconstelem averaged_MM 0 
+#scalconstelem averaged_MC 0 
+#scalconstelem averaged_MP 0 
+#scalconstelem averaged_MD 0 
+#scalconstelem M_reinterpol 0
+
+#scalconstelem averaged_PP 0 
+#scalconstelem averaged_PC 0 
+#scalconstelem averaged_PM 0 
+#scalconstelem averaged_PD 0 
+#scalconstelem P_reinterpol 0
+
+#scalconstelem averaged_DD 0 
+#scalconstelem averaged_DM 0 
+#scalconstelem averaged_DP 0 
+#scalconstelem averaged_DC 0 
+#scalconstelem D_reinterpol 0 
+
+
+## Initialisation des champs continus utilises pour stocker les densites moyennes percues des especes
+#scallin averaged_CZ1_cont 0
+#scallin averaged_CZ2_cont 0
+#scallin averaged_CZ3_cont 0
+#scallin averaged_CZ4_cont 0
+#scallin averaged_CZ5_cont 0
+#scallin averaged_CZ6_cont 0
+#scallin averaged_CZ7_cont 0
+#scallin averaged_CZ8_cont 0
+#scallin averaged_CZ9_cont 0
+#scallin averaged_CZ10_cont 0
+#scallin averaged_CZ11_cont 0
+#scallin averaged_CZ12_cont 0
+
+scallin averaged_mec_tot_C_cont 0
+scallin averaged_mec_tot_M_cont 0
+scallin averaged_mec_tot_P_cont 0
+
+
+#scallin averaged_MZ1_cont 0
+#scallin averaged_MZ2_cont 0
+#scallin averaged_MZ3_cont 0
+#scallin averaged_MZ4_cont 0
+#scallin averaged_MZ5_cont 0
+#scallin averaged_MZ6_cont 0
+#scallin averaged_MZ7_cont 0
+#scallin averaged_MZ8_cont 0
+#scallin averaged_MZ9_cont 0
+#scallin averaged_MZ10_cont 0
+#scallin averaged_MZ11_cont 0
+#scallin averaged_MZ12_cont 0
+
+#scallin averaged_D1Z1_cont 0
+#scallin averaged_D1Z2_cont 0
+#scallin averaged_D1Z3_cont 0
+#scallin averaged_D1Z4_cont 0
+#scallin averaged_D1Z5_cont 0
+#scallin averaged_D1Z6_cont 0
+#scallin averaged_D1Z7_cont 0
+#scallin averaged_D1Z8_cont 0
+#scallin averaged_D1Z9_cont 0
+#scallin averaged_D1Z10_cont 0
+#scallin averaged_D1Z11_cont 0
+#scallin averaged_D1Z12_cont 0
+
+#scallin averaged_CY1_cont 0
+#scallin averaged_CY2_cont 0
+#scallin averaged_CY3_cont 0
+#scallin averaged_CY4_cont 0
+#scallin averaged_CY5_cont 0
+#scallin averaged_CY6_cont 0
+
+#scallin averaged_MY1_cont 0
+#scallin averaged_MY2_cont 0
+#scallin averaged_MY3_cont 0
+#scallin averaged_MY4_cont 0
+#scallin averaged_MY5_cont 0
+#scallin averaged_MY6_cont 0
+
+#scallin averaged_D1Y1_cont 0
+#scallin averaged_D1Y2_cont 0
+#scallin averaged_D1Y3_cont 0
+#scallin averaged_D1Y4_cont 0
+#scallin averaged_D1Y5_cont 0
+#scallin averaged_D1Y6_cont 0
+
+#scallin averaged_CC_cont 0 
+#scallin averaged_MM_cont 0 
+#scallin averaged_PP_cont 0 
+#scallin averaged_DD_cont 0 
+
+#scallin averaged_CM_cont 0 
+#scallin averaged_CP_cont 0 
+#scallin averaged_CD_cont 0 
+
+
+#scallin averaged_MC_cont 0 
+#scallin averaged_MP_cont 0 
+#scallin averaged_MD_cont 0 
+
+#scallin averaged_PC_cont 0 
+#scallin averaged_PM_cont 0 
+#scallin averaged_PD_cont 0 

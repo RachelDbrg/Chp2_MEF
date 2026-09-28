@@ -1,0 +1,25 @@
+# ------------------------------------------------------------
+# Conditions de Neumann pour chaque obstacle et chaque espèce
+# ------------------------------------------------------------
+
+# ROAD 1
+neumann scalaire "bas_obstacle_1"    "P" "flux_P" "schema_intg"
+neumann scalaire "haut_obstacle_1"   "P" "flux_P" "schema_intg"
+neumann scalaire "gauche_obstacle_1" "P" "flux_P" "schema_intg"
+neumann scalaire "droite_obstacle_1" "P" "flux_P" "schema_intg"
+
+neumann scalaire "bas_obstacle_1"    "C" "flux_prey" "schema_intg"
+neumann scalaire "haut_obstacle_1"   "C" "flux_prey" "schema_intg"
+neumann scalaire "gauche_obstacle_1" "C" "flux_prey" "schema_intg"
+neumann scalaire "droite_obstacle_1" "C" "flux_prey" "schema_intg"
+
+neumann scalaire "bas_obstacle_1"    "M" "flux_prey" "schema_intg"
+neumann scalaire "haut_obstacle_1"   "M" "flux_prey" "schema_intg"
+neumann scalaire "gauche_obstacle_1" "M" "flux_prey" "schema_intg"
+neumann scalaire "droite_obstacle_1" "M" "flux_prey" "schema_intg"
+
+neumann scalaire "bas_obstacle_1"    "D1" "flux_prey" "schema_intg"
+neumann scalaire "haut_obstacle_1"   "D1" "flux_prey" "schema_intg"
+neumann scalaire "gauche_obstacle_1" "D1" "flux_prey" "schema_intg"
+neumann scalaire "droite_obstacle_1" "D1" "flux_prey" "schema_intg"
+

@@ -1,0 +1,117 @@
+# ================================================= 0.4 Test pour les landscape features, définition d'obstacles     ========================================================
+## Ici, on définit toutes les linears features (crées aléatoirement a partir d'un fichier python)
+## Definition de toutes les entités correspondant aux obstacles et creation du sous-domaine sur lequel rouler les équations lorsque des obstacles existent
+#include Linear_Features.champs
+
+
+
+# ------------------------------------ Obstacle ------------------------------------------------------------------------------------------------------------
+
+## Conditions limites par rapport a une frontiere
+## Neumann: impose une valeur a la derivee normale par rapport a l'entite ((ie caracterise le flux))
+
+
+### Ici on definit les contours des obstacles
+# ROAD 1
+scalaire                    fct_obstacle_bas_1      if(y=0.3 & x>=0.1 & x<=0.3, 1, 0)
+critere_fct_caracteristique obstacle_bas_1          [fct_obstacle_bas_1, 0]
+cree_entite_avec_critere    bas_obstacle_1          ENTITE_ARETES_SSC(obstacle_bas_1)
+
+scalaire                    fct_obstacle_haut_1     if(y=0.7 & x>=0.1 & x<=0.3, 1, 0)
+critere_fct_caracteristique obstacle_haut_1         [fct_obstacle_haut_1, 0]
+cree_entite_avec_critere    haut_obstacle_1         ENTITE_ARETES_SSC(obstacle_haut_1)
+
+scalaire                    fct_obstacle_gauche_1   if(x=0.1 & y>=0.3 & y<=0.7, 1, 0)
+critere_fct_caracteristique obstacle_gauche_1       [fct_obstacle_gauche_1, 0]
+cree_entite_avec_critere    gauche_obstacle_1       ENTITE_ARETES_SSC(obstacle_gauche_1)
+
+scalaire                    fct_obstacle_droite_1   if(x=0.3 & y>=0.3 & y<=0.7, 1, 0)
+critere_fct_caracteristique obstacle_droite_1       [fct_obstacle_droite_1, 0]
+cree_entite_avec_critere    droite_obstacle_1       ENTITE_ARETES_SSC(obstacle_droite_1)
+
+
+
+# ------------------------------------------------------------
+# Obstacle entier 1
+# ------------------------------------------------------------
+
+## Devrait etre tout sauf les sommets de l'obstacle 1
+
+scalaire                    fct_obstacle_1           if(x>0.1 & x<0.3 & y>0.3 & y<0.7, 1, 0)
+critere_fct_caracteristique fct_car_obstacle_1       [fct_obstacle_1, 0]
+cree_entite_avec_critere    obstacle_1               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_1)
+
+
+## Definition des sommets de l'obstacle 1
+scalaire                    sommmets_fct_obstacle_1          if(x>0.1 & x<0.3 & y>0.3 & y<0.7, 1, 0)
+critere_fct_caracteristique sommets_fct_car_obstacle_1       [sommmets_fct_obstacle_1, 0]
+cree_entite_avec_critere    sommets_obstacle_1                ENTITE_SOMMETS(sommets_fct_car_obstacle_1)
+
+
+
+
+# --------------------------------------------------------------------------------------------------------
+# ROAD 2
+#scalaire                    fct_obstacle_bas_2      if(y=0.3 & x>=0.5 & x<=0.6, 1, 0)
+#critere_fct_caracteristique obstacle_bas_2          [fct_obstacle_bas_2, 0]
+#cree_entite_avec_critere    bas_obstacle_2          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_2)
+
+#scalaire                    fct_obstacle_haut_2     if(y=0.7 & x>=0.5 & x<=0.6, 1, 0)
+#critere_fct_caracteristique obstacle_haut_2         [fct_obstacle_haut_2, 0]
+#cree_entite_avec_critere    haut_obstacle_2         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_2)
+
+#scalaire                    fct_obstacle_gauche_2   if(x=0.5 & y>=0.3 & y<=0.7, 1, 0)
+#critere_fct_caracteristique obstacle_gauche_2       [fct_obstacle_gauche_2, 0]
+#cree_entite_avec_critere    gauche_obstacle_2       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_2)
+
+#scalaire                    fct_obstacle_droite_2   if(x=0.6 & y>=0.3 & y<=0.7, 1, 0)
+#critere_fct_caracteristique obstacle_droite_2       [fct_obstacle_droite_2, 0]
+#cree_entite_avec_critere    droite_obstacle_2       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_2)
+
+
+
+# ------------------------------------------------------------
+# Obstacle entier 2
+# ------------------------------------------------------------
+#scalaire                    fct_obstacle_2           if(x>=0.5 & x<=0.6 & y>=0.3 & y<=0.7, 1, 0)
+#critere_fct_caracteristique fct_car_obstacle_2       [fct_obstacle_2, 0]
+#cree_entite_avec_critere    obstacle_2               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_2)
+
+
+
+
+# --------------------------------------------------------------------------------------------------------
+# ROAD 3
+#scalaire                    fct_obstacle_bas_3      if(y=0.3 & x>=0.7 & x<=0.9, 1, 0)
+#critere_fct_caracteristique obstacle_bas_3          [fct_obstacle_bas_3, 0]
+#cree_entite_avec_critere    bas_obstacle_3          ENTITE_TOUTES_COMPOSANTES(obstacle_bas_3)
+
+#scalaire                    fct_obstacle_haut_3     if(y=0.7 & x>=0.7 & x<=0.9, 1, 0)
+#critere_fct_caracteristique obstacle_haut_3         [fct_obstacle_haut_3, 0]
+#cree_entite_avec_critere    haut_obstacle_3         ENTITE_TOUTES_COMPOSANTES(obstacle_haut_3)
+
+#scalaire                    fct_obstacle_gauche_3   if(x=0.7 & y>=0.3 & y<=0.7, 1, 0)
+#critere_fct_caracteristique obstacle_gauche_3       [fct_obstacle_gauche_3, 0]
+#cree_entite_avec_critere    gauche_obstacle_3       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche_3)
+
+#scalaire                    fct_obstacle_droite_3   if(x=0.9 & y>=0.3 & y<=0.7, 1, 0)
+#critere_fct_caracteristique obstacle_droite_3       [fct_obstacle_droite_3, 0]
+#cree_entite_avec_critere    droite_obstacle_3       ENTITE_TOUTES_COMPOSANTES(obstacle_droite_3)
+
+
+
+# ------------------------------------------------------------
+# Obstacle entier 3
+# ------------------------------------------------------------
+#scalaire                    fct_obstacle_3           if(x>=0.7 & x<=0.9 & y>=0.3 & y<=0.7, 1, 0)
+#critere_fct_caracteristique fct_car_obstacle_3       [fct_obstacle_3, 0]
+#cree_entite_avec_critere    obstacle_3               ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle_3)
+
+
+
+# ------------------------------------------------------------
+# Sous-domaine moins les obstacles
+# ------------------------------------------------------------
+
+#critere_sommet_dans_entite sommets_obs_1 obstacle_1
+#cree_entite_avec_critere    sommets_obs_1_enti               ENTITE_TOUTES_COMPOSANTES(sommets_obs_1)

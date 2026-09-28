@@ -1,0 +1,26 @@
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 1 Terme de croissance                               -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+scalaire aH1V1 0.05
+scalaire aH1V2 0.05
+scalaire hH1V1 8.81e-4
+scalaire hH1V2 8.81e-4
+scalaire target_growth_rate_H1 0.26
+scalaire epsi_AJ 0.08
+scalaire rho_H1  0.6
+scalaire eH1V1  11.8e3
+scalaire eH1V2  20083
+scalaire k_V_norm  92870
+scalaire k_U_max  167010
+scalaire w_H1  100
+scalaire w_H2  400
+scalaire w_H3  70
+scalaire muH1  70 * w_H1^0.75 * 365 * 1.7 * 4.184 
+scalaire denom_supp_NRJ_H1 1 + (rho_H1 * aH1V1 * hH1V1 * k_V_norm) + ((1 - rho_H1) * aH1V2 * hH1V2 * k_U_max)
+scalaire chiH1 target_growth_rate_H1 / (epsi_AJ) * ((((rho_H1 * aH1V1 * eH1V1 * k_V_norm + (1 - rho_H1) * aH1V2 * eH1V2 * k_U_max)/(denom_supp_NRJ_H1))) - muH1)^-1
+scalaire epsilonH1 epsi_AJ
+
+
+## TODO: get rid of the *10
+scalaire coeffCroissance_C -(chiH1*epsilonH1*( (aH1V1*eH1V1*Z1+aH1V2*eH1V2*Z2)/(1+aH1V1*hH1V1*Z1+aH1V2*hH1V2*Z2) - muH1))*100

@@ -1,0 +1,5 @@
+{petsc
+
+    petscpartitioner_type       parmetis
+    petscpartitioner_overlap    10
+}

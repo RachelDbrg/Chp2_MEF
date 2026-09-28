@@ -1,0 +1,25 @@
+## Type d'habitat
+## Pour chaque type d'habitat, on definit un champs qui prendra la valeur 1 lorsque le pixel sera de ce type d'habitat, et 0 sinon
+#scalconstelem Z1 if(valeurs_paysage == 1, 1, 0)
+
+scallin         Z1          if(valeurs_paysage == 1, 1, 0)
+scallin         Z2          if(valeurs_paysage == 2, 1, 0) 
+scallin         Z3          if(valeurs_paysage == 3, 1, 0) 
+scallin         Z4          if(valeurs_paysage == 4, 1, 0) 
+scallin         Z5          if(valeurs_paysage == 5, 1, 0) 
+scallin         Z6          if(valeurs_paysage == 6, 1, 0) 
+scallin         Z7          if(valeurs_paysage == 7, 1, 0) 
+scallin         Z8          if(valeurs_paysage == 8, 1, 0) 
+scallin         Z9          if(valeurs_paysage == 9, 1, 0) 
+scallin         Z10         if(valeurs_paysage == 10, 1, 0) 
+scallin         Z11         if(valeurs_paysage == 11, 1, 0) 
+scallin         Z12         if(valeurs_paysage == 12, 1, 0) 
+
+
+## Heterogeneité
+scallin         Y1          if(valeurs_diversity == 1, 1, 0)
+scallin         Y2          if(valeurs_diversity == 2, 1, 0) 
+scallin         Y3          if(valeurs_diversity == 3, 1, 0) 
+scallin         Y4          if(valeurs_diversity == 4, 1, 0) 
+scallin         Y5          if(valeurs_diversity == 5, 1, 0) 
+scallin         Y6          if(valeurs_diversity == 6, 1, 0) 

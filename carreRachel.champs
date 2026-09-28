@@ -1,0 +1,716 @@
+GIREF_MODE_VERBOSE_CHRONO 0
+
+booleen GIREF_VERBOSE_SOLVEUR false
+
+#==========================================================================================================================================================================
+#             Simple and cross diffusion model - application to the wolf ungulate system
+#==========================================================================================================================================================================
+
+# ================================================= 0. INITIALISATION                                   ===================================================================
+# ================================================= 0.1 Definition du paysage a partir du .csv          ===================================================================
+
+# Spécification du champ géométrique à utiliser pour le problème (linéaire ou quadratique).
+# Nous prenons ici un champ géométrique linéaire:
+champgeolin champgeo
+
+
+# Ici on convertit le .csv en .mail et on charge donc:
+## les coordonnes x et y normalisees (col 1 et col2)
+### a. Raster de types d'habitat (col3)
+### b. Raster de heterogeneité (col4)
+
+
+## Ce code appelle la conversion d'un .csv en entrée vers un .mail, et il cree aussi un cmefpp par colonne supplementaire dans le .csv originel
+## Commenté quand on utilise le grand paysage car doit être convertit en binaire
+#include conversion_csv_mail.champs
+
+# Si on fait maillage sur sommets:
+## on recupere ici chacune des colonnes du .csv 
+scallin valeurs_paysage "carreRachel.habitat.cmefpp" 
+scallin valeurs_diversity "carreRachel.diversity.cmefpp" 
+
+## Faire attention car selon si on prend SM1 ou SM2, il faut ré-allumer les definitions dans position_densite_initiale
+## For SM1
+#scallin C "carreRachel.ud_caribou_init.cmefpp" 
+#scallin P "carreRachel.ud_wolf_init.cmefpp"
+
+
+## Definition des CI a partir du csv empirique
+scallin C "carreRachel.caribou_CI.cmefpp" 
+scallin P "carreRachel.wolf_CI.cmefpp"
+
+## For SM2
+#scallin C "carreRachel.ud_caribou_init.cmefpp" 
+#scallin M "carreRachel.ud_moose_init.cmefpp"
+
+
+# Si on fait maillage sur barycentres
+#scalconstelem valeurs_paysage "carreRachel.category.cmefpp" 
+
+## Ici, on importe les metadonnes liees au .csv du paysage: Vraie longueur et largeur en km (length_landscape)
+
+### !!!!!!!!!! A changer en fonction du paysage !!!!!!!!!!
+## test on l'a mis dans le fichier collection
+#include metadata_landscape.champs
+
+
+## Découpe le paysage en binaires en fct du type d'habitat
+include decoupe_paysage_binaire.champs
+
+#==========================================================================================================================================================================
+# ================================================= 2.9 Définition du solveur instationnaire                                            ===================================
+
+# Liste d'informations utiles au solveur:
+include gestionnaire_pas_de_temps.champs
+
+
+
+
+
+# ================================================= 0.2 Definition du schema d'integration              ===================================================================
+
+# Paramètres qui serviront à créer un schéma d'intégration. Plus il y a de points, et plus la solution est
+# exacte. Il faut respecter certains critères lorsqu'on met des points (seulement certaines valeurs)
+# fonctionnent dépendamment du type d'élément:
+{ ParamSchema
+  scalaire ptintgarete               3
+  scalaire ptintgface3               3
+  scalaire ptintgface4               2
+  scalaire ptintgelement1d           3
+  scalaire ptintgtriangle            16
+  scalaire ptintgquadrangle          2
+  #scalaire ptintgtetra               5l
+  scalaire ptintgprismetri_legendre  2
+  scalaire ptintgprismetri_triangle  3
+  scalaire ptintghexa                2
+}
+
+# Création d'un schéma d'intégration selon les paramètres du "namespace" ParamSchema
+schemaintg schema_intg ParamSchema
+
+
+
+
+# ================================================= 0.3 Definition entite geométriques du domaine  =================================================================
+## La creation du maillage n'entraine pas la creation des entités, alors on fait ca nous meme
+## En gros, defini un carre de (0,1)^2
+include definition_domaine.champs
+
+
+cree_entite sous_domaine_cropped sous_domaine 
+
+
+# ================================================= 0.5 Initialisation des positions des especes     ===================================================================
+## Definition de quelles espèces sont présentes initialement et à quelles positions
+include position_densite_initiale.champs
+
+
+
+# ================================================= 0.6 Charger les coefficients de selection qui viennent des iSSA ========================================================
+
+### For caribou
+include beta_Boreal_Caribou_habitat_selection_coefficients.champs
+include beta_Boreal_Caribou_diversity_selection_coefficients.champs
+include beta_Boreal_Caribou_conspecific_selection_coefficients.champs
+include beta_Boreal_Caribou_moose_selection_coefficients.champs
+include beta_Boreal_Caribou_wolf_selection_coefficients.champs
+include beta_Boreal_Caribou_deer_selection_coefficient.champs
+
+### For moose
+include beta_Moose_habitat_selection_coefficients.champs
+include beta_Moose_diversity_selection_coefficients.champs
+include beta_Moose_conspecific_selection_coefficients.champs
+include beta_Moose_other_prey_selection_coefficients.champs
+include beta_Moose_wolf_selection_coefficients.champs
+
+### For wolf
+include beta_Gray_Wolf_habitat_selection_coefficients.champs
+include beta_Gray_Wolf_diversity_selection_coefficients.champs
+include beta_Gray_Wolf_conspecific_selection_coefficients.champs
+include beta_Gray_Wolf_caribou_selection_coefficients.champs
+
+## TODO: CHECKER LA VALEUR DANS LA LITTERATURE
+include beta_Gray_Wolf_moose_selection_coefficients.champs
+
+
+### TODO: CHECKER LA VALEUR DANS LA LITTERATURE ---  Deer
+include beta_Deer_conspecific_selection_coefficients.champs
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#                                                      ====       DIFFUSION SIMPLE      ====
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Importe les valeurs des coefficients de diffusion
+include diffusion_parms.champs
+
+
+
+
+## Creation des tenseurs 3D
+## C'est une matrice symetrique en 2D 3x3, qui a pour valeurs sur la diagonale les 3 premieres valeurs du tenseur, et en autres valeurs les 3 derniers termes du tenseur.
+empilementto2 DC    [coeff_diffusion_C_norm, coeff_diffusion_C_norm, coeff_diffusion_C_norm, Zero, Zero, Zero]
+empilementto2 DM    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coeff_diffusion_M_norm, Zero, Zero, Zero]
+empilementto2 DP    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
+empilementto2 DD1   [coeff_diffusion_D_norm, coeff_diffusion_D_norm, coeff_diffusion_D_norm, Zero, Zero, Zero]
+
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 1.3.3 Cross-diffusion                               -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#### TODO: checker le pb numerique selon taille de L
+#include rayon_perception.champs
+
+
+## Initialisation de tous les champs intermediaires utilises pour le calcul des moyennages locaux
+include initialisation_champs_moyennage_local.champs
+
+
+# ------------------------------------------------- For caribou                            -------------------------------------------------------------------
+
+scalaire M1_C c1 * (C_landcover1 * Z1 + C_landcover2 * Z1 + C_landcover3 * Z3 + C_landcover4 * Z4 + C_landcover5 * Z5 + C_landcover6 * Z6 + C_landcover7 * Z7 + C_landcover8 * Z8 + C_landcover9 * Z9 + C_landcover11 * Z11 + C_landcover12 * Z12  ) 
+scalaire M2_C c2 * (C_diversity1 * Y1 + C_diversity2 * Y2 + C_diversity3 * Y3 + C_diversity4 * Y4 + C_diversity5 * Y5 + C_diversity6 * Y6) 
+scalaire M3_C c3 * C_cons_dens * C
+scalaire M4_C c4 * C_moose_dens * M
+scalaire M5_C c5 * C_wolf_dens * P 
+
+scalaire mec_tot_C M1_C + M2_C + M3_C + M4_C + M5_C
+
+## Moyennage de tout le gradeint (en utilisant les pp)
+scalaire mec_tot_C_avg averaged_mec_tot_C_cont
+
+
+#gradient grad_mec_tot_C  mec_tot_C 
+gradient grad_mec_tot_C  mec_tot_C_avg 
+
+
+ ### En x 
+gradient der_sec_par_rapport_x_gradM1_C_hab_sel grad_mec_tot_CX
+ 
+### En y 
+gradient der_sec_par_rapport_y_gradM1_C_hab_sel grad_mec_tot_CY
+ 
+### Calcul du Laplacien
+scalaire laplacien_M1_C der_sec_par_rapport_x_gradM1_C_hab_selX + der_sec_par_rapport_y_gradM1_C_hab_selY
+ 
+### Formulation du terme de masse de l'advection
+scalaire terme_masse_adv_C_hab_sel mult_c * laplacien_M1_C
+
+# ------------------------------------------------- For moose                            -------------------------------------------------------------------
+
+scalaire M1_M m1 * (M_landcover1 * Z1 + M_landcover2 * Z2 + M_landcover3 * Z3 + M_landcover4 * Z4 + M_landcover5 * Z5 + M_landcover6 * Z6 + M_landcover7 * Z7 + M_landcover8 * Z8 + M_landcover9 * Z9 + M_landcover11 * Z11 + M_landcover12 * Z12  ) 
+scalaire M2_M m2 * (M_diversity1 * Y1 + M_diversity2 * Y2 + M_diversity3 * Y3 + M_diversity4 * Y4 + M_diversity5 * Y5 + M_diversity6 * Y6) 
+scalaire M3_M m3 * M_cons_dens * M
+scalaire M4_M m4 * M_other_prey_dens * C
+scalaire M5_M m5 * M_wolf_dens * P 
+
+scalaire mec_tot_M    M1_M + M2_M + M3_M + M4_M + M5_M
+
+## Moyennage de tout le gradeint (en utilisant les pp)
+scalaire mec_tot_M_avg averaged_mec_tot_M_cont
+
+gradient grad_mec_tot_M  mec_tot_M_avg 
+
+
+
+# ------------------------------------------------- For WTD                            -------------------------------------------------------------------
+
+#scalaire M1_D1 d1 * (P_landcover1 * Z1 + D1_landcover2 * Z2 + D1_landcover3 * Z3 + D1_landcover4 * Z4 + D1_landcover5 * Z5 + D1_landcover6 * Z6 + D1_landcover7 * Z7 + D1_landcover8 * Z8 + D1_landcover9 * Z9 + D1_landcover11 * Z11 + D1_landcover12 * Z12  ) 
+#scalaire M2_D1 d2 * (D1_diversity1 * Y1 + D1_diversity2 * Y2 + D1_diversity3 * Y3 + D1_diversity4 * Y4 + D1_diversity5 * Y5 + D1_diversity6 * Y6) 
+#scalaire M3_D1 d3 * D1_cons_dens * D1
+#scalaire M4_D1 d4 * D1_other_prey_dens * C
+#scalaire M5_D1 d5 * D1_wolf_dens * P 
+
+#scalaire mec_tot_D1 M1_D1 + M2_D1 + M3_D1 + M4_D1 + M5_D1
+
+## Moyennage de tout le gradeint (en utilisant les pp)
+#scalaire mec_tot_D1_avg averaged_mec_tot_D1_cont
+
+#gradient grad_mec_tot_D1  mec_tot_D1_avg 
+
+
+
+# ------------------------------------------------- For predator                            -------------------------------------------------------------------
+
+#scalaire M1_P p1 * (P_landcover1 * Z1 + P_landcover2 * Z2 + P_landcover3 * Z3 + P_landcover4 * Z4 + P_landcover5 * Z5 + P_landcover6 * Z6 + P_landcover7 * Z7 + P_landcover8 * Z8 + P_landcover9 * Z9 + P_landcover11 * Z11 + P_landcover12 * Z12  ) 
+#scalaire M2_P p2 * (P_diversity1 * Y1 + P_diversity2 * Y2 + P_diversity3 * Y3 + P_diversity4 * Y4 + P_diversity5 * Y5 + P_diversity6 * Y6) 
+scalaire M3_P p3 * P_caribou_dens * C
+scalaire M4_P p4 * P_cons_dens * P
+scalaire M5_P p5 * P_moose_dens * M
+
+#scalaire mec_tot_P M1_P + M2_P + M3_P + M4_P + M5_P
+scalaire mec_tot_P M3_P + M4_P + M5_P
+
+## Moyennage de tout le gradeint (en utilisant les pp)
+scalaire mec_tot_P_avg averaged_mec_tot_P_cont
+
+gradient grad_mec_tot_P  mec_tot_P_avg 
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- M6  - Invasive prey species                            -------------------------------------------------------------------
+
+## WTD - Northward invasion of the species
+## On définit un vecteur en 3D qui va transporter H3 selon l'axe des y (vers le nord)
+#scalaire advection_coeff 1 
+#scalaire scalTD1 1e-3
+#empilementto2 TD1 [Zero, scalTD1, Zero, Zero, Zero, Zero]
+
+
+## Lorsque l'advection est constante dans le temps, on peut definir le coefficient d'advection par un vecteur 
+## Valeur empirique de la vitesse d'invasion de D (km/year)
+scalaire travel_speed_D1 3.33 
+## Coefficient d'advection, utilise pour ponderer la force du mecanisme par rapport aux autres
+scalaire coef_advection_D1 1
+## Direction d'advection
+scalaire scalTD1 1
+
+## Selon ce qu'on veut, advection verticale ou horizontale
+vectoriel3D TD1 [0, travel_speed_D1, 0]
+
+
+
+
+
+#scalaire M6_C c6 * C_WTD_dens * averaged_CD_cont
+
+#scalaire mult_c6 -2*coeff_diffusion_C_norm
+
+## Calcul du gradient du coefficient d'advection
+#gradient grad_c6 c6
+
+## Calcul du gradient de ressources basé sur la diversité de l'habitat
+#gradient gradM6_C M6_C
+
+## Calcul du Laplacien de M6_C
+### En x 
+#gradient der_sec_par_rapport_x_gradM6_C_WTD_sel gradM6_CX
+
+### En y 
+#gradient der_sec_par_rapport_y_gradM6_C_WTD_sel gradM6_CY
+
+### Calcul du Laplacien
+#scalaire laplacien_M6_C der_sec_par_rapport_x_gradM6_C_WTD_selX + der_sec_par_rapport_y_gradM6_C_WTD_selY
+
+### Formulation du terme de masse de l'advection
+#scalaire terme_masse_adv_C_WTD_sel -2*laplacien_M6_C
+
+
+
+#==========================================================================================================================================================================
+#==========================================================================================================================================================================
+
+# ================================================= 2. PREPARATION DES EQUATIONS POUR RESOLUTION                                               ============================
+
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.2 Definition d'un probleme element fini pour MEF  ===================================================================
+
+
+problemeef probDida
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.3 Definition des Pré et Post PostTraitements      ===================================================================
+
+# On définit ici les fonctions (~actions), qui seront roulées en court de résolution des PDE. On décide ensuite l'ordre de leur execution a la fin du script. 
+
+include def_pre_post_traitements.champs
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.4 Définition des termes de formulation (TF)                                       ===================================
+
+## On définit ici tous les termes de formulation (faits en partie avec eMEF), permettant de décrire chaque morceau des équations
+
+##### ------------ Ajout de SUPG pour eviter que ca saute si on a + de transport que de diffusion
+
+
+
+## Partie SUPG
+scalaire petit_diff 1e-1
+empilementto2 no_diff_C    [coeff_diffusion_C_norm, coeff_diffusion_C_norm, coeff_diffusion_C_norm, Zero, Zero, Zero]
+#alias no_diff_M=no_diff_C no_diff_P=no_diff_C no_diff_D1=no_diff_C
+empilementto2 no_diff_M    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coeff_diffusion_M_norm, Zero, Zero, Zero]
+empilementto2 no_diff_P    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
+empilementto2 no_diff_D1   [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
+
+{ decl_hugn_C
+  alias U=grad_mec_tot_C
+  booleen hugn_utilise_schema_const_pour_hugn_C faux
+}
+scalh_ugn hugn_C   decl_hugn_C
+{ decl_hugn_M
+  alias U=grad_mec_tot_M
+  booleen hugn_utilise_schema_const_pour_hugn_M faux
+}
+scalh_ugn hugn_M   decl_hugn_M
+
+{ decl_hugn_P
+  alias U=grad_mec_tot_P
+  booleen hugn_utilise_schema_const_pour_hugn_P faux
+}
+scalh_ugn hugn_P   decl_hugn_P
+
+{ decl_hugn_D1
+  alias U=TD1
+  booleen hugn_utilise_schema_const_pour_hugn_D1 faux
+}
+scalh_ugn hugn_D1   decl_hugn_D1
+
+## Avec delta_t
+scalaire         Tau_tC      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_C::U))^2  / hugn_C^2 + 9.*16.*no_diff_C[00]^2   / hugn_C^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tC 1. / sqrt (4*norme2(V3D(decl_hugn_C::U))^2 / hugn_C^2  +  9.*16.*no_diff_C[00]^2 / hugn_C^4)
+
+fcts_supg       phi_C_supg [Tau_tC,C,decl_hugn_C::U]
+
+## Avec delta_t
+scalaire         Tau_tM      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_M::U))^2  / hugn_M^2 + 9.*16.*no_diff_M[00]^2   / hugn_M^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tM 1. / sqrt (4*norme2(V3D(decl_hugn_M::U))^2 / hugn_M^2  +  9.*16.*no_diff_M[00]^2 / hugn_M^4)
+
+fcts_supg       phi_M_supg [Tau_tM,M,decl_hugn_M::U]
+
+## Avec delta_t
+scalaire         Tau_tP      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_P::U))^2  / hugn_P^2 + 9.*16.*no_diff_P[00]^2   / hugn_P^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tP 1. / sqrt (4*norme2(V3D(decl_hugn_P::U))^2 / hugn_P^2  +  9.*16.*no_diff_P[00]^2 / hugn_P^4)
+
+fcts_supg       phi_P_supg [Tau_tP,P,decl_hugn_P::U]
+
+## Avec delta_t
+scalaire         Tau_tD1      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_D1::U))^2  / hugn_D1^2 + 9.*16.*no_diff_D1[00]^2   / hugn_D1^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tD1 1. / sqrt (4*norme2(V3D(decl_hugn_D1::U))^2 / hugn_D1^2  +  9.*16.*no_diff_D1[00]^2 / hugn_D1^4)
+
+fcts_supg       phi_D1_supg [Tau_tD1,D1,decl_hugn_D1::U]
+
+
+
+
+{ probDida
+
+
+
+## Definition des CL 
+
+scalaire flux_frontiere 0
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.3 TF de C                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  ### ----------------------------- Termes de diffusion simple
+  ## on veut resoudre l'equation de la diffusion seulement dans le domaine qui n'est pas l'obstacle (sous-domaine)
+  #tfdiffusion                    tfDiffusionC                                   [champgeo, C, C, DC, schema_intg, defaut::sous_domaine_cropped]
+  #tfdiffusion                    tfDiffusionC                                  [champgeo, C, C, DC, schema_intg]
+
+
+  scalaire petit_diff 1e-1
+  empilementto2 no_diff_C    [petit_diff,petit_diff,petit_diff, Zero, Zero, Zero]
+
+  #tfdiffusion                    tfDiffusionC                                  [champgeo,  C, C, no_diff_C, schema_intg, defaut::sous_domaine_cropped]
+  #tfdiffusion                    tfDiffusionC                                  [champgeo,  C, C, no_diff_C, schema_intg]
+  
+
+  ## ---------------------------- Termes de diffusion croisée
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels C est sensible, pondérés par les facteurs c_i
+  #formulation_transport_diffusion_inst          transport_C                    [schema_intg, mec_tot_C, (C, DC, mult_c)]
+
+  formulation_transport_diffusion_inst_supg          transport_C                [schema_intg, mec_tot_C, (C, DC, mult_c)]
+  #tfmassegenscal                 tftransport_bis_M2_C                          [champgeo, C, C, terme_masse_adv_C_hab_sel, schema_intg]
+
+
+  
+  ### ----------------------------- Termes de reaction
+  
+  #tfmassegenscal                 tfCroissanceC                                 [champgeo, C, C, coeffCroissance_C, schema_intg]
+  #tfmassegenscal                 tfDensiteDepC                                 [champgeo, C, C, coeffDensiteDep_C, schema_intg]
+  #tfmassegenscal                 tfPredationCP                                 [champgeo, C, C, coeffPredation_CP, schema_intg]
+
+
+
+neumann [bas, C, flux_frontiere, schema_intg]
+neumann [haut, C, flux_frontiere, schema_intg]
+neumann [gauche, C, flux_frontiere, schema_intg]
+neumann [droite, C, flux_frontiere, schema_intg]
+
+
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.3 TF de M                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ### ----------------------------- Termes de diffusion 
+  #tfdiffusion                    tfDiffusionM                                [champgeo, M, M, DM, schema_intg]
+
+  empilementto2 no_diff_M    [petit_diff,petit_diff,petit_diff, Zero, Zero, Zero]
+
+  #tfdiffusion                    tfDiffusionM                                   [champgeo, M, M, no_diff_M, schema_intg]
+
+
+
+  ## ---------------------------- Termes de diffusion croisée
+
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
+  #formulation_transport_diffusion_inst          transport_M                  [schema_intg, grad_mec_tot_M, (M, DM, mult_m)]
+  formulation_transport_diffusion_inst_supg          transport_M                [schema_intg, mec_tot_M, (M, DM, mult_m)]
+
+  ### ----------------------------- Termes de reaction
+  
+  #tfmassegenscal                 tfCroissanceM                                 [champgeo, M, M, coeffCroissance_M, schema_intg]
+  #tfmassegenscal                 tfDensiteDepM                                 [champgeo, M, M, coeffDensiteDep_M, schema_intg]
+  #tfmassegenscal                 tfPredationMP                                 [champgeo, M, M, coeffPredation_MP, schema_intg]
+
+
+  neumann [bas,    M, flux_frontiere, schema_intg]
+  neumann [haut,   M, flux_frontiere, schema_intg]
+  neumann [gauche, M, flux_frontiere, schema_intg]
+  neumann [droite, M, flux_frontiere, schema_intg]
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.3 TF de P                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ### ----------------------------- Termes de diffusion 
+  #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg, defaut::sous_domaine_cropped]
+  #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg]
+
+
+  empilementto2 no_diff_P    [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
+
+  #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, no_diff_P, schema_intg]
+
+  
+  ## ---------------------------- Termes de diffusion croisée
+
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels P est sensible, pondérés par les facteurs p_i
+  #formulation_transport_diffusion_inst          transport_P                  [schema_intg, grad_mec_tot_P, (P, DP, mult_p)]
+  formulation_transport_diffusion_inst_supg          transport_P                [schema_intg, mec_tot_P, (P, DP, mult_p)]
+
+ ### ----------------------------- Termes de reaction
+  
+  #tfmassegenscal                 tfCroissanceM                                 [champgeo, P, P, coeffCroissance_P, schema_intg]
+  #tfmassegenscal                 tfDensiteDepM                                 [champgeo, P, P, coeffDensiteDep_P, schema_intg]
+
+  neumann [bas, P, flux_frontiere, schema_intg]
+  neumann [haut, P, flux_frontiere, schema_intg]
+  neumann [gauche, P, flux_frontiere, schema_intg]
+  neumann [droite, P, flux_frontiere, schema_intg]
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.4 TF de D1                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ### ----------------------------- Termes de diffusion 
+  #tfdiffusion                    tfDiffusionD1                                [champgeo, D1, D1, DD1, schema_intg]
+
+  empilementto2 no_diff_D1    [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
+
+  #tfdiffusion                    tfDiffusionD1                                   [champgeo, D1, D1, no_diff_D1, schema_intg]
+
+
+  ## ---------------------------- Termes de diffusion croisée
+
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
+  #formulation_transport_diffusion_inst          transport_D1                  [schema_intg, grad_tot_D1, (D1, no_diff_D1, mult_d1)]
+  
+
+  ### ----------------------------- Termes d'advection 
+  tftransportconvectifscalaire   transportD1             [champgeo, D1, D1, TD1, coef_advection_D1, schema_intg, true]
+
+
+
+}
+
+#==========================================================================================================================================================================
+#==========================================================================================================================================================================
+
+#==========================================================================================================================================================================
+# ================================================= 2.5 Définition conditions limites                                                   ===================================
+
+  # Conditions aux limites. On écrit le type de condition, puis on indique l'entité sur laquelle  
+  # se trouve la condition, puis la variable touchée par la condition (ici T pour température) et
+  # finalement la condition. Il faut ajouter "schema_intg" après une condition autre que Dirichlet
+  # (il y a une intégrale de bord à calculer):
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.5 Définition conditions limites                                                   ===================================
+
+  # Conditions aux limites. On écrit le type de condition, puis on indique l'entité sur laquelle  
+  # se trouve la condition, puis la variable touchée par la condition (ici T pour température) et
+  # finalement la condition. Il faut ajouter "schema_intg" après une condition autre que Dirichlet
+  # (il y a une intégrale de bord à calculer):
+
+
+{ probDida
+
+# ------------------------------------ Frontieres de paysage ------------------------------------------------------------------------------------------------------------
+
+## Neumann: impose une valeur a la derivee normale par rapport a l'entite ((ie caracterise le flux))
+
+
+scalaire flux_P 0 
+
+
+}
+
+
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.7 Définition des conditions aux bords                                            ===================================
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.8 Définition variables instationnaires pour résolution dans le temps              ===================================
+
+{ probDida_inst
+  #tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg, defaut::sous_domaine_cropped]
+  tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg]
+  tfmassegenscal  tfDMdtMasse   [champgeo, M, M, Un, schema_intg]
+  tfmassegenscal  tfDPdtMasse   [champgeo, P, P, Un, schema_intg]
+  tfmassegenscal  tfDD1dtMasse  [champgeo, D1, D1, Un, schema_intg]
+}
+
+
+
+
+
+## ================================================= Définition du solveur itératif PETc
+## PETc
+{options_prefixees_petsc options_slin
+
+ksp_type fgmres
+#ksp_gmres_preallocate
+ksp_gmres_restart 50
+ksp_gmres_modifiedgramschmidt 
+ksp_monitor
+ksp_atol 1e-20
+ksp_rtol 1e-12
+
+ksp_view
+
+pc_type gamg
+
+
+}
+
+# Déclaration du solveur instationnaire:
+
+# Il y a plusieurs schémas (gear, eulerimplicit, etc.) possibles. Ici, on choisit gear:
+### solveur_inst_nlin Solveur_inst_0(probDida)
+
+{ solveur_inst_nlin Solveur_inst(probDida)
+   schema_temps gear
+#   #schema_temps euler_implicite
+
+  prefixe_options options_slin
+
+
+   # Assignation des paramètres pour les résolutions non-linéaires. Cette propriété accepte deux
+   # paramètres: le critère de convergence (réel) et le nombre maximum d'itérations (entier):
+   #nombre_iterations_maximum        MaxItNlin
+   criteres_convergence             [ToleranceNlin, MaxItNlin]
+   #parametres_nlin [ToleranceNlin, MaxItNlin]
+
+   # Les lignes suivantes indiquent au programme s'il devra, à chaque étape, recalculer
+   # la matrice de masse ou rigidité. C'est nécessaire seulement quand elles dépendent du temps.
+   # Deux choix: [f,f] : ne dépend pas du temps, ou [v,v]: dépend du temps.
+   parametres_matrice_masse    [v,v]
+   parametres_matrice_rigidite [v,v]
+
+  # À noter: le solveur s'appelle dorénavant Solveur_inst(probDida)
+}
+
+
+## Definit le pp pour reinitialiser le solveur
+pp_reinitialise_solveur pp_redemarre [Solveur_inst(probDida)]
+
+{ exportation        export
+  format_exportation GIREF
+  format_exportation VTK
+  ajoute_champ C
+  ajoute_champ valeurs_paysage
+  ajoute_champ valeurs_diversity
+  ajoute_champ M
+  ajoute_champ P
+  ajoute_champ rayon_perception_C_norm
+  ajoute_champ rayon_perception_C
+  ajoute_champ rayon_perception_M_norm
+  ajoute_champ rayon_perception_M
+  ajoute_champ rayon_perception_P_norm
+  ajoute_champ rayon_perception_P
+  ajoute_champ mec_tot_C 
+  ajoute_champ mec_tot_C_avg
+  ajoute_champ grad_tot_C
+  ajoute_champ mec_tot_C_reinterpol
+  ajoute_champ averaged_mec_tot_C_cont
+  ajoute_champ averaged_mec_tot_C
+  ajoute_champ mec_tot_M 
+  ajoute_champ mec_tot_M_avg
+  ajoute_champ grad_tot_M
+  ajoute_champ mec_tot_M_reinterpol
+  ajoute_champ averaged_mec_tot_M_cont
+  ajoute_champ averaged_mec_tot_M
+  ajoute_eq_latex probDida
+}
+
+
+## Exporte dans le dossier simulations sous le nom NM_SM1 ou NM_SM2
+#pp_exportation pp_export [export, "$CheminAccesExport$/simulations/vars_parms_c/CMP_", 2, true, true]
+pp_exportation pp_export [export, "$CheminAccesExport$/simulations/Nelder_Mead/NM_SM1_", 2, true, true]
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.6 Ajout des Pre-Post Traitements                                                  ===================================
+
+## Le chemim dans lequel doivent être storés les résultats a chaque itération
+
+
+{ probDida
+  
+include active_pre_post_traitements.champs
+
+
+## Pour exporter tous les pas de temps
+#ajoutePrePostTraitement [pp_export, FinPasDeTemps]
+
+}
+
+
+
+
+#==========================================================================================================================================================================
+#==========================================================================================================================================================================
+
+# ================================================= 2.  RESOLUTION DES EQUATIONS                                                               ============================
+## PP REBEL ##
+#pp_resolution_probleme              resoud_Rachel                  [Solveur_inst(probDida)]
+
+
+# A commenter si on roule sur Python, a decommenter si on roule sur MEF non local
+
+## 
+{ Actions
+  pp_redemarre
+  #pp_export
+  Solveur_inst(probDida)
+  pp_export
+}

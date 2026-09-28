@@ -1,0 +1,47 @@
+## Definition de positions "classiques" pour l'initialisation des distribution des especes
+scalaire top_right     ((x - 1)^2 + (y - 1)^2)
+scalaire top_left      ((x)^2 + (y - 1 )^2)
+scalaire left_middle   ((x)^2 + (y - 0.5 )^2)
+scalaire top_center    ((x-0.5)^2 + (y - 1 )^2)
+scalaire bottom_right  ((x-1)^2+(y)^2)
+scalaire bottom_left   ((x)^2+(y)^2)
+scalaire center        ((x-0.5)^2+(y-0.5)^2)
+scalaire left_center   ((x-0.2)^2+(y-0.5)^2)
+scalaire right_center   ((x-0.6)^2+(y-0.4)^2)
+scalaire bottom_center ((x-0.5)^2+(y)^2)
+scalaire almost_bottom_center ((x-0.5)^2+(y+0.1)^2)
+scalaire custom_M        ((x-0.7)^2+(y-0.4)^2)
+scalaire custom_P   ((x-0.1)^2+(y-0.1)^2)
+
+
+## Valeur max de la gaussienne (pas exactement...)
+scalaire densiteInitC   1
+scalaire densiteInitM   0
+scalaire densiteInitP   1
+scalaire densiteInitD1  0
+
+## Definition de l'etalement des cloches de distribution intiale
+## Lorsque cette valeur est grande: cloche super etroite
+## Lorsque cette valeur est petite: cloche full etalée 
+
+scalaire etalementCloche 300
+
+## Definition de la distribution initiale dans l'espace
+#scalquad C    densiteInitC*exp( (-etalementCloche*center) ) 
+scalquad M    densiteInitM*exp( (-etalementCloche*left_center) ) 
+#scalquad P    densiteInitP*exp( (-etalementCloche*right_center) ) 
+scalquad D1   densiteInitD1*exp( (-200*top_right) )
+
+
+
+
+## Definition de la distribution en tenant compte des sous-domaines (obstacles)
+#scallin(domaine=defaut::sous_domaine_cropped) C    densiteInitC*exp( (-300*right_center) ) 
+#scallin(domaine=defaut::sous_domaine_cropped)  P    densiteInitP*exp( (-200*center) ) 
+
+
+## Definition de termes de limite logistique pour eviter blow-up
+#scalaire log_lim_C      (1 - C/densiteInitC)
+#scalaire log_lim_M      (1 - M/densiteInitM)
+#scalaire log_lim_P      (1 - P/densiteInitP)
+#scalaire log_lim_D1     (1 - D1/densiteInitD1)

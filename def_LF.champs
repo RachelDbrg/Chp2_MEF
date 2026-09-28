@@ -1,0 +1,60 @@
+### Definition des differents LF simulés
+
+# ================================================= 0.4 Test pour les landscape features, définition d'obstacles     ========================================================
+
+# ------------------------------------ Linear features ------------------------------------------------------------------------------------------------------------
+
+### i- obstacle(s) non franchissable(s)
+
+## On definit les coordonnees de l'obstacle
+scalaire    obstacle_x_min    0
+scalaire    obstacle_x_max    0
+scalaire    obstacle_y_min    0
+scalaire    obstacle_y_max    0
+
+
+# ------------------------------------------------------------------
+## Definition des entites (contours) de l'obstacle
+
+# BAS
+scalaire                    fct_obstacle_bas      if(y=obstacle_y_min & x>=obstacle_x_min & x<=obstacle_x_max, 1, 0)
+critere_fct_caracteristique obstacle_bas          [fct_obstacle_bas, 0]
+cree_entite_avec_critere    bas_obstacle          ENTITE_TOUTES_COMPOSANTES(obstacle_bas)
+
+# HAUT
+scalaire                    fct_obstacle_haut     if(y=obstacle_y_max & x>=obstacle_x_min & x<=obstacle_x_max, 1, 0)
+critere_fct_caracteristique obstacle_haut         [fct_obstacle_haut, 0]
+cree_entite_avec_critere    haut_obstacle         ENTITE_TOUTES_COMPOSANTES(obstacle_haut)
+
+# GAUCHE
+scalaire                    fct_obstacle_gauche   if(x=obstacle_x_min & y>=obstacle_y_min & y<=obstacle_y_max, 1, 0)
+critere_fct_caracteristique obstacle_gauche       [fct_obstacle_gauche, 0]
+cree_entite_avec_critere    gauche_obstacle       ENTITE_TOUTES_COMPOSANTES(obstacle_gauche)
+
+# DROITE
+scalaire                    fct_obstacle_droite   if(x=obstacle_x_max & y>=obstacle_y_min & y<=obstacle_y_max, 1, 0)
+critere_fct_caracteristique obstacle_droite       [fct_obstacle_droite, 0]
+cree_entite_avec_critere    droite_obstacle       ENTITE_TOUTES_COMPOSANTES(obstacle_droite)
+
+
+# ------------------------------------------------------------------
+# Definition de l'obstacle entier (interieur)
+
+scalaire fct_obstacle if(x>=obstacle_x_min & x<=obstacle_x_max & y>=obstacle_y_min & y<=obstacle_y_max, 1, 0)
+critere_fct_caracteristique fct_car_obstacle [fct_obstacle, 0]
+cree_entite_avec_critere obstacle  ENTITE_TOUTES_COMPOSANTES(fct_car_obstacle)
+
+# ------------------------------------------------------------------
+
+## Nouveau domaine sur lequel on va résoudre les équations: domaine entier - l'obstacle
+
+#cree_entite sous_domaine contour_domaine - obstacle
+#cree_entite sous_domaine_intersection contour_domaine ^ obstacle
+
+
+
+### ii- Routes
+
+### a- Si toutes deconnectees
+### Le .champs est issu du fichier python random_roads.py
+include obstacles.champs

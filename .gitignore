@@ -1,0 +1,6 @@
+# Output files
+*.out
+*err.txt
+
+# Large data files
+diversity_raster.csv

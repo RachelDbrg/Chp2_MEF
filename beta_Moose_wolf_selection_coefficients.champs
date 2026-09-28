@@ -1,0 +1,3 @@
+# TODO: we here don't define the term for the reaction to predation, because we don't have the beta coefficient - what to do then????
+# Trouvable dans Latombe2014, c'est son coefficient diffPref: 1.21 en hiver et 0.65 en été
+scalaire M_wolf_dens 0.93
