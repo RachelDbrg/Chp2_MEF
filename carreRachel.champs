@@ -1,6 +1,4 @@
-GIREF_MODE_VERBOSE_CHRONO 0
-
-booleen GIREF_VERBOSE_SOLVEUR false
+GIREF_MODE_VERBOSE_CHRONO 3
 
 #==========================================================================================================================================================================
 #             Simple and cross diffusion model - application to the wolf ungulate system
@@ -29,6 +27,8 @@ champgeolin champgeo
 scallin valeurs_paysage "carreRachel.habitat.cmefpp" 
 scallin valeurs_diversity "carreRachel.diversity.cmefpp" 
 
+include initial_conditions.champs
+
 ## Faire attention car selon si on prend SM1 ou SM2, il faut ré-allumer les definitions dans position_densite_initiale
 ## For SM1
 #scallin C "carreRachel.ud_caribou_init.cmefpp" 
@@ -36,8 +36,8 @@ scallin valeurs_diversity "carreRachel.diversity.cmefpp"
 
 
 ## Definition des CI a partir du csv empirique
-scallin C "carreRachel.caribou_CI.cmefpp" 
-scallin P "carreRachel.wolf_CI.cmefpp"
+#scallin C "carreRachel.caribou_CI.cmefpp" 
+#scallin P "carreRachel.wolf_CI.cmefpp"
 
 ## For SM2
 #scallin C "carreRachel.ud_caribou_init.cmefpp" 
@@ -57,11 +57,39 @@ scallin P "carreRachel.wolf_CI.cmefpp"
 ## Découpe le paysage en binaires en fct du type d'habitat
 include decoupe_paysage_binaire.champs
 
+## Initialisation de tous les champs intermediaires utilises pour le calcul des moyennages locaux
+include initialisation_champs_moyennage_local.champs
+
 #==========================================================================================================================================================================
 # ================================================= 2.9 Définition du solveur instationnaire                                            ===================================
 
 # Liste d'informations utiles au solveur:
 include gestionnaire_pas_de_temps.champs
+
+
+
+# ===  A TRIER  
+
+## Caribou
+
+## Si le terme est négatif, divergence! 
+#scalaire mult_c 2 * coeff_diffusion_C_norm
+scalaire mult_c 0
+
+
+## Moose
+
+## Biz car ne fait pas ca pour les autrees especes
+scalaire mult_m 2 * coeff_diffusion_M_norm
+
+
+
+## Predator
+## Si le terme est négatif, divergence! 
+scalaire mult_p 2*coeff_diffusion_P_norm
+
+## Deer
+scalaire mult_d1 -2* coeff_diffusion_D1_norm
 
 
 
@@ -140,32 +168,18 @@ include beta_Deer_conspecific_selection_coefficients.champs
 #                                                      ====       DIFFUSION SIMPLE      ====
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Importe les valeurs des coefficients de diffusion
-include diffusion_parms.champs
-
-
-
-
 ## Creation des tenseurs 3D
 ## C'est une matrice symetrique en 2D 3x3, qui a pour valeurs sur la diagonale les 3 premieres valeurs du tenseur, et en autres valeurs les 3 derniers termes du tenseur.
 empilementto2 DC    [coeff_diffusion_C_norm, coeff_diffusion_C_norm, coeff_diffusion_C_norm, Zero, Zero, Zero]
 empilementto2 DM    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coeff_diffusion_M_norm, Zero, Zero, Zero]
 empilementto2 DP    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
-empilementto2 DD1   [coeff_diffusion_D_norm, coeff_diffusion_D_norm, coeff_diffusion_D_norm, Zero, Zero, Zero]
-
-
-
+empilementto2 DD1   [coeff_diffusion_D1_norm, coeff_diffusion_D1_norm, coeff_diffusion_D1_norm, Zero, Zero, Zero]
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------- 1.3.3 Cross-diffusion                               -------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#### TODO: checker le pb numerique selon taille de L
-#include rayon_perception.champs
 
-
-## Initialisation de tous les champs intermediaires utilises pour le calcul des moyennages locaux
-include initialisation_champs_moyennage_local.champs
 
 
 # ------------------------------------------------- For caribou                            -------------------------------------------------------------------
@@ -176,27 +190,32 @@ scalaire M3_C c3 * C_cons_dens * C
 scalaire M4_C c4 * C_moose_dens * M
 scalaire M5_C c5 * C_wolf_dens * P 
 
+#scalaire Phi_C M1_C + M2_C + M3_C + M4_C + M5_C
+scalaire Phi_C M2_C 
 scalaire mec_tot_C M1_C + M2_C + M3_C + M4_C + M5_C
 
-## Moyennage de tout le gradeint (en utilisant les pp)
-scalaire mec_tot_C_avg averaged_mec_tot_C_cont
 
+gradient grad_Phi_C  Phi_C 
 
-#gradient grad_mec_tot_C  mec_tot_C 
-gradient grad_mec_tot_C  mec_tot_C_avg 
+gradient testgradX grad_Phi_CX
+gradient testgradY grad_Phi_CY
 
 
  ### En x 
-gradient der_sec_par_rapport_x_gradM1_C_hab_sel grad_mec_tot_CX
+gradient der_sec_par_rapport_x_grad_Phi_C grad_Phi_CX
  
 ### En y 
-gradient der_sec_par_rapport_y_gradM1_C_hab_sel grad_mec_tot_CY
+gradient der_sec_par_rapport_y_grad_Phi_C grad_Phi_CY
  
 ### Calcul du Laplacien
-scalaire laplacien_M1_C der_sec_par_rapport_x_gradM1_C_hab_selX + der_sec_par_rapport_y_gradM1_C_hab_selY
+scalaire laplacien_Phi_C der_sec_par_rapport_x_grad_Phi_CX + der_sec_par_rapport_y_grad_Phi_CY
  
 ### Formulation du terme de masse de l'advection
-scalaire terme_masse_adv_C_hab_sel mult_c * laplacien_M1_C
+scalaire terme_masse_adv_C_hab_sel -2*coeff_diffusion_C_norm*laplacien_Phi_C
+#scalaire terme_masse_adv_C_hab_sel 0 
+
+
+
 
 # ------------------------------------------------- For moose                            -------------------------------------------------------------------
 
@@ -217,7 +236,7 @@ gradient grad_mec_tot_M  mec_tot_M_avg
 
 # ------------------------------------------------- For WTD                            -------------------------------------------------------------------
 
-#scalaire M1_D1 d1 * (P_landcover1 * Z1 + D1_landcover2 * Z2 + D1_landcover3 * Z3 + D1_landcover4 * Z4 + D1_landcover5 * Z5 + D1_landcover6 * Z6 + D1_landcover7 * Z7 + D1_landcover8 * Z8 + D1_landcover9 * Z9 + D1_landcover11 * Z11 + D1_landcover12 * Z12  ) 
+#scalaire M1_D1 d1 * (P_landcover1 * Z1 + D1_landcover2 * Z2 + D1_fandcover3 * Z3 + D1_landcover4 * Z4 + D1_landcover5 * Z5 + D1_landcover6 * Z6 + D1_landcover7 * Z7 + D1_landcover8 * Z8 + D1_landcover9 * Z9 + D1_landcover11 * Z11 + D1_landcover12 * Z12  ) 
 #scalaire M2_D1 d2 * (D1_diversity1 * Y1 + D1_diversity2 * Y2 + D1_diversity3 * Y3 + D1_diversity4 * Y4 + D1_diversity5 * Y5 + D1_diversity6 * Y6) 
 #scalaire M3_D1 d3 * D1_cons_dens * D1
 #scalaire M4_D1 d4 * D1_other_prey_dens * C
@@ -240,13 +259,35 @@ scalaire M3_P p3 * P_caribou_dens * C
 scalaire M4_P p4 * P_cons_dens * P
 scalaire M5_P p5 * P_moose_dens * M
 
-#scalaire mec_tot_P M1_P + M2_P + M3_P + M4_P + M5_P
+#scalaire Phi_P M3_P + M4_P + M5_P
+scalaire Phi_P  M5_P
 scalaire mec_tot_P M3_P + M4_P + M5_P
 
-## Moyennage de tout le gradeint (en utilisant les pp)
-scalaire mec_tot_P_avg averaged_mec_tot_P_cont
 
-gradient grad_mec_tot_P  mec_tot_P_avg 
+#gradient grad_mec_tot_P  mec_tot_P_avg 
+
+
+gradient grad_Phi_P  Phi_P
+
+
+ ### En x 
+gradient der_sec_par_rapport_x_grad_Phi_P grad_Phi_PX
+ 
+### En y 
+gradient der_sec_par_rapport_y_grad_Phi_P grad_Phi_PY
+ 
+### Calcul du Laplacien
+scalaire laplacien_Phi_P der_sec_par_rapport_x_grad_Phi_PX + der_sec_par_rapport_y_grad_Phi_PY
+ 
+### Formulation du terme de masse de l'advection
+scalaire terme_masse_adv_P -2*coeff_diffusion_P_norm*laplacien_Phi_P
+
+
+
+
+
+
+
 
 
 
@@ -343,56 +384,56 @@ empilementto2 no_diff_M    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coef
 empilementto2 no_diff_P    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
 empilementto2 no_diff_D1   [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
 
-{ decl_hugn_C
-  alias U=grad_mec_tot_C
-  booleen hugn_utilise_schema_const_pour_hugn_C faux
-}
-scalh_ugn hugn_C   decl_hugn_C
-{ decl_hugn_M
-  alias U=grad_mec_tot_M
-  booleen hugn_utilise_schema_const_pour_hugn_M faux
-}
-scalh_ugn hugn_M   decl_hugn_M
+#{ decl_hugn_C
+#  alias U=grad_mec_tot_C
+#  booleen hugn_utilise_schema_const_pour_hugn_C faux
+#}
+#scalh_ugn hugn_C   decl_hugn_C
+#{ decl_hugn_M
+#  alias U=grad_mec_tot_M
+#  booleen hugn_utilise_schema_const_pour_hugn_M faux
+#}
+#scalh_ugn hugn_M   decl_hugn_M
 
-{ decl_hugn_P
-  alias U=grad_mec_tot_P
-  booleen hugn_utilise_schema_const_pour_hugn_P faux
-}
-scalh_ugn hugn_P   decl_hugn_P
+#{ decl_hugn_P
+#  alias U=grad_mec_tot_P
+#  booleen hugn_utilise_schema_const_pour_hugn_P faux
+#}
+#scalh_ugn hugn_P   decl_hugn_P
 
-{ decl_hugn_D1
-  alias U=TD1
-  booleen hugn_utilise_schema_const_pour_hugn_D1 faux
-}
-scalh_ugn hugn_D1   decl_hugn_D1
+#{ decl_hugn_D1
+#  alias U=TD1
+#  booleen hugn_utilise_schema_const_pour_hugn_D1 faux
+#}
+#scalh_ugn hugn_D1   decl_hugn_D1
 
 ## Avec delta_t
-scalaire         Tau_tC      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_C::U))^2  / hugn_C^2 + 9.*16.*no_diff_C[00]^2   / hugn_C^4  + 4/delta_t^2 + 1e-8)
+#scalaire         Tau_tC      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_C::U))^2  / hugn_C^2 + 9.*16.*no_diff_C[00]^2   / hugn_C^4  + 4/delta_t^2 + 1e-8)
 ## Sans delta_t
 #scalaire          Tau_tC 1. / sqrt (4*norme2(V3D(decl_hugn_C::U))^2 / hugn_C^2  +  9.*16.*no_diff_C[00]^2 / hugn_C^4)
 
-fcts_supg       phi_C_supg [Tau_tC,C,decl_hugn_C::U]
+#fcts_supg       phi_C_supg [Tau_tC,C,decl_hugn_C::U]
 
 ## Avec delta_t
-scalaire         Tau_tM      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_M::U))^2  / hugn_M^2 + 9.*16.*no_diff_M[00]^2   / hugn_M^4  + 4/delta_t^2 + 1e-8)
+#scalaire         Tau_tM      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_M::U))^2  / hugn_M^2 + 9.*16.*no_diff_M[00]^2   / hugn_M^4  + 4/delta_t^2 + 1e-8)
 ## Sans delta_t
 #scalaire          Tau_tM 1. / sqrt (4*norme2(V3D(decl_hugn_M::U))^2 / hugn_M^2  +  9.*16.*no_diff_M[00]^2 / hugn_M^4)
 
-fcts_supg       phi_M_supg [Tau_tM,M,decl_hugn_M::U]
+#fcts_supg       phi_M_supg [Tau_tM,M,decl_hugn_M::U]
 
 ## Avec delta_t
-scalaire         Tau_tP      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_P::U))^2  / hugn_P^2 + 9.*16.*no_diff_P[00]^2   / hugn_P^4  + 4/delta_t^2 + 1e-8)
+#scalaire         Tau_tP      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_P::U))^2  / hugn_P^2 + 9.*16.*no_diff_P[00]^2   / hugn_P^4  + 4/delta_t^2 + 1e-8)
 ## Sans delta_t
 #scalaire          Tau_tP 1. / sqrt (4*norme2(V3D(decl_hugn_P::U))^2 / hugn_P^2  +  9.*16.*no_diff_P[00]^2 / hugn_P^4)
 
-fcts_supg       phi_P_supg [Tau_tP,P,decl_hugn_P::U]
+#fcts_supg       phi_P_supg [Tau_tP,P,decl_hugn_P::U]
 
 ## Avec delta_t
-scalaire         Tau_tD1      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_D1::U))^2  / hugn_D1^2 + 9.*16.*no_diff_D1[00]^2   / hugn_D1^4  + 4/delta_t^2 + 1e-8)
+#scalaire         Tau_tD1      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_D1::U))^2  / hugn_D1^2 + 9.*16.*no_diff_D1[00]^2   / hugn_D1^4  + 4/delta_t^2 + 1e-8)
 ## Sans delta_t
 #scalaire          Tau_tD1 1. / sqrt (4*norme2(V3D(decl_hugn_D1::U))^2 / hugn_D1^2  +  9.*16.*no_diff_D1[00]^2 / hugn_D1^4)
 
-fcts_supg       phi_D1_supg [Tau_tD1,D1,decl_hugn_D1::U]
+#fcts_supg       phi_D1_supg [Tau_tD1,D1,decl_hugn_D1::U]
 
 
 
@@ -413,7 +454,7 @@ scalaire flux_frontiere 0
   ### ----------------------------- Termes de diffusion simple
   ## on veut resoudre l'equation de la diffusion seulement dans le domaine qui n'est pas l'obstacle (sous-domaine)
   #tfdiffusion                    tfDiffusionC                                   [champgeo, C, C, DC, schema_intg, defaut::sous_domaine_cropped]
-  #tfdiffusion                    tfDiffusionC                                  [champgeo, C, C, DC, schema_intg]
+  tfdiffusion                    tfDiffusionC                                  [champgeo, C, C, DC, schema_intg]
 
 
   scalaire petit_diff 1e-1
@@ -425,10 +466,14 @@ scalaire flux_frontiere 0
 
   ## ---------------------------- Termes de diffusion croisée
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels C est sensible, pondérés par les facteurs c_i
-  #formulation_transport_diffusion_inst          transport_C                    [schema_intg, mec_tot_C, (C, DC, mult_c)]
+  #formulation_transport_diffusion_inst          transport_C                    [schema_intg, grad_mec_tot_C, (C, DC, mult_c)]
 
-  formulation_transport_diffusion_inst_supg          transport_C                [schema_intg, mec_tot_C, (C, DC, mult_c)]
-  #tfmassegenscal                 tftransport_bis_M2_C                          [champgeo, C, C, terme_masse_adv_C_hab_sel, schema_intg]
+  #formulation_transport_diffusion_inst_supg          transport_C                [schema_intg, mec_tot_C, (C, DC, mult_c)]
+  
+
+  ## Back to the origins - terme de diffusion croisée décortiquée par application de la divergence et règle du produit
+  #tftransportconvectifscalaire   transportM1_C                                 [champgeo, C, C, grad_Phi_C, mult_c, schema_intg, false]
+  #tfmassegenscal                 tftransport_bis_M1_C                          [champgeo, C, C, terme_masse_adv_C_hab_sel, schema_intg]
 
 
   
@@ -439,12 +484,11 @@ scalaire flux_frontiere 0
   #tfmassegenscal                 tfPredationCP                                 [champgeo, C, C, coeffPredation_CP, schema_intg]
 
 
-
-neumann [bas, C, flux_frontiere, schema_intg]
-neumann [haut, C, flux_frontiere, schema_intg]
-neumann [gauche, C, flux_frontiere, schema_intg]
-neumann [droite, C, flux_frontiere, schema_intg]
-
+## Peut etre plus bon car il faut que Phi apparaisse dans le terme de Neumann
+ #neumann [bas,         C, flux_frontiere, schema_intg]
+ #neumann [haut,        C, flux_frontiere, schema_intg]
+ #neumann [gauche,      C, flux_frontiere, schema_intg]
+ #neumann [droite,      C, flux_frontiere, schema_intg]
 
 
 
@@ -466,7 +510,7 @@ neumann [droite, C, flux_frontiere, schema_intg]
 
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
   #formulation_transport_diffusion_inst          transport_M                  [schema_intg, grad_mec_tot_M, (M, DM, mult_m)]
-  formulation_transport_diffusion_inst_supg          transport_M                [schema_intg, mec_tot_M, (M, DM, mult_m)]
+  #formulation_transport_diffusion_inst_supg          transport_M                [schema_intg, mec_tot_M, (M, DM, mult_m)]
 
   ### ----------------------------- Termes de reaction
   
@@ -475,10 +519,10 @@ neumann [droite, C, flux_frontiere, schema_intg]
   #tfmassegenscal                 tfPredationMP                                 [champgeo, M, M, coeffPredation_MP, schema_intg]
 
 
-  neumann [bas,    M, flux_frontiere, schema_intg]
-  neumann [haut,   M, flux_frontiere, schema_intg]
-  neumann [gauche, M, flux_frontiere, schema_intg]
-  neumann [droite, M, flux_frontiere, schema_intg]
+  #neumann [bas,    M, flux_frontiere, schema_intg]
+  #neumann [haut,   M, flux_frontiere, schema_intg]
+  #neumann [gauche, M, flux_frontiere, schema_intg]
+  #neumann [droite, M, flux_frontiere, schema_intg]
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -487,7 +531,7 @@ neumann [droite, C, flux_frontiere, schema_intg]
 
   ### ----------------------------- Termes de diffusion 
   #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg, defaut::sous_domaine_cropped]
-  #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg]
+  tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg]
 
 
   empilementto2 no_diff_P    [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
@@ -499,17 +543,28 @@ neumann [droite, C, flux_frontiere, schema_intg]
 
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels P est sensible, pondérés par les facteurs p_i
   #formulation_transport_diffusion_inst          transport_P                  [schema_intg, grad_mec_tot_P, (P, DP, mult_p)]
-  formulation_transport_diffusion_inst_supg          transport_P                [schema_intg, mec_tot_P, (P, DP, mult_p)]
+  #formulation_transport_diffusion_inst_supg          transport_P                [schema_intg, mec_tot_P, (P, DP, mult_p)]
 
  ### ----------------------------- Termes de reaction
   
   #tfmassegenscal                 tfCroissanceM                                 [champgeo, P, P, coeffCroissance_P, schema_intg]
   #tfmassegenscal                 tfDensiteDepM                                 [champgeo, P, P, coeffDensiteDep_P, schema_intg]
 
-  neumann [bas, P, flux_frontiere, schema_intg]
-  neumann [haut, P, flux_frontiere, schema_intg]
-  neumann [gauche, P, flux_frontiere, schema_intg]
-  neumann [droite, P, flux_frontiere, schema_intg]
+  #neumann [bas, P, flux_frontiere, schema_intg]
+  #neumann [haut, P, flux_frontiere, schema_intg]
+  #neumann [gauche, P, flux_frontiere, schema_intg]
+  #neumann [droite, P, flux_frontiere, schema_intg]
+
+
+
+
+### ----------------------------- Termes de diffusion simple
+  ## on veut resoudre l'equation de la diffusion seulement dans le domaine qui n'est pas l'obstacle (sous-domaine)
+  #tfdiffusion                    tfDiffusionP                                  [champgeo, P, P, DP, schema_intg]
+
+
+
+
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -531,7 +586,7 @@ neumann [droite, C, flux_frontiere, schema_intg]
   
 
   ### ----------------------------- Termes d'advection 
-  tftransportconvectifscalaire   transportD1             [champgeo, D1, D1, TD1, coef_advection_D1, schema_intg, true]
+  #tftransportconvectifscalaire   transportD1             [champgeo, D1, D1, TD1, coef_advection_D1, schema_intg, true]
 
 
 
@@ -584,9 +639,9 @@ scalaire flux_P 0
 { probDida_inst
   #tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg, defaut::sous_domaine_cropped]
   tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg]
-  tfmassegenscal  tfDMdtMasse   [champgeo, M, M, Un, schema_intg]
+  #tfmassegenscal  tfDMdtMasse   [champgeo, M, M, Un, schema_intg]
   tfmassegenscal  tfDPdtMasse   [champgeo, P, P, Un, schema_intg]
-  tfmassegenscal  tfDD1dtMasse  [champgeo, D1, D1, Un, schema_intg]
+  #tfmassegenscal  tfDD1dtMasse  [champgeo, D1, D1, Un, schema_intg]
 }
 
 
@@ -651,24 +706,8 @@ pp_reinitialise_solveur pp_redemarre [Solveur_inst(probDida)]
   ajoute_champ valeurs_diversity
   ajoute_champ M
   ajoute_champ P
-  ajoute_champ rayon_perception_C_norm
-  ajoute_champ rayon_perception_C
-  ajoute_champ rayon_perception_M_norm
-  ajoute_champ rayon_perception_M
-  ajoute_champ rayon_perception_P_norm
-  ajoute_champ rayon_perception_P
-  ajoute_champ mec_tot_C 
-  ajoute_champ mec_tot_C_avg
-  ajoute_champ grad_tot_C
-  ajoute_champ mec_tot_C_reinterpol
-  ajoute_champ averaged_mec_tot_C_cont
-  ajoute_champ averaged_mec_tot_C
-  ajoute_champ mec_tot_M 
-  ajoute_champ mec_tot_M_avg
-  ajoute_champ grad_tot_M
-  ajoute_champ mec_tot_M_reinterpol
-  ajoute_champ averaged_mec_tot_M_cont
-  ajoute_champ averaged_mec_tot_M
+  ajoute_champ Phi_C
+  ajoute_champ grad_Phi_C
   ajoute_eq_latex probDida
 }
 
@@ -690,7 +729,7 @@ include active_pre_post_traitements.champs
 
 
 ## Pour exporter tous les pas de temps
-#ajoutePrePostTraitement [pp_export, FinPasDeTemps]
+ajoutePrePostTraitement [pp_export, FinPasDeTemps]
 
 }
 
@@ -710,7 +749,7 @@ include active_pre_post_traitements.champs
 ## 
 { Actions
   pp_redemarre
-  #pp_export
+  pp_export
   Solveur_inst(probDida)
   pp_export
 }

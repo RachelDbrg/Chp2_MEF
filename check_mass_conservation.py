@@ -20,6 +20,12 @@ def compute_mass_and_plot(csv_path, output_dir, chunksize=1_000_000):
     dx = x_unique[1] - x_unique[0]
     dy = y_unique[1] - y_unique[0]
 
+    print("dx unique")
+    print(np.unique(np.diff(x_unique)))
+
+    print("dy unique")
+    print(np.unique(np.diff(y_unique)))
+
     print(f"Detected dx = {dx}, dy = {dy}")
 
     species = ["C", "M", "P", "D1"]
@@ -42,19 +48,46 @@ def compute_mass_and_plot(csv_path, output_dir, chunksize=1_000_000):
             for t, m in grouped.items():
                 mass_accumulator[sp][t] += m
 
-    # Convert accumulators to pandas Series
+        # Convert accumulators to pandas Series
     mass_dict = {
         sp: pd.Series(mass_accumulator[sp]).sort_index()
         for sp in species
     }
 
+    # Diagnostic conservation de masse
+    print("\n=== Conservation de masse ===")
+
+    for sp, series in mass_dict.items():
+
+        if len(series) > 0:
+
+            print(
+                f"{sp}: "
+                f"M0={series.iloc[0]:.12e}, "
+                f"Mf={series.iloc[-1]:.12e}, "
+                f"ratio={series.iloc[-1]/series.iloc[0]:.12f}"
+            )
+
     # Plot each species
     for sp, series in mass_dict.items():
-        plt.figure(figsize=(8, 5))
-        plt.plot(series.index, series.values, linewidth=2)
-        plt.title(f"Total Mass Through Time — Species {sp}")
+
+        if series.empty:
+            continue
+
+        mass_rel = series / series.iloc[0]
+
+        plt.figure(figsize=(8,5))
+        plt.plot(
+            series.index,
+            mass_rel,
+            linewidth=2
+        )
+
+        plt.ylim(0.999, 1.001)
+
         plt.xlabel("TimeStep")
-        plt.ylabel("Total Mass")
+        plt.ylabel("Mass / Initial Mass")
+        plt.title(f"Mass Conservation - {sp}")
         plt.grid(True)
 
         png_path = os.path.join(output_dir, f"mass_{sp}.png")

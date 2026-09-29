@@ -16,7 +16,7 @@ scalaire delta_t 0.0001
 
 ## Definition du nombre de pas de temps
 #scalaire nombre_de_pas_de_temps 3300 
-scalaire nombre_de_pas_de_temps 1
+scalaire nombre_de_pas_de_temps 3
 
 ## pour faire simulation de 4mois -- mais rend simulation trop longue et diffusion domine trop 
 

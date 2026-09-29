@@ -275,7 +275,7 @@ include diffusion_parms.champs
 empilementto2 DC    [coeff_diffusion_C_norm, coeff_diffusion_C_norm, coeff_diffusion_C_norm, Zero, Zero, Zero]
 empilementto2 DM    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coeff_diffusion_M_norm, Zero, Zero, Zero]
 empilementto2 DP    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
-empilementto2 DD1   [coeff_diffusion_D_norm, coeff_diffusion_D_norm, coeff_diffusion_D_norm, Zero, Zero, Zero]
+empilementto2 DD1   [coeff_diffusion_D1_norm, coeff_diffusion_D1_norm, coeff_diffusion_D1_norm, Zero, Zero, Zero]
 
 
 

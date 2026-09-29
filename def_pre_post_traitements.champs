@@ -11,9 +11,9 @@
 ## pp_reinterpole a pour effet de passer un champ de continu a discret
 ## La syntaxe du pp_reinterpole est:                                    [champ_destination, champ_source]
 
-pp_reinterpole                      pp_reinterpole_mec_tot_C                   [mec_tot_C_reinterpol,      mec_tot_C]
-pp_reinterpole                      pp_reinterpole_mec_tot_M                   [mec_tot_M_reinterpol,      mec_tot_M]
-pp_reinterpole                      pp_reinterpole_mec_tot_P                   [mec_tot_P_reinterpol,      mec_tot_P]
+#pp_reinterpole                      pp_reinterpole_mec_tot_C                   [mec_tot_C_reinterpol,      mec_tot_C]
+#pp_reinterpole                      pp_reinterpole_mec_tot_M                   [mec_tot_M_reinterpol,      mec_tot_M]
+#pp_reinterpole                      pp_reinterpole_mec_tot_P                   [mec_tot_P_reinterpol,      mec_tot_P]
 
 
 
@@ -39,9 +39,9 @@ pp_reinterpole                      pp_reinterpole_mec_tot_P                   [
 ## TODO: remplacer le 0.1 par le vrai rayon_perception_!!!
 ## Si SM1, alors 
 
-pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_C               [mec_tot_C_reinterpol,  averaged_mec_tot_C,        0.1]
-pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_M               [mec_tot_M_reinterpol,  averaged_mec_tot_M,        0.1]
-pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_P               [mec_tot_P_reinterpol,  averaged_mec_tot_P,        0.1]
+#pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_C               [mec_tot_C_reinterpol,  averaged_mec_tot_C,        0.1]
+#pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_M               [mec_tot_M_reinterpol,  averaged_mec_tot_M,        0.1]
+#pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_P               [mec_tot_P_reinterpol,  averaged_mec_tot_P,        0.1]
 
 
 
@@ -50,6 +50,6 @@ pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_P               [m
 ## Projection L2 pour convertir discret en continu
 ## La syntaxe du pp_projection_l2 est:                                  [champ_source, champ_destination, schema integration]
 
-pp_projection_l2                    projection_l2_tot_mec_C              [averaged_mec_tot_C,   averaged_mec_tot_C_cont,   schema_intg]
-pp_projection_l2                    projection_l2_tot_mec_M              [averaged_mec_tot_M,   averaged_mec_tot_M_cont,   schema_intg]
-pp_projection_l2                    projection_l2_tot_mec_P              [averaged_mec_tot_P,   averaged_mec_tot_P_cont,   schema_intg]
+#pp_projection_l2                    projection_l2_tot_mec_C              [averaged_mec_tot_C,   averaged_mec_tot_C_cont,   schema_intg]
+#pp_projection_l2                    projection_l2_tot_mec_M              [averaged_mec_tot_M,   averaged_mec_tot_M_cont,   schema_intg]
+#pp_projection_l2                    projection_l2_tot_mec_P              [averaged_mec_tot_P,   averaged_mec_tot_P_cont,   schema_intg]

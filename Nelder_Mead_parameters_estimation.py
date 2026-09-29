@@ -12,7 +12,7 @@ import glob
 import os
 import shutil
 from mpi4py import MPI
-import psutil
+#import psutil
 from fn_read_last_vtu import read_last_vtu
 
 
@@ -33,13 +33,55 @@ files_by_model = {
     "SM2": script_dir / "UD_caribou_moose_2023.csv",
 }
 
-
 ## Ici on choisit le modèle que l'on veut tester
 current_model = "SM1"
+
+## Ici on definit les CI que l'on veut 
+ci_type = "gaussian"
+
+positions = {
+    "center": "( (x-0.5)^2 + (y-0.5)^2 )",
+    "left_center": "( (x-0.2)^2 + (y-0.5)^2 )",
+    "right_center": "( (x-0.6)^2 + (y-0.4)^2 )",
+    "custom_P": "((x-0.1)^2+(y-0.1)^2)"}
+
+etalementCloche = 300
+
+
+## Distributions initiales des especes si empirique, ie provient .csv
+empirical_ci = {
+    "SM1": {
+        "C": "carreRachel.caribou_CI.cmefpp",
+        "P": "carreRachel.wolf_CI.cmefpp",
+        "M": 0,
+        "D1": 0,
+    },
+
+    "SM2": {
+        "C": "carreRachel.caribou_CI.cmefpp",
+        "M": "carreRachel.moose_CI.cmefpp",
+        "P": 0,
+        "D1": 0,
+    }
+}
+
+## Distributions initiales des especes definies par l'utilisateur
+gaussian_ci = {
+    "SM1": {
+        "C": ("center", 1),
+        "M": ("center", 0),
+        "P": ("center", 1),
+        "D1": ("center", 0),
+    },
+    "SM2": {
+        "C": ("center", 1),
+        "M": ("center", 1)}}
+
 
 
 species = species_by_model[current_model]
 data_file = files_by_model[current_model]
+
 
 df = pd.read_csv(data_file)
 df = df.sort_values(["x", "y"])
@@ -57,6 +99,60 @@ for sp in species:
     uds[sp] = uds[sp] / uds[sp].sum()
 
 
+#Écrit le .champs qui correspond aux conditions initiales, selon le modèle
+CI_FILE = os.path.join(
+    os.path.dirname(__file__),
+    "initial_conditions.champs"
+)
+
+with open(CI_FILE, "w") as fp:
+
+    if ci_type == "empirical":
+
+        for field_name, value in empirical_ci[current_model].items():
+
+            if isinstance(value, str):
+
+                fp.write(
+                    f'scallin {field_name} "{value}"\n'
+                )
+
+            else:
+
+                fp.write(
+                    f"scallin {field_name} {value}\n"
+                )
+
+    elif ci_type == "gaussian":
+
+        fp.write(f"scalaire etalementCloche {etalementCloche}\n")
+
+        for field_name, (pos, dens) in gaussian_ci[current_model].items():
+
+            fp.write(
+                f"scalquad {field_name} "
+                f"{dens}*exp((-etalementCloche*{positions[pos]}))\n"
+            )
+
+
+
+        
+
+## Verifie si la somme de mes UD pour les CI, par espèces somment à 1
+for sp in species:
+    col = f"{sp}_CF"
+
+    values = df[col].values
+
+    print(
+        f"{sp}: "
+        f"min={values.min():.6e}, "
+        f"max={values.max():.6e}, "
+        f"sum={values.sum():.12f}"
+    )
+
+
+
 ## Definition de tous les parametres que l'on peut faire varier 
 param_groups = {
     "caribou": ["c1", "c2", "c3", "c4", "c5"],
@@ -70,7 +166,7 @@ parms_names = []
 for sp in species:
     parms_names.extend(param_groups[sp])
 
-#theta0 = np.ones(len(parms_names))
+#theta0 = np.zeros(len(parms_names))
 
 theta0 = np.ones(len(parms_names))
 
@@ -93,13 +189,16 @@ def write_parameters(gfc, theta):
         dict(zip(parms_names, theta))
     )
 
-## Ajuster tous les parms qui dependent de la taille du paysage
+
+
+## Ajuster tous les parms qui dependent de la taille du paysage -- en gros c'est l'etape de la normalisation 
+## de mes coefficients selon la taille L de mon paysage
 
 if current_model == "SM1":
 
     #L = 404.45
 
-    ## Valeur pour mars 2022
+    ## Valeur pour mars 2022 - Nelder Mead
     L = 405.606
 
 elif current_model == "SM2":
@@ -114,13 +213,27 @@ rayon_perception_M = 1.0
 rayon_perception_P = 0.2
 rayon_perception_D1 = 1.0
 
+## Coefficients de diffusions empiriques (km2/an) (hp qu'ils sont constants)
+coeff_diffusion_C =  1073.1
+coeff_diffusion_M =  142.35 
+coeff_diffusion_D1 = coeff_diffusion_M
+coeff_diffusion_P  = 1051.25
+
 
 ## Rayons normalisés
-
 rayon_perception_C_norm = rayon_perception_C / L
 rayon_perception_M_norm = rayon_perception_M / L
 rayon_perception_P_norm = rayon_perception_P / L
 rayon_perception_D1_norm = rayon_perception_D1 / L
+
+
+## Coefficients de diffusion normalisés, centrés sur C
+coeff_diffusion_C_norm = 1
+coeff_diffusion_M_norm = coeff_diffusion_M/coeff_diffusion_C
+coeff_diffusion_P_norm = coeff_diffusion_P/coeff_diffusion_C
+coeff_diffusion_D1_norm = coeff_diffusion_D1/coeff_diffusion_C
+
+
 
 
 name_parm = [
@@ -128,7 +241,11 @@ name_parm = [
     "rayon_perception_C_norm",
     "rayon_perception_M_norm",
     "rayon_perception_P_norm",
-    "rayon_perception_D1_norm"
+    "rayon_perception_D1_norm",
+    "coeff_diffusion_C_norm",
+    "coeff_diffusion_M_norm",
+    "coeff_diffusion_P_norm",
+    "coeff_diffusion_D1_norm"
 ]
 
 value_parm = [
@@ -136,9 +253,11 @@ value_parm = [
     rayon_perception_C_norm,
     rayon_perception_M_norm,
     rayon_perception_P_norm,
-    rayon_perception_D1_norm
-    #0.001, 0.001, 0.001, 0.001,
-    #L, 0.01, 0.01, 0.01, 0.01
+    rayon_perception_D1_norm,
+    coeff_diffusion_C_norm,
+    coeff_diffusion_M_norm,
+    coeff_diffusion_P_norm,
+    coeff_diffusion_D1_norm
 ]
 
 
@@ -285,12 +404,12 @@ def objective(theta):
     # -------------------------------------------------
 
     ## Verification de l'usage de la memoire avant
-    process = psutil.Process(os.getpid())
-    print(
-    "RSS before solve:",
-    process.memory_info().rss / 1024**3,
-    "GB"
-    )
+    # process = psutil.Process(os.getpid())
+    # print(
+    # "RSS before solve:",
+    # process.memory_info().rss / 1024**3,
+    # "GB"
+    # )
 
     gfc.executeActionsRecursif()
 
@@ -299,12 +418,13 @@ def objective(theta):
 
     ## Verification de l'usage de la memoire apres
 
-    print(
-    "RSS after solve:",
-    process.memory_info().rss / 1024**3,
-    "GB"
-    )
+    # print(
+    # "RSS after solve:",
+    # process.memory_info().rss / 1024**3,
+    # "GB"
+    # )
 
+    
     # -------------------------------------------------
     # À partir d'ici, seulement rank 0 manipule les fichiers
     # -------------------------------------------------
@@ -351,44 +471,85 @@ def objective(theta):
             "parameters.txt"
         )
 
+
         with open(params_file, "w") as fp:
 
-            fp.write(
-                f"Iteration: {objective.iter}\n\n"
-            )
-
+            fp.write(f"Iteration: {objective.iter}\n\n")
+        
+            fp.write("=== Parametres optimises ===\n")
             for name, value in zip(parms_names, theta):
-                fp.write(
-                    f"{name} = {value}\n"
-                )
+                fp.write(f"{name} = {value}\n")
+
+            ## Écrit les valeurs des paramètres adimensionnels
+            fp.write("\n=== Parametres derives du modele ===\n")
+            for name, value in zip(name_parm, value_parm):
+                fp.write(f"{name} = {value}\n")
+
+            ## Écrit les valeurs des paramètres physiques
+            fp.write("\n=== Parametres physiques ===\n")
+            fp.write(f"coeff_diffusion_C = {coeff_diffusion_C}\n")
+            fp.write(f"coeff_diffusion_M = {coeff_diffusion_M}\n")
+            fp.write(f"coeff_diffusion_P = {coeff_diffusion_P}\n")
+            fp.write(f"coeff_diffusion_D1 = {coeff_diffusion_D1}\n")
+
+            ## Écrit les densités initiales
+            fp.write("\n=== Conditions initiales ===\n")
+            fp.write(f"ci_type = {ci_type}\n")
+            if ci_type == "empirical":
+
+                for field, filename in empirical_ci[current_model].items():
+                    fp.write(f"{field} = {filename}\n")
+
+            elif ci_type == "gaussian":
+
+                fp.write(f"etalementCloche = {etalementCloche}\n")
+                for field, (pos, dens) in gaussian_ci[current_model].items():
+                
+                    fp.write(
+                        f"{field}: position={pos}, densite={dens}\n"
+                    )
+
+
+                
 
         # -------------------------------------------------
         # Calcul du loss
         # -------------------------------------------------
 
 
-        print(
-        "RSS before read_last_vtu:",
-        process.memory_info().rss / 1024**3,
-        "GB"
-        )   
+        # print(
+        # "RSS before read_last_vtu:",
+        # process.memory_info().rss / 1024**3,
+        # "GB"
+        # )   
 
         pde_caribou, pde_wolf, pde_moose = \
-        read_last_vtu(iter_dir, "para")
+        read_last_vtu(iter_dir, "seq")
 
-
-        pde_caribou, pde_wolf, pde_moose = \
-            read_last_vtu(iter_dir, "para")
-
-        print(
-        "RSS after read_last_vtu:",
-        process.memory_info().rss / 1024**3, "GB")
+        # print(
+        # "RSS after read_last_vtu:",
+        # process.memory_info().rss / 1024**3, "GB")
 
         pde_uds = {
             "caribou": pde_caribou,
             "wolf": pde_wolf,
             "moose": pde_moose
         }
+
+    ## Verifie si la somme de mes UD pour les CI, par espèces somment à 1
+        for sp in species:
+    
+            pde = pde_uds[sp]
+        
+            print(
+                f"{sp}: "
+                f"min={pde.min():.6e}, "
+                f"max={pde.max():.6e}, "
+                f"sum={pde.sum():.12f}"
+            )
+
+
+
 
         losses = {
             sp: bhattacharyya_distance(
@@ -400,9 +561,9 @@ def objective(theta):
 
         loss = sum(losses.values())
 
-        print(
-        "RSS after BC:",
-        process.memory_info().rss / 1024**3, "GB")
+        # print(
+        # "RSS after BC:",
+        # process.memory_info().rss / 1024**3, "GB")
 
         print(
             ", ".join(

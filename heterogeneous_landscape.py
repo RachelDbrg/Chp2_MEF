@@ -9,7 +9,7 @@ def plot_maps_from_csv(
     output_dir,
     x_col="x",
     y_col="y",
-    variables=("valeurs_paysage", "valeurs_diversity", "mec_tot_C", "grad_tot_C"),
+    variables=("valeurs_paysage", "valeurs_diversity", "mec_tot_C", "grad_tot_C", "der_sec_par_rapport_x_gradM1_C_hab_sel", "der_sec_par_rapport_y_gradM1_C_hab_sel"),
     chunksize=500_000
 ):
 

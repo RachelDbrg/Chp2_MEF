@@ -15,22 +15,22 @@ scalaire custom_P   ((x-0.1)^2+(y-0.1)^2)
 
 
 ## Valeur max de la gaussienne (pas exactement...)
-scalaire densiteInitC   1
-scalaire densiteInitM   0
-scalaire densiteInitP   1
-scalaire densiteInitD1  0
+#scalaire densiteInitC   1
+#scalaire densiteInitM   0
+#scalaire densiteInitP   1
+#scalaire densiteInitD1  0
 
 ## Definition de l'etalement des cloches de distribution intiale
 ## Lorsque cette valeur est grande: cloche super etroite
 ## Lorsque cette valeur est petite: cloche full etalée 
 
-scalaire etalementCloche 300
+#scalaire etalementCloche 300
 
 ## Definition de la distribution initiale dans l'espace
-#scalquad C    densiteInitC*exp( (-etalementCloche*center) ) 
-scalquad M    densiteInitM*exp( (-etalementCloche*left_center) ) 
-#scalquad P    densiteInitP*exp( (-etalementCloche*right_center) ) 
-scalquad D1   densiteInitD1*exp( (-200*top_right) )
+#scallin C    densiteInitC*exp( (-etalementCloche*center) ) 
+#scalquad M    densiteInitM*exp( (-etalementCloche*left_center) ) 
+#scallin P    densiteInitP*exp( (-etalementCloche*center) ) 
+#scalquad D1   densiteInitD1*exp( (-200*top_right) )
 
 
 

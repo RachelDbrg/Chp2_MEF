@@ -11,6 +11,23 @@ scalaire rayon_perception_C_norm 1
 scalaire rayon_perception_M_norm 1 
 scalaire rayon_perception_P_norm 1 
 scalaire rayon_perception_D1_norm 1 
+scalaire coeff_diffusion_C_norm 1
+scalaire coeff_diffusion_M_norm 1
+scalaire coeff_diffusion_P_norm 1
+scalaire coeff_diffusion_D1_norm 1
+scalaire c1 1
+scalaire c2 1
+scalaire c3 1
+scalaire c4 1
+scalaire c5 1
+scalaire m1 1
+scalaire m2 1
+scalaire m3 1
+scalaire m4 1
+scalaire m5 1
+scalaire p3 1
+scalaire p4 1
+scalaire p5 1
 
 
 ### Initialisation des champs de sorties du pp filtrage moyenne

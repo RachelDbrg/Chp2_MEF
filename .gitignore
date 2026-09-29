@@ -4,3 +4,16 @@
 
 # Large data files
 diversity_raster.csv
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated simulations
+simulations/
+
+# Generated figures
+figures/
+
+# Generated runtime files
+initial_conditions.champs
