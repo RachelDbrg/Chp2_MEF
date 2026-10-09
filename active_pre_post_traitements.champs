@@ -1,10 +1,6 @@
 
 
 ## Pre-traitement pour convertir l'expression algébrique qui normalise le rayon percu selon la taille du paysage
-#ajoutePrePostTraitement [pp_reinterpole_rayon_norm_C, AvantPremierPasTemps]
-#ajoutePrePostTraitement [pp_reinterpole_rayon_norm_M, AvantPremierPasTemps]
-#ajoutePrePostTraitement [pp_reinterpole_rayon_norm_P, AvantPremierPasTemps]
-#ajoutePrePostTraitement [pp_reinterpole_rayon_norm_D, AvantPremierPasTemps]
 
 
 #ajoutePrePostTraitement [pp_reinterpole_mec_tot_C, DebutBoucleNlin]

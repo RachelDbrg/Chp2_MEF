@@ -12,3 +12,22 @@
 #scalaire fH3 chiH3*epsilonH3*( (aH3V2*eH3V2*V2)/(1+aH3V2*hH3V2*V2) - muH3)*H3 - phiH3 * H3^2 - ( (aPH3*H3)/(1+aPH1*hPH1*H1+aPH2*hPH2*H2+aPH3*hPH3*H3) )*P
 #scalaire fP P*(chiP * ((aPH2*H2 + epsilonH1H2*aPH1*H1 + epsilonH3H2*aPH3*H3)/(1+aPH1*hPH1*H1+aPH2*hPH2*H2+aPH3*hPH3*H3))-mu_P - phi_P - h)
 
+ ### ----------------------------- Termes de reaction
+  
+  #tfmassegenscal                 tfCroissanceC                                 [champgeo, C, C, coeffCroissance_C, schema_intg]
+  #tfmassegenscal                 tfDensiteDepC                                 [champgeo, C, C, coeffDensiteDep_C, schema_intg]
+  #tfmassegenscal                 tfPredationCP                                 [champgeo, C, C, coeffPredation_CP, schema_intg]
+
+
+  ### ----------------------------- Termes de reaction
+  
+  #tfmassegenscal                 tfCroissanceM                                 [champgeo, M, M, coeffCroissance_M, schema_intg]
+  #tfmassegenscal                 tfDensiteDepM                                 [champgeo, M, M, coeffDensiteDep_M, schema_intg]
+  #tfmassegenscal                 tfPredationMP                                 [champgeo, M, M, coeffPredation_MP, schema_intg]
+
+
+  
+  ### ----------------------------- Termes de reaction
+  
+  #tfmassegenscal                 tfCroissanceM                                 [champgeo, P, P, coeffCroissance_P, schema_intg]
+  #tfmassegenscal                 tfDensiteDepM                                 [champgeo, P, P, coeffDensiteDep_P, schema_intg]

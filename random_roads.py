@@ -340,7 +340,7 @@ with open("Linear_Features_BC.champs", "w") as f:
     f.write("# Conditions de Neumann pour chaque obstacle et chaque espèce\n")
     f.write("# ------------------------------------------------------------\n\n")
 
-    species = ["P", "C", "M", "D1"]
+    species = ["P", "C", "M", "D"]
 
     for i in range(1, len(roads)+1):
 

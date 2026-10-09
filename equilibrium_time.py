@@ -4,7 +4,7 @@ import os
 
 def func_equilibrium_time(data_csv, output_dir, epsilon=1e-3):
     """
-    Estimate time to spatial equilibrium for multiple species (C, M, D1, P)
+    Estimate time to spatial equilibrium for multiple species (C, M, D, P)
     from PDE output CSV.
 
     Parameters
@@ -27,7 +27,7 @@ def func_equilibrium_time(data_csv, output_dir, epsilon=1e-3):
     df = pd.read_csv(data_csv)
 
     # Species columns to evaluate
-    species_list = ["C", "M", "D1", "P"]
+    species_list = ["C", "M", "D", "P"]
 
     # Prepare output directory
     os.makedirs(output_dir, exist_ok=True)

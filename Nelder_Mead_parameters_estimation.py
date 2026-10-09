@@ -16,6 +16,19 @@ from mpi4py import MPI
 from fn_read_last_vtu import read_last_vtu
 
 
+
+## Ici on choisit le modèle que l'on veut tester
+current_model = "SM1"
+
+## Ici on definit les CI que l'on veut  -- soit empirical soit theoretical, soit debug (pour verifier numeriquement nos équations)
+ci_type = "debug"
+
+## On precise si on test le modele IFD (ie habitat-selection driven), ou non
+model_type = "IFD"
+#model_type = "LOF"
+#model_type = "" ## C en fait le defaut (IFD+LOF)
+
+
 ## Load the empirical data
 species_by_model = {
     "SM1": ["caribou", "wolf"],
@@ -30,28 +43,29 @@ script_dir = Path(__file__).resolve().parent
 
 files_by_model = {
     "SM1": script_dir / "UD_monthly_caribou_wolf_mars_2022.csv",
-    "SM2": script_dir / "UD_caribou_moose_2023.csv",
+    "SM2": script_dir / "UD_monthly_caribou_moose_avril_2023.csv",
 }
 
-## Ici on choisit le modèle que l'on veut tester
-current_model = "SM1"
 
-## Ici on definit les CI que l'on veut 
-ci_type = "gaussian"
+## Écrit le carreRachel-collection.champs correspondant, pour convertir le .csv en .mail
+collection_file = os.path.join(
+    os.path.dirname(__file__),
+    "carreRachel-collection.champs"
+)
 
-positions = {
-    "center": "( (x-0.5)^2 + (y-0.5)^2 )",
-    "left_center": "( (x-0.2)^2 + (y-0.5)^2 )",
-    "right_center": "( (x-0.6)^2 + (y-0.4)^2 )",
-    "custom_P": "((x-0.1)^2+(y-0.1)^2)"}
+with open(collection_file, "w") as fp:
+    fp.write(
+        f"convertisseurversgiref carreRachel "
+        f"[{files_by_model[current_model].name}, "
+        f"GRILLESOMMETCSV, 2, Lin]\n"
+    )
 
-etalementCloche = 300
 
 
 ## Distributions initiales des especes si empirique, ie provient .csv
 empirical_ci = {
     "SM1": {
-        "C": "carreRachel.caribou_CI.cmefpp",
+        "C": ("carreRachel.caribou_CI.cmefpp"),
         "P": "carreRachel.wolf_CI.cmefpp",
         "M": 0,
         "D1": 0,
@@ -59,24 +73,71 @@ empirical_ci = {
 
     "SM2": {
         "C": "carreRachel.caribou_CI.cmefpp",
-        "M": "carreRachel.moose_CI.cmefpp",
         "P": 0,
+        "M": "carreRachel.moose_CI.cmefpp",
         "D1": 0,
     }
 }
 
-## Distributions initiales des especes definies par l'utilisateur
-gaussian_ci = {
-    "SM1": {
-        "C": ("center", 1),
-        "M": ("center", 0),
-        "P": ("center", 1),
-        "D1": ("center", 0),
-    },
-    "SM2": {
-        "C": ("center", 1),
-        "M": ("center", 1)}}
 
+## Definition de 10 positions aléatoires par espèce native lorsque ci_type is set to "theoretical"
+import random
+
+random.seed(69)
+
+positions_C = {}
+positions_M = {}
+positions_P = {}
+
+
+etalementCloche = 300
+
+densiteInitC = 1
+densiteInitM = 0
+densiteInitP = 0
+densiteInitD1 = 0 
+
+
+for i in range(10):
+
+    x = random.uniform(0.05, 0.95)
+    y = random.uniform(0.05, 0.95)
+    positions_C[f"C_{i+1}"] = f"((x-{x})^2 + (y-{y})^2)"
+
+    x = random.uniform(0.05, 0.95)
+    y = random.uniform(0.05, 0.95)
+    positions_M[f"M_{i+1}"] = f"((x-{x})^2 + (y-{y})^2)"
+
+    x = random.uniform(0.05, 0.95)
+    y = random.uniform(0.05, 0.95)
+    positions_P[f"P_{i+1}"] = f"((x-{x})^2 + (y-{y})^2)"
+
+gaussian_sum_C = " + ".join(
+    [f"exp((-etalementCloche*C_{i+1}))" for i in range(10)]
+)
+
+gaussian_sum_M = " + ".join(
+    [f"exp((-etalementCloche*M_{i+1}))" for i in range(10)]
+)
+
+gaussian_sum_P = " + ".join(
+    [f"exp((-etalementCloche*P_{i+1}))" for i in range(10)]
+)
+
+theoretical_ci = {
+    "C": gaussian_sum_C,
+    "M": gaussian_sum_M,
+    "P": gaussian_sum_P
+}
+
+
+## On set toutes les distributions comme des gaussiennes au centre
+debug_ci = {
+    "C": "densiteInitC*exp(-etalementCloche*((x-0.5)^2 + (y-0.5)^2))",
+    "M": "densiteInitM*exp(-etalementCloche*((x-0.5)^2 + (y-0.5)^2))",
+    "P": "densiteInitP*exp(-etalementCloche*((x-0.5)^2 + (y-0.5)^2))",
+    "D1": "densiteInitD1*exp(-etalementCloche*((x-0.5)^2 + (y-0.5)^2))"
+    }
 
 
 species = species_by_model[current_model]
@@ -88,15 +149,11 @@ df = df.sort_values(["x", "y"])
 
 uds = {}
 
-# for sp in species:
-#     col = f"ud_{sp}"
-#     uds[sp] = df[col].values
-#     uds[sp] = uds[sp] / uds[sp].sum()
-
 for sp in species:
     col = f"{sp}_CF"
     uds[sp] = df[col].values
     uds[sp] = uds[sp] / uds[sp].sum()
+
 
 
 #Écrit le .champs qui correspond aux conditions initiales, selon le modèle
@@ -104,6 +161,7 @@ CI_FILE = os.path.join(
     os.path.dirname(__file__),
     "initial_conditions.champs"
 )
+
 
 with open(CI_FILE, "w") as fp:
 
@@ -123,19 +181,67 @@ with open(CI_FILE, "w") as fp:
                     f"scallin {field_name} {value}\n"
                 )
 
-    elif ci_type == "gaussian":
+
+    elif ci_type == "theoretical":
 
         fp.write(f"scalaire etalementCloche {etalementCloche}\n")
 
-        for field_name, (pos, dens) in gaussian_ci[current_model].items():
+        fp.write(f"scalaire densiteInitC {densiteInitC}\n")
+        fp.write(f"scalaire densiteInitM {densiteInitM}\n")
+        fp.write(f"scalaire densiteInitP {densiteInitP}\n")
+        fp.write(f"scalaire densiteInitD1 {densiteInitD1}\n")
 
-            fp.write(
-                f"scalquad {field_name} "
-                f"{dens}*exp((-etalementCloche*{positions[pos]}))\n"
-            )
+        for name, expr in positions_C.items():
+            fp.write(f"scalaire {name} {expr}\n")
+
+        for name, expr in positions_M.items():
+            fp.write(f"scalaire {name} {expr}\n")
+
+        for name, expr in positions_P.items():
+            fp.write(f"scalaire {name} {expr}\n")
+
+        fp.write(
+            f"scalquad C densiteInitC*({theoretical_ci['C']})\n"
+        )
+
+        fp.write(
+            f"scalquad M densiteInitM*({theoretical_ci['M']})\n"
+        )
+
+        fp.write(
+            f"scalquad P densiteInitP*({theoretical_ci['P']})\n"
+        )
+
+        fp.write(
+            "scalaire custom_D1 (y < 0.02)\n"
+        )
+
+        fp.write(
+            "scalquad D1 densiteInitD1*custom_D1\n"
+        )
 
 
+    elif ci_type == "debug":
 
+        fp.write(f"scalaire etalementCloche {etalementCloche}\n")
+
+        fp.write(f"scalaire densiteInitC {densiteInitC}\n")
+        fp.write(f"scalaire densiteInitM {densiteInitM}\n")
+        fp.write(f"scalaire densiteInitP {densiteInitP}\n")
+        fp.write(f"scalaire densiteInitD1 {densiteInitD1}\n")
+
+        fp.write(
+                    f"scalquad C densiteInitC*({debug_ci['C']})\n"
+                )
+        fp.write(
+                            f"scalquad M densiteInitM*({debug_ci['M']})\n"
+                        )
+        fp.write(
+                            f"scalquad P densiteInitP*({debug_ci['P']})\n"
+                        )
+        fp.write(
+                            f"scalquad D1 densiteInitD1*({debug_ci['D1']})\n"
+                        )
         
 
 ## Verifie si la somme de mes UD pour les CI, par espèces somment à 1
@@ -155,21 +261,54 @@ for sp in species:
 
 ## Definition de tous les parametres que l'on peut faire varier 
 param_groups = {
-    "caribou": ["c1", "c2", "c3", "c4", "c5"],
-    "moose": ["m1", "m2", "m3", "m4", "m5"],
-    "wolf": ["p3", "p4", "p5"]
+    "caribou": ["c1", "c2", "c3", "c4", "c5", "c6"],
+    "moose":   ["m1", "m2", "m3", "m4", "m5", "m6"],
+    "wolf":    ["p1", "p2", "p3", "p4", "p5", "p6"]
 }
+
+interaction_params = [
+     "c3", "c4", "c5", "c6",
+     "m3", "m4", "m5", "m6",
+     "p1", "p2"
+    ]
+
+habitat_selection_params = [
+    "c1", "c2",
+    "m1", "m2",
+    "p3", "p4", "p5", "p6"
+    ]
 
 parms_names = []
 
-## On ne fait varier que les parametres pour les especes presentes
 for sp in species:
-    parms_names.extend(param_groups[sp])
+    params = param_groups[sp]
 
-#theta0 = np.zeros(len(parms_names))
+    ## Ajoute une exception si D1 pas présente, pas besoin de chercher ses parms
+    if "D1" not in species:
+        params = [p for p in params if not p.endswith("6")]
+
+    parms_names.extend(params)
 
 theta0 = np.ones(len(parms_names))
 
+## Si on est dans le modele IFD (habitat-selection driven),
+## les seuls mécanismes qu'on regarde sont liés à l'habitat.
+## Alors on force tous les paramètres d'interaction à 0.
+
+if model_type == "IFD":
+    theta0 = np.array([
+        0.0 if p in interaction_params else 1
+        for p in parms_names
+    ])
+
+elif model_type == "LOF":
+    theta0 = np.array([
+            0.0 if p in habitat_selection_params else 1.0
+            for p in parms_names
+        ])
+
+
+print(parms_names)
 print(theta0)
 
 
@@ -207,7 +346,6 @@ elif current_model == "SM2":
 
 
 ## Rayons biologiques
-
 rayon_perception_C = 4.7
 rayon_perception_M = 1.0
 rayon_perception_P = 0.2
@@ -234,6 +372,12 @@ coeff_diffusion_P_norm = coeff_diffusion_P/coeff_diffusion_C
 coeff_diffusion_D1_norm = coeff_diffusion_D1/coeff_diffusion_C
 
 
+## Coefficient d'advection biologique pour WTD (km/year)
+advection_rate_D1 = 5
+
+## Coefficient d'advection normalisé (adimensionnel)
+advection_rate_D1_norm = advection_rate_D1 * L / coeff_diffusion_C
+
 
 
 name_parm = [
@@ -245,7 +389,8 @@ name_parm = [
     "coeff_diffusion_C_norm",
     "coeff_diffusion_M_norm",
     "coeff_diffusion_P_norm",
-    "coeff_diffusion_D1_norm"
+    "coeff_diffusion_D1_norm",
+    "advection_rate_D1_norm"
 ]
 
 value_parm = [
@@ -257,7 +402,8 @@ value_parm = [
     coeff_diffusion_C_norm,
     coeff_diffusion_M_norm,
     coeff_diffusion_P_norm,
-    coeff_diffusion_D1_norm
+    coeff_diffusion_D1_norm,
+    advection_rate_D1_norm
 ]
 
 
@@ -500,14 +646,38 @@ def objective(theta):
                 for field, filename in empirical_ci[current_model].items():
                     fp.write(f"{field} = {filename}\n")
 
-            elif ci_type == "gaussian":
+            elif ci_type == "theoretical":
 
-                fp.write(f"etalementCloche = {etalementCloche}\n")
-                for field, (pos, dens) in gaussian_ci[current_model].items():
-                
-                    fp.write(
-                        f"{field}: position={pos}, densite={dens}\n"
-                    )
+                fp.write(f"scalaire etalementCloche {etalementCloche}\n")
+
+                for name, expr in positions_C.items():
+                    fp.write(f"scalaire {name} {expr}\n")
+
+                for name, expr in positions_M.items():
+                    fp.write(f"scalaire {name} {expr}\n")
+
+                for name, expr in positions_P.items():
+                    fp.write(f"scalaire {name} {expr}\n")
+
+                fp.write(
+                    f"scalquad C densiteInitC*({theoretical_ci['C']})\n"
+                )
+
+                fp.write(
+                    f"scalquad M densiteInitM*({theoretical_ci['M']})\n"
+                )
+
+                fp.write(
+                    f"scalquad P densiteInitP*({theoretical_ci['P']})\n"
+                )
+
+                fp.write(
+                    "scalaire custom_D1 (y < 0.02)\n"
+                )
+
+                fp.write(
+                    "scalquad D1 densiteInitD1*custom_D1\n"
+                )
 
 
                 

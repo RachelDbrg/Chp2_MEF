@@ -1,7 +1,7 @@
 def plot_spatial_overlaps_grid(
     csv_path,
     output_dir="overlap_plots",
-    species_list=("C", "M", "P", "D1"),
+    species_list=("C", "M", "P", "D"),
     output_name="overlap_grid"
 ):
     import pandas as pd

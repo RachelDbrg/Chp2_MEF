@@ -11,7 +11,7 @@
 ## pp_reinterpole a pour effet de passer un champ de continu a discret
 ## La syntaxe du pp_reinterpole est:                                    [champ_destination, champ_source]
 
-#pp_reinterpole                      pp_reinterpole_mec_tot_C                   [mec_tot_C_reinterpol,      mec_tot_C]
+pp_reinterpole                      pp_reinterpole_mec_tot_C                   [Phi_C_reinterpol,      Phi_C]
 #pp_reinterpole                      pp_reinterpole_mec_tot_M                   [mec_tot_M_reinterpol,      mec_tot_M]
 #pp_reinterpole                      pp_reinterpole_mec_tot_P                   [mec_tot_P_reinterpol,      mec_tot_P]
 
@@ -36,10 +36,8 @@
 ## ou le champ de destination averaged_XY reflete la moyenne (discrete) de l'espece Y en fonction de la perception de l'espece X
 
 ### Moyennage type vegetation (mecanisme 1)
-## TODO: remplacer le 0.1 par le vrai rayon_perception_!!!
-## Si SM1, alors 
 
-#pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_C               [mec_tot_C_reinterpol,  averaged_mec_tot_C,        0.1]
+pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_C               [Phi_C_reinterpol,  avg_Phi_C_disc,        rayon_perception_C_norm]
 #pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_M               [mec_tot_M_reinterpol,  averaged_mec_tot_M,        0.1]
 #pp_filtrage_moyenne                 pp_moyenne_locale_mec_tot_P               [mec_tot_P_reinterpol,  averaged_mec_tot_P,        0.1]
 
@@ -50,6 +48,6 @@
 ## Projection L2 pour convertir discret en continu
 ## La syntaxe du pp_projection_l2 est:                                  [champ_source, champ_destination, schema integration]
 
-#pp_projection_l2                    projection_l2_tot_mec_C              [averaged_mec_tot_C,   averaged_mec_tot_C_cont,   schema_intg]
+pp_projection_l2                    projection_l2_tot_mec_C              [avg_Phi_C_disc,   avg_Phi_C,   schema_intg]
 #pp_projection_l2                    projection_l2_tot_mec_M              [averaged_mec_tot_M,   averaged_mec_tot_M_cont,   schema_intg]
 #pp_projection_l2                    projection_l2_tot_mec_P              [averaged_mec_tot_P,   averaged_mec_tot_P_cont,   schema_intg]

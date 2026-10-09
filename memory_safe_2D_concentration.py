@@ -7,7 +7,7 @@ import os
 def plot_spatial_snapshots(
     csv_path,
     output_dir,
-    species_list=("C", "M", "P", "D1"),
+    species_list=("C", "M", "P", "D"),
     output_name="combined_plot",
     chunksize=500_000
 ):
@@ -139,7 +139,7 @@ def plot_spatial_snapshots(
                 "C": "Caribou",
                 "P": "Wolf",
                 "M": "Moose",
-                "D1": "Deer"
+                "D": "Deer"
                 }
 
 

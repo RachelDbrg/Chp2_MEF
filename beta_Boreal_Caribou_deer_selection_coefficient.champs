@@ -1,3 +1,5 @@
+## Si on assume que le caribou est naif
+scalaire C_WTD_dens 0
 
-## TODO: trouver valeur dans littérature
-#scalaire C_WTD_dens -1
+## Sinon, prend la valeur obtenue pour le moose
+#scalaire C_WTD_dens -1.25

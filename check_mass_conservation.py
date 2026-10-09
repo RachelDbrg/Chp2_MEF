@@ -28,7 +28,7 @@ def compute_mass_and_plot(csv_path, output_dir, chunksize=1_000_000):
 
     print(f"Detected dx = {dx}, dy = {dy}")
 
-    species = ["C", "M", "P", "D1"]
+    species = ["C", "M", "P", "D"]
 
     # Dictionary of dictionaries: species → timestep → mass
     mass_accumulator = {sp: defaultdict(float) for sp in species}

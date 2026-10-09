@@ -1,0 +1,59 @@
+## Partie SUPG - faite par Éric
+scalaire petit_diff 1e-1
+empilementto2 no_diff_C    [coeff_diffusion_C_norm, coeff_diffusion_C_norm, coeff_diffusion_C_norm, Zero, Zero, Zero]
+#alias no_diff_M=no_diff_C no_diff_P=no_diff_C no_diff_D=no_diff_C
+empilementto2 no_diff_M    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coeff_diffusion_M_norm, Zero, Zero, Zero]
+empilementto2 no_diff_P    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
+empilementto2 no_diff_D   [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
+
+{ decl_hugn_C
+  alias U=grad_Phi_C
+  booleen hugn_utilise_schema_const_pour_hugn_C faux
+}
+scalh_ugn hugn_C   decl_hugn_C
+
+{ decl_hugn_M
+  alias U=grad_Phi_M
+  booleen hugn_utilise_schema_const_pour_hugn_M faux
+}
+scalh_ugn hugn_M   decl_hugn_M
+
+{ decl_hugn_P
+  alias U=grad_Phi_P
+  booleen hugn_utilise_schema_const_pour_hugn_P faux
+}
+scalh_ugn hugn_P   decl_hugn_P
+
+{ decl_hugn_D
+  alias U=TD
+  booleen hugn_utilise_schema_const_pour_hugn_D faux
+}
+scalh_ugn hugn_D   decl_hugn_D
+
+## Avec delta_t
+scalaire         Tau_tC      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_C::U))^2  / hugn_C^2 + 9.*16.*no_diff_C[00]^2   / hugn_C^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tC 1. / sqrt (4*norme2(V3D(decl_hugn_C::U))^2 / hugn_C^2  +  9.*16.*no_diff_C[00]^2 / hugn_C^4)
+
+fcts_supg       phi_C_supg [Tau_tC,C,decl_hugn_C::U]
+
+## Avec delta_t
+scalaire         Tau_tM      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_M::U))^2  / hugn_M^2 + 9.*16.*no_diff_M[00]^2   / hugn_M^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tM 1. / sqrt (4*norme2(V3D(decl_hugn_M::U))^2 / hugn_M^2  +  9.*16.*no_diff_M[00]^2 / hugn_M^4)
+
+fcts_supg       phi_M_supg [Tau_tM,M,decl_hugn_M::U]
+
+## Avec delta_t
+scalaire         Tau_tP      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_P::U))^2  / hugn_P^2 + 9.*16.*no_diff_P[00]^2   / hugn_P^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tP 1. / sqrt (4*norme2(V3D(decl_hugn_P::U))^2 / hugn_P^2  +  9.*16.*no_diff_P[00]^2 / hugn_P^4)
+
+fcts_supg       phi_P_supg [Tau_tP,P,decl_hugn_P::U]
+
+## Avec delta_t
+scalaire         Tau_tD      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_D::U))^2  / hugn_D^2 + 9.*16.*no_diff_D[00]^2   / hugn_D^4  + 4/delta_t^2 + 1e-8)
+## Sans delta_t
+#scalaire          Tau_tD 1. / sqrt (4*norme2(V3D(decl_hugn_D::U))^2 / hugn_D^2  +  9.*16.*no_diff_D[00]^2 / hugn_D^4)
+
+fcts_supg       phi_D_supg [Tau_tD,D,decl_hugn_D::U]

@@ -8,7 +8,7 @@ import os
 def plot_overlap_from_csv(
     csv_path,
     output_dir,
-    variables=("C", "M", "P", "D1"),
+    variables=("C", "M", "P", "D"),
     output_name="pairwise_overlaps"
 ):
     """

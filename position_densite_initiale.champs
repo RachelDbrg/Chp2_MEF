@@ -15,22 +15,27 @@ scalaire custom_P   ((x-0.1)^2+(y-0.1)^2)
 
 
 ## Valeur max de la gaussienne (pas exactement...)
-#scalaire densiteInitC   1
-#scalaire densiteInitM   0
-#scalaire densiteInitP   1
-#scalaire densiteInitD1  0
+scalaire densiteInitC   0
+scalaire densiteInitM   0
+scalaire densiteInitP   0
+scalaire densiteInitD  1
 
 ## Definition de l'etalement des cloches de distribution intiale
 ## Lorsque cette valeur est grande: cloche super etroite
 ## Lorsque cette valeur est petite: cloche full etalée 
 
-#scalaire etalementCloche 300
+scalaire etalementCloche 300
 
 ## Definition de la distribution initiale dans l'espace
-#scallin C    densiteInitC*exp( (-etalementCloche*center) ) 
-#scalquad M    densiteInitM*exp( (-etalementCloche*left_center) ) 
-#scallin P    densiteInitP*exp( (-etalementCloche*center) ) 
-#scalquad D1   densiteInitD1*exp( (-200*top_right) )
+scalquad C    densiteInitC*exp( (-etalementCloche*center) ) 
+scalquad M    densiteInitM*exp( (-etalementCloche*left_center) ) 
+scalquad P    densiteInitP*exp( (-etalementCloche*center) ) 
+
+
+
+## La proie invasive "vient" du sud, donc initialisation sur les 2% du domaine les + au sud, sur toute la largeur du paysage
+scalaire custom_D (y < 0.02)
+scalquad D   densiteInitD * custom_D
 
 
 
@@ -44,4 +49,4 @@ scalaire custom_P   ((x-0.1)^2+(y-0.1)^2)
 #scalaire log_lim_C      (1 - C/densiteInitC)
 #scalaire log_lim_M      (1 - M/densiteInitM)
 #scalaire log_lim_P      (1 - P/densiteInitP)
-#scalaire log_lim_D1     (1 - D1/densiteInitD1)
+#scalaire log_lim_D     (1 - D/densiteInitD)

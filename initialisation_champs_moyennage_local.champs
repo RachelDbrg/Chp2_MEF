@@ -10,24 +10,38 @@ scalaire L 1
 scalaire rayon_perception_C_norm 1 
 scalaire rayon_perception_M_norm 1 
 scalaire rayon_perception_P_norm 1 
-scalaire rayon_perception_D1_norm 1 
+scalaire rayon_perception_D_norm 1 
 scalaire coeff_diffusion_C_norm 1
 scalaire coeff_diffusion_M_norm 1
 scalaire coeff_diffusion_P_norm 1
-scalaire coeff_diffusion_D1_norm 1
-scalaire c1 1
-scalaire c2 1
-scalaire c3 1
-scalaire c4 1
-scalaire c5 1
-scalaire m1 1
-scalaire m2 1
-scalaire m3 1
-scalaire m4 1
-scalaire m5 1
-scalaire p3 1
-scalaire p4 1
-scalaire p5 1
+scalaire coeff_diffusion_D_norm 1
+scalaire advection_rate_D_norm 1
+
+
+scalaire c1 0
+scalaire c2 0
+scalaire c3 0
+scalaire c4 0
+scalaire c5 0
+scalaire c6 0
+scalaire m1 0
+scalaire m2 0
+scalaire m3 0
+scalaire m4 0
+scalaire m5 0
+scalaire m6 0
+scalaire p1 0
+scalaire p2 0
+scalaire p3 0
+scalaire p4 0
+scalaire p5 0
+scalaire p6 0
+scalaire d1 0
+scalaire d2 0
+scalaire d3 0
+scalaire d4 0
+scalaire d5 0
+scalaire d6 0
 
 
 ### Initialisation des champs de sorties du pp filtrage moyenne
@@ -44,15 +58,13 @@ scalaire p5 1
 #scalconstelem averaged_CZ11 0
 #scalconstelem averaged_CZ12 0
 
-scalconstelem mec_tot_C_reinterpol 0
+scalconstelem Phi_C_reinterpol 0
 scalconstelem mec_tot_M_reinterpol 0
 scalconstelem mec_tot_P_reinterpol 0
 
-scalconstelem mec_tot_C_reinterpol_scallin
-scalconstelem mec_tot_C_reinterpol_scalquad
 
 
-scalconstelem averaged_mec_tot_C 0
+scalconstelem avg_Phi_C_disc 0
 scalconstelem averaged_mec_tot_M 0
 scalconstelem averaged_mec_tot_P 0
 
@@ -70,18 +82,18 @@ scalconstelem averaged_mec_tot_P 0
 #scalconstelem averaged_MZ11 0
 #scalconstelem averaged_MZ12 0
 
-#scalconstelem averaged_D1Z1 0
-#scalconstelem averaged_D1Z2 0
-#scalconstelem averaged_D1Z3 0
-#scalconstelem averaged_D1Z4 0
-#scalconstelem averaged_D1Z5 0
-#scalconstelem averaged_D1Z6 0
-#scalconstelem averaged_D1Z7 0
-#scalconstelem averaged_D1Z8 0
-#scalconstelem averaged_D1Z9 0
-#scalconstelem averaged_D1Z10 0
-#scalconstelem averaged_D1Z11 0
-#scalconstelem averaged_D1Z12 0
+#scalconstelem averaged_DZ1 0
+#scalconstelem averaged_DZ2 0
+#scalconstelem averaged_DZ3 0
+#scalconstelem averaged_DZ4 0
+#scalconstelem averaged_DZ5 0
+#scalconstelem averaged_DZ6 0
+#scalconstelem averaged_DZ7 0
+#scalconstelem averaged_DZ8 0
+#scalconstelem averaged_DZ9 0
+#scalconstelem averaged_DZ10 0
+#scalconstelem averaged_DZ11 0
+#scalconstelem averaged_DZ12 0
 
 #scalconstelem averaged_CY1 0
 #scalconstelem averaged_CY2 0
@@ -98,12 +110,12 @@ scalconstelem averaged_mec_tot_P 0
 #scalconstelem averaged_MY6 0
 
 
-#scalconstelem averaged_D1Y1 0
-#scalconstelem averaged_D1Y2 0
-#scalconstelem averaged_D1Y3 0
-#scalconstelem averaged_D1Y4 0
-#scalconstelem averaged_D1Y5 0
-#scalconstelem averaged_D1Y6 0
+#scalconstelem averaged_DY1 0
+#scalconstelem averaged_DY2 0
+#scalconstelem averaged_DY3 0
+#scalconstelem averaged_DY4 0
+#scalconstelem averaged_DY5 0
+#scalconstelem averaged_DY6 0
 
 
 
@@ -167,7 +179,7 @@ scalconstelem averaged_mec_tot_P 0
 #scallin averaged_CZ11_cont 0
 #scallin averaged_CZ12_cont 0
 
-scallin averaged_mec_tot_C_cont 0
+scallin avg_Phi_C 0
 scallin averaged_mec_tot_M_cont 0
 scallin averaged_mec_tot_P_cont 0
 
@@ -185,18 +197,18 @@ scallin averaged_mec_tot_P_cont 0
 #scallin averaged_MZ11_cont 0
 #scallin averaged_MZ12_cont 0
 
-#scallin averaged_D1Z1_cont 0
-#scallin averaged_D1Z2_cont 0
-#scallin averaged_D1Z3_cont 0
-#scallin averaged_D1Z4_cont 0
-#scallin averaged_D1Z5_cont 0
-#scallin averaged_D1Z6_cont 0
-#scallin averaged_D1Z7_cont 0
-#scallin averaged_D1Z8_cont 0
-#scallin averaged_D1Z9_cont 0
-#scallin averaged_D1Z10_cont 0
-#scallin averaged_D1Z11_cont 0
-#scallin averaged_D1Z12_cont 0
+#scallin averaged_DZ1_cont 0
+#scallin averaged_DZ2_cont 0
+#scallin averaged_DZ3_cont 0
+#scallin averaged_DZ4_cont 0
+#scallin averaged_DZ5_cont 0
+#scallin averaged_DZ6_cont 0
+#scallin averaged_DZ7_cont 0
+#scallin averaged_DZ8_cont 0
+#scallin averaged_DZ9_cont 0
+#scallin averaged_DZ10_cont 0
+#scallin averaged_DZ11_cont 0
+#scallin averaged_DZ12_cont 0
 
 #scallin averaged_CY1_cont 0
 #scallin averaged_CY2_cont 0
@@ -212,12 +224,12 @@ scallin averaged_mec_tot_P_cont 0
 #scallin averaged_MY5_cont 0
 #scallin averaged_MY6_cont 0
 
-#scallin averaged_D1Y1_cont 0
-#scallin averaged_D1Y2_cont 0
-#scallin averaged_D1Y3_cont 0
-#scallin averaged_D1Y4_cont 0
-#scallin averaged_D1Y5_cont 0
-#scallin averaged_D1Y6_cont 0
+#scallin averaged_DY1_cont 0
+#scallin averaged_DY2_cont 0
+#scallin averaged_DY3_cont 0
+#scallin averaged_DY4_cont 0
+#scallin averaged_DY5_cont 0
+#scallin averaged_DY6_cont 0
 
 #scallin averaged_CC_cont 0 
 #scallin averaged_MM_cont 0 

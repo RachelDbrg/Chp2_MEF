@@ -186,4 +186,73 @@ def read_vtu(output_file, type_run):
             densities[field] = values
 
     return densities
-    
+
+
+
+
+
+import vtk
+import numpy as np
+
+from vtk.util.numpy_support import vtk_to_numpy
+
+
+def read_vtu_validation(output_file, type_run="seq"):
+
+    if type_run == "para":
+
+        reader = vtk.vtkXMLPUnstructuredGridReader()
+
+    elif type_run == "seq":
+
+        reader = vtk.vtkXMLUnstructuredGridReader()
+
+    else:
+
+        raise ValueError(
+            f"Unknown type_run = {type_run}"
+        )
+
+    reader.SetFileName(output_file)
+    reader.Update()
+
+    grid = reader.GetOutput()
+
+    points = vtk_to_numpy(
+        grid.GetPoints().GetData()
+    )
+
+    x = points[:, 0]
+    y = points[:, 1]
+
+    idx = np.lexsort((y, x))
+
+    pdata = grid.GetPointData()
+
+    densities = {}
+
+    for field in ["C", "M", "P", "D"]:
+
+        arr = pdata.GetArray(field)
+
+        if arr is None:
+
+            print(
+                f"Warning: field '{field}' not found in "
+                f"{output_file}"
+            )
+
+            densities[field] = None
+
+        else:
+
+            densities[field] = np.array(
+                vtk_to_numpy(arr)[idx],
+                copy=True
+            )
+
+    return {
+        "x": x[idx],
+        "y": y[idx],
+        "fields": densities
+    }

@@ -8,7 +8,7 @@ import os
 def temporal_density_change(
     csv_path,
     output_dir,
-    species_list=("C", "M", "P", "D1"),
+    species_list=("C", "M", "P", "D"),
     plot=True,
     output_name="overlap_through_time"
 ):

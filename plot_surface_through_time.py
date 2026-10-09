@@ -7,7 +7,7 @@ import os
 def plot_surface_through_time(
     csv_path,
     output_dir,
-    species_list=("C", "M", "P", "D1"),
+    species_list=("C", "M", "P", "D"),
     output_name="surface_covered"
 ):
     """
