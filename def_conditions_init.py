@@ -2,7 +2,6 @@ import pandas as pd
 import os
 
 def setup_initial_conditions(
-    current_model,
     ci_type,
     species_by_model,
     files_by_model,
@@ -53,12 +52,24 @@ def setup_initial_conditions(
     positions_P = {}
     positions_D = {}
 
-    etalementCloche = 300
+    etalementCloche = 3000
 
     densiteInitC = 1
     densiteInitM = 1
     densiteInitP = 1
-    densiteInitD = 0
+    densiteInitD = 1
+
+    initial_densities = {
+    "caribou": densiteInitC,
+    "moose":   densiteInitM,
+    "wolf":    densiteInitP,
+    "deer":    densiteInitD,
+}
+
+    active_species = [
+    sp for sp, density in initial_densities.items()
+    if density > 0
+]
 
     for i in range(10):
 
@@ -86,10 +97,16 @@ def setup_initial_conditions(
         [f"exp((-etalementCloche*P_{i+1}))" for i in range(10)]
     )
 
+    gaussian_sum_D = " + ".join(
+            [f"exp((-etalementCloche*D_{i+1}))" for i in range(10)]
+        )
+
+
     theoretical_ci = {
-        "C": gaussian_sum_C,
-        "M": gaussian_sum_M,
-        "P": gaussian_sum_P
+        "C0": gaussian_sum_C,
+        "M0": gaussian_sum_M,
+        "P0": gaussian_sum_P,
+        "D0": gaussian_sum_D
     }
 
     # ==================================================
@@ -98,50 +115,77 @@ def setup_initial_conditions(
 
     debug_ci = {
 
-        "C": (
+        "C0": (
             "densiteInitC*exp("
             "-etalementCloche*((x-0.5)^2+(y-0.5)^2)"
             ")"
         ),
 
-        "M": (
+        "M0": (
             "densiteInitM*exp("
             "-etalementCloche*((x-0.5)^2+(y-0.5)^2)"
             ")"
         ),
 
-        "P": (
+        "P0": (
             "densiteInitP*exp("
             "-etalementCloche*((x-0.5)^2+(y-0.5)^2)"
             ")"
         ),
 
-        "D": (
+        "D0": (
             "densiteInitD*exp("
             "-etalementCloche*((x-0.5)^2+(y-0.5)^2)"
             ")"
         ),
     }
 
+
+
+    # =================================================
+    # Creation d'un dictionnaire avec les ci
+    # =================================================
+
+    ci_description = {
+    "ci_type": ci_type,
+    "etalementCloche": etalementCloche,
+    "densiteInitC": densiteInitC,
+    "densiteInitM": densiteInitM,
+    "densiteInitP": densiteInitP,
+    "densiteInitD": densiteInitD,
+    "debug_ci": debug_ci,
+    "theoretical_ci": theoretical_ci,
+}
+
+
+    positions = {
+    "caribou": positions_C,
+    "moose": positions_M,
+    "wolf": positions_P,
+    "deer": positions_D,
+}
+
     # ==================================================
     # Read empirical data
     # ==================================================
 
-    species = species_by_model[current_model]
-
-    data_file = files_by_model[current_model]
-
-    df = pd.read_csv(data_file)
-    df = df.sort_values(["x", "y"])
-
     uds = {}
+    df = None
 
-    for sp in species:
+    if ci_type == "empirical":
 
-        col = f"{sp}_CF"
+        raise ValueError(
+            "Le mode empirical nécessite encore un current_model "
+            "(SM1 ou SM2)."
+        )
 
-        uds[sp] = df[col].values
-        uds[sp] /= uds[sp].sum()
+    else:
+
+        species = [
+            sp
+            for sp, density in initial_densities.items()
+            if density > 0
+        ]
 
     # ==================================================
     # Write .champs file
@@ -206,63 +250,78 @@ def setup_initial_conditions(
                 fp.write(f"scalaire {name} {expr}\n")
 
             fp.write(
-                f"scalquad C densiteInitC*({theoretical_ci['C']})\n"
+                f"scalquad C0 densiteInitC*({theoretical_ci['C0']})\n"
             )
 
             fp.write(
-                f"scalquad M densiteInitM*({theoretical_ci['M']})\n"
+                f"scalquad M0 densiteInitM*({theoretical_ci['M0']})\n"
             )
 
             fp.write(
-                f"scalquad P densiteInitP*({theoretical_ci['P']})\n"
+                f"scalquad P0 densiteInitP*({theoretical_ci['P0']})\n"
             )
 
-            fp.write(
-                "scalaire custom_D (y < 0.02)\n"
-            )
+            # fp.write(
+            #     "scalaire custom_D (y < 0.02)\n"
+            # )
+
+            # fp.write(
+            #     "scalquad D0 densiteInitD*custom_D\n"
+            # )
 
             fp.write(
-                "scalquad D densiteInitD*custom_D\n"
+            "scalaire sigma_D 0.02\n" 
             )
+            fp.write(
+            "scalquad D0 densiteInitD*exp(-((y-0.0)^2)/(2*sigma_D^2))\n"
+            )
+
 
         elif ci_type == "debug":
 
             fp.write(
-                f"scalquad C densiteInitC*({debug_ci['C']})\n"
+                f"scalquad C0 densiteInitC*({debug_ci['C0']})\n"
             )
 
             fp.write(
-                f"scalquad M densiteInitM*({debug_ci['M']})\n"
+                f"scalquad M0 densiteInitM*({debug_ci['M0']})\n"
             )
 
             fp.write(
-                f"scalquad P densiteInitP*({debug_ci['P']})\n"
+                f"scalquad P0 densiteInitP*({debug_ci['P0']})\n"
             )
 
             fp.write(
-                f"scalquad D densiteInitD*({debug_ci['D']})\n"
+                f"scalquad D0 densiteInitD*({debug_ci['D0']})\n"
             )
 
     # ==================================================
     # Validation UDs
     # ==================================================
 
-    for sp in species:
+    if df is not None:
 
-        col = f"{sp}_CF"
+        for sp in species:
 
-        values = df[col].values
+            col = f"{sp}_CF"
 
-        print(
-            f"{sp}: "
-            f"min={values.min():.6e}, "
-            f"max={values.max():.6e}, "
-            f"sum={values.sum():.12f}"
-        )
+            values = df[col].values
+
+            print(
+                f"{sp}: "
+                f"min={values.min():.6e}, "
+                f"max={values.max():.6e}, "
+                f"sum={values.sum():.12f}"
+            )
+
+
+
+
 
     return (
-        species,
-        df,
-        uds,
-        empirical_ci
-    )
+    species,
+    df,
+    uds,
+    initial_densities,
+    positions,
+    ci_description)

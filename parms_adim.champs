@@ -1,0 +1,13 @@
+## Dimensionless parameters
+
+scalaire L 405.606
+scalaire rayon_perception_C_norm 0.011587599788957757
+scalaire rayon_perception_M_norm 0.0024654467636080336
+scalaire rayon_perception_P_norm 0.0004930893527216067
+scalaire rayon_perception_D_norm 0.0024654467636080336
+scalaire coeff_diffusion_C_norm 1.0
+scalaire coeff_diffusion_M_norm 0.1326530612244898
+scalaire coeff_diffusion_P_norm 0.9796384307147518
+scalaire coeff_diffusion_D_norm 0.1326530612244898
+scalaire advection_rate_D_norm 1.889879787531451
+scalaire temps_caracteristique 153.30931622029635

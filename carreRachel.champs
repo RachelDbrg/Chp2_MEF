@@ -23,11 +23,31 @@ scallin valeurs_diversity "carreRachel.diversity.cmefpp"
 ## Importation des CI, écrites par le python
 include initial_conditions.champs
 
+## Valeurs des parms qui changent a chaque iteration
+include values_scenario.champs
+
+## Declaration des inconnues 
+scalquad C 0
+scalquad M 0 
+scalquad P 0 
+scalquad D 0 
+
+## Attribution des distributions initiales des inconnues (utile pour remettre a zero les distributions entre les itérations)
+pp_reinterpole                      pp_reinitialise_dens_init_C                   [C,      C0]
+pp_reinterpole                      pp_reinitialise_dens_init_M                   [M,      M0]
+pp_reinterpole                      pp_reinitialise_dens_init_P                   [P,      P0]
+pp_reinterpole                      pp_reinitialise_dens_init_D                   [D,      D0]
+
+
+
 ## Découpe le paysage en binaires en fct du type d'habitat
 include decoupe_paysage_binaire.champs
 
 ## Initialisation de tous les champs intermediaires utilises pour le calcul des moyennages locaux
 include initialisation_champs_moyennage_local.champs
+
+## Ajoute tous les champs adimensionels
+include parms_adim.champs
 
 
 # ================================================= 0.1 Définition du solveur instationnaire                                            ===================================
@@ -122,8 +142,11 @@ include beta_Deer_wolf_selection_coefficients.champs
 empilementto2 DC                        [coeff_diffusion_C_norm,  coeff_diffusion_C_norm,   coeff_diffusion_C_norm,  Zero, Zero, Zero]
 empilementto2 DM                        [coeff_diffusion_M_norm,  coeff_diffusion_M_norm,   coeff_diffusion_M_norm,  Zero, Zero, Zero]
 empilementto2 DP                        [coeff_diffusion_P_norm,  coeff_diffusion_P_norm,   coeff_diffusion_P_norm,  Zero, Zero, Zero]
-empilementto2 DD                       [coeff_diffusion_D_norm, coeff_diffusion_D_norm,  coeff_diffusion_D_norm, Zero, Zero, Zero]
+empilementto2 DD                        [coeff_diffusion_D_norm,  coeff_diffusion_D_norm,   coeff_diffusion_D_norm,  Zero, Zero, Zero]
 
+
+## Creation du tenseur avec les coefficients d'advection pour D
+empilementto2 adv_rate_D                        [advection_rate_D_norm,  advection_rate_D_norm,   advection_rate_D_norm,  Zero, Zero, Zero]
 
 
 
@@ -135,153 +158,82 @@ empilementto2 DD                       [coeff_diffusion_D_norm, coeff_diffusion_
 # ------------------------------------------------------------------          Caribou                   -------------------------------------------------------------------
 
 ## Verifier cohérence entre formulation faible et forte
-scalaire mult_c                        2 * coeff_diffusion_C_norm
+scalaire K_C           1 
+scalaire mult_c        (2 * coeff_diffusion_C_norm) * (1 - C/K_C+1e-16)
 
 
-gradient grad_Y1 Y1
-gradient grad_Y2 Y2
-gradient grad_Y3 Y3
-gradient grad_Y4 Y4
-gradient grad_Y5 Y5
-gradient grad_Y6 Y6
+
+scalaire    M1_C       c1 * (C_landcover1       * Z1 + C_landcover2 * Z1 + C_landcover3 * Z3 + C_landcover4 * Z4 + C_landcover5 * Z5 + C_landcover6 * Z6 + C_landcover7 * Z7 + C_landcover8 * Z8 + C_landcover9 * Z9 + C_landcover11 * Z11 + C_landcover12 * Z12  ) 
+scalaire    M2_C       c2 * (C_diversity1       * Y1 + C_diversity2 * Y2 + C_diversity3 * Y3 + C_diversity4 * Y4 + C_diversity5 * Y5 + C_diversity6 * Y6) 
+scalaire    M3_C       c3 * C_cons_dens         * C
+scalaire    M4_C       c4 * C_moose_dens        * M
+scalaire    M5_C       c5 * C_wolf_dens         * P 
+scalaire    M6_C       c6 * C_WTD_dens          * D
 
 
-scalaire   M1_C       c1 * (C_landcover1 * Z1 + C_landcover2 * Z1 + C_landcover3 * Z3 + C_landcover4 * Z4 + C_landcover5 * Z5 + C_landcover6 * Z6 + C_landcover7 * Z7 + C_landcover8 * Z8 + C_landcover9 * Z9 + C_landcover11 * Z11 + C_landcover12 * Z12  ) 
-scalaire   M2_C       c2 * (C_diversity1 * Y1 + C_diversity2 * Y2 + C_diversity3 * Y3 + C_diversity4 * Y4 + C_diversity5 * Y5 + C_diversity6 * Y6) 
-scalaire   M3_C       c3 * C_cons_dens * C
-scalaire   M4_C       c4 * C_moose_dens * M
-scalaire   M5_C       c5 * C_wolf_dens * P 
-scalaire   M6_C       c6 * C_WTD_dens * D
-
-
-scalaire Phi_C M1_C + M2_C + M4_C + M5_C + M6_C
-  
-
+scalaire    Phi_C      M1_C + M2_C + M3_C + M4_C + M5_C + M6_C
 
 gradient grad_Phi_C  Phi_C 
 
 
-### En x 
-gradient der_sec_par_rapport_x_grad_Phi_C           grad_Phi_CX
- 
-### En y 
-gradient der_sec_par_rapport_y_grad_Phi_C           grad_Phi_CY
- 
-### Calcul du Laplacien
-scalaire laplacien_Phi_C der_sec_par_rapport_x_grad_Phi_CX + der_sec_par_rapport_y_grad_Phi_CY
- 
-### Formulation du terme de masse de l'advection
-scalaire terme_masse_adv_C -mult_c*laplacien_Phi_C
-
-
-
-
 # ------------------------------------------------------------------          Moose                   -------------------------------------------------------------------
 
-scalaire    M1_M      m1 * (M_landcover1      * Z1 + M_landcover2 * Z2 + M_landcover3 * Z3 + M_landcover4 * Z4 + M_landcover5 * Z5 + M_landcover6 * Z6 + M_landcover7 * Z7 + M_landcover8 * Z8 + M_landcover9 * Z9 + M_landcover11 * Z11 + M_landcover12 * Z12  ) 
-scalaire    M2_M      m2 * (M_diversity1      * Y1 + M_diversity2 * Y2 + M_diversity3 * Y3 + M_diversity4 * Y4 + M_diversity5 * Y5 + M_diversity6 * Y6) 
-scalaire    M3_M      m3 * M_cons_dens        * M
-scalaire    M4_M      m4 * M_other_prey_dens  * C
-scalaire    M5_M      m5 * M_wolf_dens        * P 
-scalaire    M6_M      m6 * M_WTD_dens         * D
+scalaire    K_M         1
+scalaire    mult_m      (2 * coeff_diffusion_M_norm) * (1 - M/K_M+1e-16)
+
+scalaire    M1_M        m1 * (M_landcover1      * Z1 + M_landcover2 * Z2 + M_landcover3 * Z3 + M_landcover4 * Z4 + M_landcover5 * Z5 + M_landcover6 * Z6 + M_landcover7 * Z7 + M_landcover8 * Z8 + M_landcover9 * Z9 + M_landcover11 * Z11 + M_landcover12 * Z12  ) 
+scalaire    M2_M        m2 * (M_diversity1      * Y1 + M_diversity2 * Y2 + M_diversity3 * Y3 + M_diversity4 * Y4 + M_diversity5 * Y5 + M_diversity6 * Y6) 
+scalaire    M3_M        m3 * M_cons_dens        * M
+scalaire    M4_M        m4 * M_other_prey_dens  * C
+scalaire    M5_M        m5 * M_wolf_dens        * P 
+scalaire    M6_M        m6 * M_WTD_dens         * D
 
 
+scalaire    Phi_M       M1_M + M2_M + M3_M + M4_M + M5_M + M6_M
 
-scalaire    Phi_M     M1_M + M2_M + M3_M + M4_M + M5_M + M6_M
-
-scalaire    mult_m    2 * coeff_diffusion_M_norm
-
-
-## Ca c un patch qui devra partir
-## Ajout d'un truc qui fade le gradient sur le bord pour le rendre nul
 
 gradient    grad_Phi_M  Phi_M 
 
 
-### En x 
-gradient der_sec_par_rapport_x_grad_Phi_M grad_Phi_MX
- 
-### En y 
-gradient der_sec_par_rapport_y_grad_Phi_M grad_Phi_MY
- 
-### Calcul du Laplacien
-scalaire laplacien_Phi_M der_sec_par_rapport_x_grad_Phi_MX + der_sec_par_rapport_y_grad_Phi_MY
- 
-### Formulation du terme de masse de l'advection
-scalaire terme_masse_adv_M -mult_c*laplacien_Phi_M
+
+# ------------------------------------------------------------------          Wolf                   -------------------------------------------------------------------
+
+scalaire    K_P          1
+scalaire    mult_p       (2 * coeff_diffusion_P_norm) * (1 - P/K_P+1e-16)
 
 
-
-# ------------------------------------------------------------------          Predator                   -------------------------------------------------------------------
-
-scalaire    M1_P    p1 * (P_landcover1    * Z1 + P_landcover2 * Z2 + P_landcover3 * Z3 + P_landcover4 * Z4 + P_landcover5 * Z5 + P_landcover6 * Z6 + P_landcover7 * Z7 + P_landcover8 * Z8 + P_landcover9 * Z9 + P_landcover11 * Z11 + P_landcover12 * Z12  ) 
-scalaire    M2_P    p2 * (P_diversity1    * Y1 + P_diversity2 * Y2 + P_diversity3 * Y3 + P_diversity4 * Y4 + P_diversity5 * Y5 + P_diversity6 * Y6) 
-scalaire    M3_P    p3 * P_cons_dens      * P
-scalaire    M4_P    p4 * P_caribou_dens   * C
-scalaire    M5_P    p5 * P_moose_dens     * M
-scalaire    M6_P    p6 * P_WTD_dens      * D
+scalaire    M1_P        p1 * (P_landcover1      * Z1 + P_landcover2 * Z2 + P_landcover3 * Z3 + P_landcover4 * Z4 + P_landcover5 * Z5 + P_landcover6 * Z6 + P_landcover7 * Z7 + P_landcover8 * Z8 + P_landcover9 * Z9 + P_landcover11 * Z11 + P_landcover12 * Z12  ) 
+scalaire    M2_P        p2 * (P_diversity1      * Y1 + P_diversity2 * Y2 + P_diversity3 * Y3 + P_diversity4 * Y4 + P_diversity5 * Y5 + P_diversity6 * Y6) 
+scalaire    M3_P        p3 * P_cons_dens        * P
+scalaire    M4_P        p4 * P_caribou_dens     * C
+scalaire    M5_P        p5 * P_moose_dens       * M
+scalaire    M6_P        p6 * P_WTD_dens         * D
 
 
-## Ajout d'un truc qui fade le gradient sur le bord pour le rendre nul
-scalaire Phi_P M3_P + M4_P + M5_P 
+scalaire    Phi_P       M3_P + M4_P + M5_P + M6_P
 
-gradient grad_Phi_P  Phi_P
-
-
- ### En x 
-gradient der_sec_par_rapport_x_grad_Phi_P grad_Phi_PX
- 
-### En y 
-gradient der_sec_par_rapport_y_grad_Phi_P grad_Phi_PY
- 
-### Calcul du Laplacien
-scalaire laplacien_Phi_P der_sec_par_rapport_x_grad_Phi_PX + der_sec_par_rapport_y_grad_Phi_PY
-
-
-## Predator
-scalaire mult_p       2 * coeff_diffusion_P_norm
-
- 
-### Formulation du terme de masse de l'advection
-scalaire terme_masse_adv_P -mult_p*laplacien_Phi_P
-
+gradient    grad_Phi_P  Phi_P
 
 
 
 # ------------------------------------------------------------------          WTD                   -------------------------------------------------------------------
 
-scalaire    M1_D    D * (D_landcover1      * Z1 + D_landcover2 * Z2 + D_landcover3 * Z3 + D_landcover4 * Z4 + D_landcover5 * Z5 + D_landcover6 * Z6 + D_landcover7 * Z7 + D_landcover8 * Z8 + D_landcover9 * Z9 + D_landcover11 * Z11 + D_landcover12 * Z12  ) 
-scalaire    M2_D    d2 * (D_diversity1      * Y1 + D_diversity2 * Y2 + D_diversity3 * Y3 + D_diversity4 * Y4 + D_diversity5 * Y5 + D_diversity6 * Y6) 
-scalaire    M3_D    d3 * D_cons_dens        * D
-scalaire    M4_D    d4 * D_caribou_dens  * C
-scalaire    M5_D    d5 * D_wolf_dens        * P 
-scalaire    M6_D    d6 * D_moose_dens       * M
+scalaire    K_D          1
+scalaire    mult_d       (2 * coeff_diffusion_D_norm) * (1 - D/K_D+1e-16)
+
+scalaire    M1_D        d1 * (D_landcover1      * Z1 + D_landcover2 * Z2 + D_landcover3 * Z3 + D_landcover4 * Z4 + D_landcover5 * Z5 + D_landcover6 * Z6 + D_landcover7 * Z7 + D_landcover8 * Z8 + D_landcover9 * Z9 + D_landcover11 * Z11 + D_landcover12 * Z12  ) 
+scalaire    M2_D        d2 * (D_diversity1      * Y1 + D_diversity2 * Y2 + D_diversity3 * Y3 + D_diversity4 * Y4 + D_diversity5 * Y5 + D_diversity6 * Y6) 
+scalaire    M3_D        d3 * D_cons_dens        * D
+scalaire    M4_D        d4 * D_caribou_dens     * C
+scalaire    M5_D        d5 * D_wolf_dens        * P 
+scalaire    M6_D        d6 * D_moose_dens       * M
 
 
+scalaire    Phi_D       M1_D + M2_D + M3_D + M4_D + M5_D + M6_D
 
-scalaire    Phi_D     M1_D + M2_D + M3_D + M4_D + M5_D + M6_D
-
-scalaire    mult_d    2 * coeff_diffusion_M_norm
-
-
-## Ca c un patch qui devra partir
-## Ajout d'un truc qui fade le gradient sur le bord pour le rendre nul
-
-gradient    grad_Phi_D  Phi_D 
+gradient    grad_Phi_D  Phi_D
 
 
-### Dérivée seconde en x 
-
-gradient der_sec_par_rapport_x_grad_Phi_D grad_Phi_DX
- 
-### En y 
-gradient der_sec_par_rapport_y_grad_Phi_D grad_Phi_DY
- 
-### Calcul du Laplacien
-scalaire laplacien_Phi_D der_sec_par_rapport_x_grad_Phi_DX + der_sec_par_rapport_y_grad_Phi_DY
- 
-### Formulation du terme de masse de l'advection
-scalaire terme_masse_adv_D -mult_c*laplacien_Phi_D
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -289,9 +241,7 @@ scalaire terme_masse_adv_D -mult_c*laplacien_Phi_D
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Definition de la direction du vecteur w_D, dont on fixe la norme a 1 et qui pointe selon un y positif (vers le haut)
-vectoriel3D TD [0, 1, 0]
-
-
+vectoriel3D w_D [0, 1, 0]
 
 
 #==========================================================================================================================================================================
@@ -346,9 +296,9 @@ include stabilisation_supg.champs
 
   ## ---------------------------- Termes de diffusion croisée
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels C est sensible, pondérés par les facteurs c_i
-  
-  
-  formulation_transport_conservatif_diffusion_inst_supg          transport_C                [schema_intg, Phi_C, (C, DC, mult_c)]
+
+    
+  formulation_transport_conservatif_diffusion_inst_supg          transport_C                [schema_intg, avg_Phi_C, (C , DC, mult_c)]
   
 
 
@@ -373,7 +323,7 @@ include stabilisation_supg.champs
 
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
   #formulation_transport_diffusion_inst          transport_M                  [schema_intg, grad_Phi_M, (M, DM, mult_m)]
-  formulation_transport_conservatif_diffusion_inst_supg          transport_M                [schema_intg, Phi_M, (M, DM, mult_m)]
+  formulation_transport_conservatif_diffusion_inst_supg          transport_M                [schema_intg, avg_Phi_M, (M, DM, mult_m)]
 
 
 
@@ -397,12 +347,9 @@ include stabilisation_supg.champs
 
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels P est sensible, pondérés par les facteurs p_i
   #formulation_transport_diffusion_inst          transport_P                  [schema_intg, grad_Phi_P, (P, DP, mult_p)]
-  formulation_transport_conservatif_diffusion_inst_supg          transport_P                [schema_intg, Phi_P, (P, DP, mult_p)]
+  formulation_transport_conservatif_diffusion_inst_supg          transport_P                [schema_intg, avg_Phi_P, (P, DP, mult_p)]
 
 
-  ## Back to the origins - terme de diffusion croisée décortiquée par application de la divergence et règle du produit
-  #tftransportconvectifscalaire   transportM1_P                                 [champgeo, P, P, grad_Phi_P, mult_p, schema_intg, false]
-  #tfmassegenscal                 tftransport_bis_M1_P                          [champgeo, P, P, terme_masse_adv_P, schema_intg]
 
 
 
@@ -421,11 +368,18 @@ include stabilisation_supg.champs
   ## ---------------------------- Termes de diffusion croisée
 
   ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
-  formulation_transport_conservatif_diffusion_inst_supg          transport_D                  [schema_intg, Phi_D, (D, DD, mult_d)]
+  formulation_transport_conservatif_diffusion_inst_supg          transport_D                  [schema_intg, avg_Phi_D, (D, DD, mult_d)]
   
 
+
+  
+  formulation_transport_conservatif_diffusion_inst_supg          transport_D                  [schema_intg, w_D, (D, adv_rate_D, Un)]
+
+  ## Probablement possible d'ajouter dans la formulation le chose d'adveciton 
+
   ### ----------------------------- Termes d'advection 
-  #tftransportconvectifscalaire   transportD             [champgeo, D, D, TD, advection_rate_D_norm, schema_intg, true]
+  #tftransportconvectifscalaire_supg                             transportD                   [champgeo, D, D, w_D, advection_rate_D_norm, schema_intg, true]
+  #asgnFonctionsTestSUPG [transportD, phi_D_supg]
 
 
 
@@ -439,11 +393,10 @@ include stabilisation_supg.champs
 # ================================================= 2.8 Définition variables instationnaires pour résolution dans le temps              ===================================
 
 { probDida_inst
-  #tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg, defaut::sous_domaine_cropped]
   tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg]
   tfmassegenscal  tfDMdtMasse   [champgeo, M, M, Un, schema_intg]
   tfmassegenscal  tfDPdtMasse   [champgeo, P, P, Un, schema_intg]
-  tfmassegenscal  tfDDdtMasse  [champgeo, D, D, Un, schema_intg]
+  tfmassegenscal  tfDDdtMasse   [champgeo, D, D, Un, schema_intg]
 }
 
 
@@ -508,9 +461,16 @@ pc_type lu
 ## Definit le pp pour reinitialiser le solveur - utile pour la boucle Python, pour que le solveur reinitialise son numero de pas de temps, temps final etc
 pp_reinitialise_solveur pp_redemarre [Solveur_inst(probDida)]
 
+
+
+
+
+
+
 { exportation        export
   format_exportation GIREF
   format_exportation VTK
+  
   ajoute_champ C
   ajoute_champ valeurs_paysage
   ajoute_champ valeurs_diversity
@@ -518,14 +478,40 @@ pp_reinitialise_solveur pp_redemarre [Solveur_inst(probDida)]
   ajoute_champ P
   ajoute_champ D
   ajoute_champ Phi_C
+  ajoute_champ Phi_M
+  ajoute_champ Phi_P
+  ajoute_champ Phi_D
   ajoute_champ grad_Phi_C
   ajoute_eq_latex probDida
+  ajoute_champ mult_c
+  ajoute_champ rayon_perception_C_norm 
+  ajoute_champ rayon_perception_M_norm 
+  ajoute_champ rayon_perception_P_norm 
+  ajoute_champ rayon_perception_D_norm 
+  ajoute_champ coeff_diffusion_C_norm
+  ajoute_champ coeff_diffusion_M_norm
+  ajoute_champ coeff_diffusion_P_norm
+  ajoute_champ coeff_diffusion_D_norm
+  ajoute_champ advection_rate_D_norm
+  ajoute_champ c2
+  ajoute_champ c1
+  ajoute_champ avg_Phi_C
+  ajoute_champ avg_Phi_D
+  ajoute_champ avg_Phi_P
+  ajoute_champ avg_dens_C_pond
+  ajoute_champ C_temp
+  ajoute_champ K_C
+  ajoute_champ C_log_lim
+  ajoute_champ lim_log_C
+  ajoute_champ fct_limite_C
+  ajoute_champ C_eff
 }
 
 
 ## Exporte dans le dossier simulations sous le nom NM_SM1 ou NM_SM2
 #pp_exportation pp_export [export, "$CheminAccesExport$/simulations/vars_parms_c/CMP_", 2, true, true]
-pp_exportation pp_export [export, "$CheminAccesExport$/simulations/var_parms/i/Null_NMP_", 1  , true, true]
+pp_exportation pp_export [export, "$CheminAccesExport$/simulations/var_parms/i/Null_NMPD_", 1  , true, true]
+#pp_exportation pp_export [export, "$CheminAccesExport$/simulations/var_parms/i/Null_NMP_", 1  , true, true]
 
 
 #==========================================================================================================================================================================
@@ -541,6 +527,7 @@ include active_pre_post_traitements.champs
 
 ## Pour exporter tous les pas de temps
 ajoutePrePostTraitement [pp_export, FinPasDeTemps]
+
 
 }
 
@@ -559,8 +546,15 @@ ajoutePrePostTraitement [pp_export, FinPasDeTemps]
 
 ## 
 { Actions
+## reinitialise le solveur instationnaire
   pp_redemarre
+## reinitialise les positions des especes entre chaque simulation
+  pp_reinitialise_dens_init_C
+  pp_reinitialise_dens_init_M
+  pp_reinitialise_dens_init_P
+  pp_reinitialise_dens_init_D
+## Fait un premier export initial
   pp_export
+## Resout boucle instationnaire
   Solveur_inst(probDida)
-  #pp_export
 }

@@ -5,81 +5,260 @@
 [0]
 [0]Temps de profiling "usager"
 [0] Total    sec(WC) s(SelfUser) s(SelfSys) s(ChildUser) s(ChildSys) (VmSizeDiff , VmRSSDiff, VmDataDiff) nbApls      Etiquette
-[0] Total   4203.7349 19336.1858   361.0758      7.0882      8.2166  2560060 KB   1617348 KB   2104940 KB    1 x  Prog_complet.
-[0] Total      0.0413     0.0002     0.0170      0.0045      0.0197        0 KB       700 KB         0 KB    1 x   PETScInitialisation.
-[0] Total      4.5004     2.5437     0.5248      0.7700      0.5792   183816 KB    131376 KB    113816 KB    1 x   CollectionDeCorps::lisDonneesDeBase.
-[0] Total      0.3620     0.1542     0.0439      0.0000      0.0000    15276 KB     16928 KB     14544 KB    1 x    Interface::exporteInfo.
-[0] Total      0.2122     0.1417     0.0283      0.0000      0.0000    15276 KB     16296 KB     14544 KB    1 x     Interface::exporteMaillageChampGeoEntite.
+[0] Total   1019.6313  3971.0391    87.2047      8.6703      9.2674  2920984 KB   1920832 KB   2457692 KB    1 x  Prog_complet.
+[0] Total      0.0304     0.0002     0.0153      0.0010      0.0140        0 KB       804 KB         0 KB    1 x   PETScInitialisation.
+[0] Total      7.3638     2.8034     1.0196      1.9168      1.6642   189884 KB    136728 KB    119408 KB    1 x   CollectionDeCorps::lisDonneesDeBase.
+[0] Total      0.3537     0.1601     0.0297      0.0000      0.0000    15072 KB     16132 KB     14340 KB    1 x    Interface::exporteInfo.
+[0] Total      0.1949     0.1385     0.0159      0.0000      0.0000    15072 KB     15624 KB     14340 KB    1 x     Interface::exporteMaillageChampGeoEntite.
 [0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x      Interface::creeMaillage.
 [0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x      Interface::creeEntitesDeGroupements.
-[0] Total      0.2102     0.1417     0.0279      0.0000      0.0000    15276 KB     16296 KB     14544 KB    1 x      Interface::exporteInfo::GénérateurLieuxEtZones.
-[0] Total      0.0813     0.0714     0.0099      0.0000      0.0000        0 KB       232 KB         0 KB    1 x       InitLieuxGeoMaillage::finalise.
-[0] Total      0.0662     0.0582     0.0080      0.0000      0.0000        0 KB       232 KB         0 KB    1 x        InitLieuxGeoMaillage::calculeDimensionDesCouleursEtCreeLieux.
-[0] Total      0.0435     0.0435     0.0000      0.0000      0.0000        0 KB       232 KB         0 KB    1 x         InitLieuxGeoMaillage::regroupeComposantesConnexeDeMemeCouleur.
-[0] Total     12.7500     1.5953     1.0982      0.0000      0.0000     2208 KB      2152 KB      1476 KB  221 x       Maillage::exporteParallele.
-[0] Total     12.7177     1.5673     1.0951      0.0000      0.0000     2208 KB      2088 KB      1476 KB  221 x        ecritMaillageMPI.
-[0] Total      0.1497     0.0124     0.0156      0.0000      0.0000        0 KB       632 KB         0 KB    1 x     Interface::exporteInfo::EcritureChamps.
-[0] Total     30.6106     5.8486     3.0415      0.0000      0.0000        0 KB       320 KB         0 KB 1330 x      ecritGISMPI.
-[0] Total     26.2659     5.1553     2.2611      0.0000      0.0000        0 KB       320 KB         0 KB 1330 x       ecritGISMPIDansFichierDejaOuvert.
-[0] Total      3.8388     2.1144     0.4570      0.7700      0.5792   136256 KB     78268 KB     66988 KB    1 x    CorpsAvecMaillage::lisDonneesDeBaseAvecMaillage(carreRachel).
-[0] Total      0.0942     0.0490     0.0419      0.0000      0.0000        0 KB         0 KB         0 KB    1 x     CorpsAvecMaillage::lectureMaillage(carreRachel).
-[0] Total      0.0941     0.0489     0.0419      0.0000      0.0000        0 KB         0 KB         0 KB    1 x      Maillage::importeParallele.
-[0] Total      0.0939     0.0488     0.0419      0.0000      0.0000        0 KB         0 KB         0 KB    1 x       Maillage::importeSequentiel.
-[0] Total      0.0681     0.0681     0.0000      0.0000      0.0000        0 KB       380 KB         0 KB    1 x     Geometrie::reconstructionModeChampGeometrique.
-[0] Total      1.9281     0.2754     0.3888      0.7700      0.5792    30084 KB     36824 KB     29224 KB    1 x     CorpsAvecMaillage::lectureGFC(carreRachel).
-[0] Total      0.0101     0.0063     0.0002      0.0000      0.0000        0 KB        64 KB         0 KB    2 x      litGISMPI.
-[0] Total      0.0057     0.0050     0.0001      0.0000      0.0000        0 KB        64 KB         0 KB    2 x       lititGISMPIDansFichierDejaOuvert.
+[0] Total      0.1932     0.1382     0.0158      0.0000      0.0000    15072 KB     15624 KB     14340 KB    1 x      Interface::exporteInfo::GénérateurLieuxEtZones.
+[0] Total      0.0694     0.0693     0.0000      0.0000      0.0000        0 KB       188 KB         0 KB    1 x       InitLieuxGeoMaillage::finalise.
+[0] Total      0.0573     0.0573     0.0000      0.0000      0.0000        0 KB       188 KB         0 KB    1 x        InitLieuxGeoMaillage::calculeDimensionDesCouleursEtCreeLieux.
+[0] Total      0.0445     0.0445     0.0000      0.0000      0.0000        0 KB       188 KB         0 KB    1 x         InitLieuxGeoMaillage::regroupeComposantesConnexeDeMemeCouleur.
+[0] Total      2.7052     0.3535     0.2213      0.0000      0.0000      816 KB      1264 KB       384 KB   52 x       Maillage::exporteParallele.
+[0] Total      2.6964     0.3455     0.2207      0.0000      0.0000      816 KB      1264 KB       384 KB   52 x        ecritMaillageMPI.
+[0] Total      0.1583     0.0212     0.0137      0.0000      0.0000        0 KB       508 KB         0 KB    1 x     Interface::exporteInfo::EcritureChamps.
+[0] Total     16.5749     2.1349     1.5408      0.0000      0.0000        0 KB       256 KB         0 KB 1081 x      ecritGISMPI.
+[0] Total     14.2889     1.7324     1.1761      0.0000      0.0000        0 KB       256 KB         0 KB 1081 x       ecritGISMPIDansFichierDejaOuvert.
+[0] Total      6.7152     2.3808     0.9582      1.9168      1.6642   141792 KB     82740 KB     72048 KB    1 x    CorpsAvecMaillage::lisDonneesDeBaseAvecMaillage(carreRachel).
+[0] Total      0.0854     0.0421     0.0387      0.0000      0.0000     7768 KB      7928 KB      7768 KB    1 x     CorpsAvecMaillage::lectureMaillage(carreRachel).
+[0] Total      0.0854     0.0421     0.0387      0.0000      0.0000     7768 KB      7928 KB      7768 KB    1 x      Maillage::importeParallele.
+[0] Total      0.0851     0.0420     0.0385      0.0000      0.0000     7768 KB      7928 KB      7768 KB    1 x       Maillage::importeSequentiel.
+[0] Total      0.0696     0.0687     0.0009      0.0000      0.0000        0 KB       308 KB         0 KB    1 x     Geometrie::reconstructionModeChampGeometrique.
+[0] Total      4.7334     0.4824     0.8796      1.9168      1.6642    26304 KB     32284 KB     24968 KB    1 x     CorpsAvecMaillage::lectureGFC(carreRachel).
+[0] Total      0.0104     0.0044     0.0028      0.0000      0.0000        0 KB        16 KB         0 KB    2 x      litGISMPI.
+[0] Total      0.0064     0.0042     0.0018      0.0000      0.0000        0 KB        16 KB         0 KB    2 x       lititGISMPIDansFichierDejaOuvert.
 [0] Total      0.0001     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x     CorpsAvecMaillage::lectureGFC2(carreRachel).
-[0] Total      1.7378     1.7124     0.0253      0.0000      0.0000   105616 KB     40104 KB     37208 KB    1 x     CorpsAvecMaillage::construitGeom2eFois(carreRachel).
-[0] Total      1.7377     1.7123     0.0252      0.0000      0.0000   105616 KB     40104 KB     37208 KB    1 x      Geometrie::reconstructionModeTocher.
-[0] Total      0.0012     0.0011     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   11 x   PP::pp_redemarre::preCalcul.
-[0] Total      0.0003     0.0003     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   11 x   PP::pp_redemarre::postCalcul.
-[0] Total    262.4018   159.3463    16.0736      0.9282      0.9217      752 KB      2416 KB       368 KB  220 x   PP::pp_export::preCalcul.
-[0] Total      0.0089     0.0074     0.0015      0.0000      0.0000        0 KB         0 KB         0 KB  220 x   PP::pp_export::postCalcul.
-[0] Total   4182.3309 19325.2197   359.1883      5.3856      6.6961  2328096 KB   1379208 KB   1935420 KB   11 x   PP::lPPResoud_0_dans_section_actions_pour_solveur_Solveur_inst(probDida)::preCalcul.
-[0] Total      0.0395     0.0372     0.0023      0.0000      0.0000     1320 KB      1768 KB      1320 KB    1 x    DDLsNumerotation::numeroteGIS().
-[0] Total      0.0085     0.0082     0.0003      0.0000      0.0000        0 KB       128 KB         0 KB    1 x     DDLsNumerotation::marqueEtNumeroteDDLs().
-[0] Total      0.0082     0.0081     0.0001      0.0000      0.0000        0 KB        64 KB         0 KB    3 x      DDLsNumerotation::numeroteGISChamps.
-[0] Total     25.5695    23.9672     1.5961      0.0000      0.0000   216208 KB    218136 KB    216208 KB   11 x    MatricePETSc::asgnDimension(options_slin:217620x217620).
-[0] Total     25.5555    23.9537     1.5956      0.0000      0.0000   216208 KB    218132 KB    216208 KB   11 x     MatricePETScCSR::creeObjet(options_slin:217620x217620).
-[0] Total      3.9267     3.6199     0.3058      0.0000      0.0000    52168 KB     52244 KB     52168 KB   12 x      CompteurNonZeroCSRGIS_matrice(217620x217620).
-[0] Total      3.9241     3.6176     0.3057      0.0000      0.0000    52168 KB     52240 KB     52168 KB   12 x       CompteurNonZeroCSRGIS::algoMetaCouplages(217620x217620).
-[0] Total      1.0648     0.9750     0.0898      0.0000      0.0000    17688 KB     17852 KB     17688 KB   12 x        CompteurNonZeroCSRGIS::visiteMaillage.
-[0] Total      2.3725     2.1839     0.1880      0.0000      0.0000    26928 KB     26928 KB     26928 KB   12 x        CompteurNonZeroCSRGIS::calculSequentielNbNonZerosParLigne(217620x217620).
-[0] Total      1.6213     0.7562     0.8647      0.0000      0.0000   164044 KB    165500 KB    164044 KB   12 x      MatricePETScCSR::creeObjetPrive.
-[0] Total     20.4463    19.9154     0.5261      0.0000      0.0000      852 KB       852 KB       852 KB   11 x      MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_probDida_MatKChapeau_Solveur_inst(probDida)_:217620x217620).
-[0] Total   4179.9153 19322.9373   359.0558      5.3856      6.6961  2111372 KB   1159140 KB   1714352 KB  210 x    SolveurInstNlinPETSc::resoudrePasDeTempsSuivant Solveur_inst(probDida).
-[0] Total   1658.4019  1608.6662    37.8847      5.3856      6.6961     1472 KB      1352 KB        12 KB  549 x     AssembleurEF::assembleElementBis():probDida[aAssembleurEF].
-[0] Total      0.2225     0.1432     0.0794      0.0000      0.0000        0 KB         0 KB         0 KB  549 x      AssembleurEF::prepareAvantAssemblage(assembleElementBis):probDida[aAssembleurEF].
-[0] Total      1.7866     1.1152     0.6680      0.0000      0.0000        0 KB         0 KB         0 KB  549 x      AssembleurEF::nettoieApresAssemblage(assembleElementBis):probDida[aAssembleurEF].
-[0] Total      0.0200     0.0169     0.0018      0.0000      0.0000        0 KB         0 KB         0 KB  210 x     AnalyseProcessusIteratif::CC:miseAZero: SolveurInstNlinPETSc::BoucleNonLinéaire: probDida.
-[0] Total   3921.0162 19161.5322   342.0255      3.5869      4.4123  2110560 KB   1158196 KB   1714312 KB  210 x     SolveurInstNlinPETSc::resoudreParPointFixe Solveur_inst(probDida).
-[0] Total   1712.1724  1663.8361    51.3399      3.5869      4.4123   267288 KB    198440 KB    265772 KB  274 x      SolveurInstO1NlinThetaGear::faisAssemblages Solveur_inst(probDida).
-[0] Total      2.2608     2.1509     0.1093      0.0000      0.0000   175660 KB    175652 KB    175660 KB    1 x       MatricePETSc::asgnDimension(options_defaut_sol_residu_modifie_:217620x217620).
-[0] Total      2.2595     2.1497     0.1093      0.0000      0.0000   175660 KB    175652 KB    175660 KB    1 x        MatricePETScCSR::creeObjet(options_defaut_sol_residu_modifie_:217620x217620).
-[0] Total      1.8002     1.7963     0.0035      0.0000      0.0000        0 KB         0 KB         0 KB    1 x         MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_probDida_MasseTempsPrec_Solveur_inst(probDida)_:217620x217620).
-[0] Total   2207.9974 17496.6153   290.6370      0.0000      0.0000  1839124 KB    962028 KB   1442484 KB  274 x      SolveurInstNlinPETSc::resoudreSystemeLineaire Solveur_inst(probDida).
-[0] Total   2203.9373 17489.0329   289.3387      0.0000      0.0000  1839124 KB    962028 KB   1442484 KB  274 x       SolveurLinPETSc::resoudre_Factorisation_et_DR:SolveurLin_Pour_Solveur_inst(probDida).
-[0] Total      0.1510     0.5015     0.1420      0.0000      0.0000        0 KB       256 KB         0 KB  274 x        asgnOperateurKSP.
-[0] Total    101.2342   617.2050     9.1148      0.0000      0.0000  1835080 KB    969220 KB   1438440 KB   11 x        SolveurLinPETSc::resoudre:KSPSetUp:SolveurLin_Pour_Solveur_inst(probDida).
-[0] Total   2102.4664 16870.5657   280.0517      0.0000      0.0000    24556 KB     18316 KB     24548 KB  274 x        SolveurLinPETSc::resoudre:KSPSolve:SolveurLin_Pour_Solveur_inst(probDida).
-[0] Total      0.0137     0.1501     0.0073      0.0000      0.0000        0 KB         0 KB         0 KB  274 x       SolveurLinPETSc::CL+VecDDLs:probDida.
-[0] Total      3.9844     7.0679     1.2724      0.0000      0.0000        0 KB         0 KB         0 KB  274 x       SolveurLinPETSc::appliqueCorrectionAuProbleme:probDida.
-[0] Total      0.7514     0.7241     0.0272      0.0000      0.0000        0 KB       128 KB         0 KB  274 x      AnalyseProcessusIteratif::CC:reqConvAtteinte:SolveurInstNlinPETSc::BoucleNonLinéaire: probDida.
-[0] Total    246.7741   151.2000    14.9023      0.0000      0.0000       32 KB        16 KB        28 KB  209 x     GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:FinPasDeTemps::pp_export.
-[0] Total      0.0003     0.0002     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   11 x   PP::lPPResoud_0_dans_section_actions_pour_solveur_Solveur_inst(probDida)::postCalcul.
-[0]Memoire VmSizeMin. mesure            : 1453772 KB
-[0]Memoire VmSizeMax. mesure            : 4179704 KB
-[0]Memoire (VmSizeMax-VmSizeMin) mesure : 2725932 KB
-[0]Memoire VmRSSMin. mesure             : 437240 KB
-[0]Memoire VmRSSMax. mesure             : 2170788 KB
-[0]Memoire VmHWM (véritable RSSMax)     : 2229840 KB
-[0]Memoire (VmRSSMax-VmRSSMin) mesure   : 1733548 KB
-[0]Memoire VmDataMin. mesure             : 235960 KB
-[0]Memoire VmDataMax. mesure             : 2499344 KB
-[0]Memoire (VmDataMax-VmDataMin) mesure   : 2263384 KB
-[0]Memoire VmPeak(Init). mesure         : 1472276 KB
-[0]Memoire VmPeak. mesure               : 4421004 KB
-[0]Memoire (VmPeak-VmPeak(Init)) mesure : 2948728 KB
+[0] Total      1.8162     1.7782     0.0378      0.0000      0.0000   105608 KB     40028 KB     37200 KB    1 x     CorpsAvecMaillage::construitGeom2eFois(carreRachel).
+[0] Total      1.8160     1.7780     0.0378      0.0000      0.0000   105608 KB     40020 KB     37200 KB    1 x      Geometrie::reconstructionModeTocher.
+[0] Total      0.0001     0.0000     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB    2 x   PP::pp_redemarre::preCalcul.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    2 x   PP::pp_redemarre::postCalcul.
+[0] Total      0.0068     0.0038     0.0030      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_C::preCalcul.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_C::postCalcul.
+[0] Total      0.0010     0.0010     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_M::preCalcul.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_M::postCalcul.
+[0] Total      0.0008     0.0008     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_P::preCalcul.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_P::postCalcul.
+[0] Total      0.0007     0.0007     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_D::preCalcul.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::pp_reinitialise_dens_init_D::postCalcul.
+[0] Total    104.0093    52.5007     6.6413      1.8538      1.7161     1284 KB      2848 KB       516 KB   51 x   PP::pp_export::preCalcul.
+[0] Total      0.0021     0.0019     0.0002      0.0000      0.0000        0 KB         0 KB         0 KB   51 x   PP::pp_export::postCalcul.
+[0] Total   1005.6740  3967.0011    85.0629      4.8987      5.8730  2728784 KB   1777820 KB   2336736 KB    1 x   PP::lPPResoud_0_dans_section_actions_pour_solveur_Solveur_inst(probDida)::preCalcul.
+[0] Total      0.0524     0.0521     0.0003      0.0000      0.0000     1320 KB      1668 KB      1320 KB    5 x    DDLsNumerotation::numeroteGIS().
+[0] Total      0.0116     0.0114     0.0002      0.0000      0.0000        0 KB       120 KB         0 KB    5 x     DDLsNumerotation::marqueEtNumeroteDDLs().
+[0] Total      0.0109     0.0108     0.0001      0.0000      0.0000        0 KB        56 KB         0 KB   15 x      DDLsNumerotation::numeroteGISChamps.
+[0] Total      2.9765     2.8641     0.1118      0.0000      0.0000   236972 KB    238876 KB    236972 KB    1 x    MatricePETSc::asgnDimension(options_slin:217620x217620).
+[0] Total      2.9753     2.8630     0.1117      0.0000      0.0000   236972 KB    238872 KB    236972 KB    1 x     MatricePETScCSR::creeObjet(options_slin:217620x217620).
+[0] Total      0.9232     0.8498     0.0732      0.0000      0.0000    72948 KB     72984 KB     72948 KB    2 x      CompteurNonZeroCSRGIS_matrice(217620x217620).
+[0] Total      0.9228     0.8495     0.0732      0.0000      0.0000    72948 KB     72984 KB     72948 KB    2 x       CompteurNonZeroCSRGIS::algoMetaCouplages(217620x217620).
+[0] Total      0.3056     0.2690     0.0365      0.0000      0.0000    32736 KB     32800 KB     32736 KB    6 x        CompteurNonZeroCSRGIS::visiteMaillage.
+[0] Total      0.5490     0.5220     0.0270      0.0000      0.0000    36960 KB     36912 KB     36960 KB    2 x        CompteurNonZeroCSRGIS::calculSequentielNbNonZerosParLigne(217620x217620).
+[0] Total      0.3123     0.1308     0.1814      0.0000      0.0000   164024 KB    165504 KB    164024 KB    6 x      MatricePETScCSR::creeObjetPrive.
+[0] Total      2.3241     2.3216     0.0021      0.0000      0.0000        0 KB       384 KB         0 KB    1 x      MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_probDida_MatKChapeau_Solveur_inst(probDida)_:217620x217620).
+[0] Total   1002.5600  3964.0149    84.9359      4.8987      5.8730  2171620 KB   1212740 KB   1776700 KB   50 x    SolveurInstNlinPETSc::resoudrePasDeTempsSuivant Solveur_inst(probDida).
+[0] Total    390.9833   371.1705     9.8881      4.7227      5.6624     1232 KB      1104 KB        16 KB  107 x     AssembleurEF::assembleElementBis():probDida[aAssembleurEF].
+[0] Total      1.1446     1.0593     0.0854      0.0000      0.0000        0 KB         0 KB         0 KB  107 x      AssembleurEF::prepareAvantAssemblage(assembleElementBis):probDida[aAssembleurEF].
+[0] Total      0.0221     0.0167     0.0048      0.0000      0.0000        0 KB         0 KB         0 KB  107 x      AssembleurEF::nettoieApresAssemblage(assembleElementBis):probDida[aAssembleurEF].
+[0] Total      0.0044     0.0038     0.0003      0.0000      0.0000        0 KB         0 KB         0 KB   50 x     AnalyseProcessusIteratif::CC:miseAZero: SolveurInstNlinPETSc::BoucleNonLinéaire: probDida.
+[0] Total    893.2759  3908.5499    77.0221      2.0181      2.4357  2170356 KB   1211556 KB   1776656 KB   50 x     SolveurInstNlinPETSc::resoudreParPointFixe Solveur_inst(probDida).
+[0] Total      4.4273     5.8229     0.1349      0.0000      0.0000        0 KB        60 KB         0 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_reinterpole_Phi_C.
+[0] Total      4.4192     5.8002     0.1342      0.0000      0.0000        0 KB        60 KB         0 KB   50 x       PP::pp_reinterpole_Phi_C::preCalcul.
+[0] Total      0.0012     0.0011     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_C::postCalcul.
+[0] Total      4.2659     4.2145     0.0506      0.0000      0.0000        0 KB         0 KB         0 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_reinterpole_Phi_M.
+[0] Total      4.2587     4.2080     0.0503      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_M::preCalcul.
+[0] Total      0.0010     0.0010     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_M::postCalcul.
+[0] Total      1.3309     1.3134     0.0172      0.0000      0.0000        0 KB         0 KB         0 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_reinterpole_Phi_P.
+[0] Total      1.3252     1.3084     0.0167      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_P::preCalcul.
+[0] Total      0.0009     0.0008     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_P::postCalcul.
+[0] Total      4.1730     4.1356     0.0367      0.0000      0.0000        0 KB         0 KB         0 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_reinterpole_Phi_D.
+[0] Total      4.1665     4.1298     0.0363      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_D::preCalcul.
+[0] Total      0.0010     0.0009     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_reinterpole_Phi_D::postCalcul.
+[0] Total     14.3708    12.5943     1.7738      0.0000      0.0000   111668 KB     92012 KB    111668 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_moyenne_locale_Phi_C.
+[0] Total     11.4876    10.3683     1.1175      0.0000      0.0000   111668 KB     92012 KB    111668 KB   50 x       PP::pp_moyenne_locale_Phi_C::preCalcul.
+[0] Total      2.8648     2.2091     0.6554      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_C::effectueCalcul.
+[0] Total      0.0027     0.0025     0.0002      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_C::postCalcul.
+[0] Total      6.7503     6.4621     0.2872      0.0000      0.0000    13332 KB     13288 KB     13332 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_moyenne_locale_Phi_M.
+[0] Total      6.4804     6.2005     0.2791      0.0000      0.0000    13332 KB     13288 KB     13332 KB   50 x       PP::pp_moyenne_locale_Phi_M::preCalcul.
+[0] Total      0.2562     0.2498     0.0067      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_M::effectueCalcul.
+[0] Total      0.0025     0.0021     0.0004      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_M::postCalcul.
+[0] Total      6.7326     6.4339     0.2973      0.0000      0.0000    13464 KB     13460 KB     13464 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_moyenne_locale_Phi_P.
+[0] Total      6.4640     6.1694     0.2936      0.0000      0.0000    13464 KB     13460 KB     13464 KB   50 x       PP::pp_moyenne_locale_Phi_P::preCalcul.
+[0] Total      0.2544     0.2516     0.0029      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_P::effectueCalcul.
+[0] Total      0.0025     0.0023     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_P::postCalcul.
+[0] Total      6.6308     6.4038     0.2260      0.0000      0.0000    13332 KB     13444 KB     13332 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::pp_moyenne_locale_Phi_D.
+[0] Total      6.3668     6.1476     0.2185      0.0000      0.0000    13332 KB     13444 KB     13332 KB   50 x       PP::pp_moyenne_locale_Phi_D::preCalcul.
+[0] Total      0.2513     0.2446     0.0068      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_D::effectueCalcul.
+[0] Total      0.0024     0.0023     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::pp_moyenne_locale_Phi_D::postCalcul.
+[0] Total      7.1277    23.5937     0.3619      0.1760      0.2106    65648 KB      4864 KB     65536 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::projection_l2_Phi_C.
+[0] Total      7.1237    23.5785     0.3607      0.1760      0.2106    65648 KB      4864 KB     65536 KB   50 x       PP::projection_l2_Phi_C::preCalcul.
+[0] Total      7.1170    23.5714     0.3605      0.1760      0.2106    65648 KB      4840 KB     65536 KB   50 x        SolveurLinPETSc::resoudre:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.1194     0.1002     0.0192      0.0000      0.0000        0 KB       128 KB         0 KB   50 x         SolveurLinPETSc::resoudre::init:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.1177     0.0986     0.0191      0.0000      0.0000        0 KB       128 KB         0 KB   50 x          SolveurLinPETSc::initialise:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseNumerotation:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0001     0.0001     0.0000      0.0000      0.0000        0 KB       128 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseObjetPETSc:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.1133     0.0943     0.0191      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           MatricePETSc::asgnDimension(Options_ProjectionL2_0:18225x18225).
+[0] Total      0.1127     0.0937     0.0190      0.0000      0.0000        0 KB         0 KB         0 KB    1 x            MatricePETScCSR::creeObjet(Options_ProjectionL2_0:18225x18225).
+[0] Total      0.2063     0.1842     0.0221      0.0000      0.0000     5280 KB      5276 KB      5280 KB    4 x             CompteurNonZeroCSRGIS_matrice(18225x18225).
+[0] Total      0.2059     0.1840     0.0219      0.0000      0.0000     5280 KB      5272 KB      5280 KB    4 x              CompteurNonZeroCSRGIS::algoMetaCouplages(18225x18225).
+[0] Total      0.0881     0.0798     0.0083      0.0000      0.0000      528 KB       508 KB       528 KB    4 x               CompteurNonZeroCSRGIS::calculSequentielNbNonZerosParLigne(18225x18225).
+[0] Total      0.0673     0.0522     0.0151      0.0000      0.0000        0 KB         0 KB         0 KB    1 x             MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_ReinterpolationVersContinu:avg_Phi_C_disc->avg_Phi_C_0MMasse_A_Solveur_ProjectionL2_0_:18225x18225).
+[0] Total      0.0008     0.0008     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecResidu:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0005     0.0005     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecResidu:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecCorrection:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0003     0.0003     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecCorrection:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0016     0.0016     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPre:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      4.6543     4.0347     0.2491      0.1760      0.2106      140 KB        80 KB       140 KB   50 x         SolveurLinPETSc::resoudre::ass:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0047     0.0040     0.0004      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueChamp:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0082     0.0062     0.0020      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::debutAssemblage:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      1.3936     1.3653     0.0280      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::assembleMatriceEtResidu:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      1.3916     1.3637     0.0277      0.0000      0.0000        0 KB         0 KB         0 KB   50 x           ProblemeEF::assemblePrive(Total):ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      1.3900     1.3623     0.0274      0.0000      0.0000        0 KB         0 KB         0 KB   50 x            ProblemeEF::assemblePrive(Domaine):ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      1.3877     1.3604     0.0270      0.0000      0.0000        0 KB         0 KB         0 KB   50 x             AssembleurEF::assembleElementBis():ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse[aAssembleurEF].
+[0] Total      0.0018     0.0013     0.0005      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::prepareAvantAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse[aAssembleurEF].
+[0] Total      0.0027     0.0024     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::nettoieApresAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse[aAssembleurEF].
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x          SolveurLinPETSc::faisAssemblagePrive::appliqueMatrice:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0008     0.0007     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueResidu:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0071     0.0063     0.0009      0.0000      0.0000      140 KB        24 KB       140 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::finAssemblageReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      2.3350    19.4134     0.0898      0.0000      0.0000    65568 KB      4632 KB     65536 KB   50 x         SolveurLinPETSc::resoudre::resoudre:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      2.2091    18.3548     0.0735      0.0000      0.0000    65568 KB      4632 KB     65536 KB   50 x          SolveurLinPETSc::resoudre_Factorisation_et_DR:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0042     0.0345     0.0021      0.0000      0.0000        0 KB       256 KB         0 KB   57 x           asgnOperateurKSP.
+[0] Total      0.0180     0.0162     0.0018      0.0000      0.0000        0 KB      3184 KB         0 KB    1 x           SolveurLinPETSc::resoudre:KSPSetUp:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      2.1843    18.3106     0.0689      0.0000      0.0000    65568 KB      1128 KB     65536 KB   50 x           SolveurLinPETSc::resoudre:KSPSolve:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0012     0.0165     0.0010      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::CL+VecDDLs:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.1193     1.0066     0.0131      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::appliqueCorrectionAuProbleme:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0011     0.0076     0.0010      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPost:ReinterpolationVersContinu:avg_Phi_C_disc(#203)->avg_Phi_C(#207)_0MMasse.
+[0] Total      0.0009     0.0014     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::projection_l2_Phi_C::postCalcul.
+[0] Total      6.2880    24.1449     0.2534      0.0000      0.0000        0 KB         0 KB         0 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::projection_l2_Phi_M.
+[0] Total      6.2838    24.1125     0.2503      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::projection_l2_Phi_M::preCalcul.
+[0] Total      6.2757    24.0974     0.2492      0.0000      0.0000        0 KB         0 KB         0 KB   50 x        SolveurLinPETSc::resoudre:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.1187     0.1214     0.0123      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::init:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.1169     0.1083     0.0111      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::initialise:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseNumerotation:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseObjetPETSc:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.1140     0.1031     0.0109      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           MatricePETSc::asgnDimension(Options_ProjectionL2_1:18225x18225).
+[0] Total      0.1134     0.1026     0.0108      0.0000      0.0000        0 KB         0 KB         0 KB    1 x            MatricePETScCSR::creeObjet(Options_ProjectionL2_1:18225x18225).
+[0] Total      0.0554     0.0552     0.0002      0.0000      0.0000        0 KB         0 KB         0 KB    1 x             MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_ReinterpolationVersContinu:avg_Phi_M_disc->avg_Phi_M_1MMasse_A_Solveur_ProjectionL2_1_:18225x18225).
+[0] Total      0.0004     0.0004     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecResidu:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0005     0.0005     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecResidu:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecCorrection:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0003     0.0003     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecCorrection:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0011     0.0058     0.0020      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPre:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      3.7553     3.9313     0.1317      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::ass:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0042     0.0036     0.0003      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueChamp:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0068     0.0056     0.0012      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::debutAssemblage:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      1.3873     1.3651     0.0220      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::assembleMatriceEtResidu:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      1.3855     1.3634     0.0218      0.0000      0.0000        0 KB         0 KB         0 KB   50 x           ProblemeEF::assemblePrive(Total):ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      1.3837     1.3619     0.0215      0.0000      0.0000        0 KB         0 KB         0 KB   50 x            ProblemeEF::assemblePrive(Domaine):ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      1.3813     1.3598     0.0212      0.0000      0.0000        0 KB         0 KB         0 KB   50 x             AssembleurEF::assembleElementBis():ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse[aAssembleurEF].
+[0] Total      0.0017     0.0012     0.0004      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::prepareAvantAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse[aAssembleurEF].
+[0] Total      0.0026     0.0024     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::nettoieApresAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse[aAssembleurEF].
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x          SolveurLinPETSc::faisAssemblagePrive::appliqueMatrice:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0008     0.0008     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueResidu:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0061     0.0056     0.0005      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::finAssemblageReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      2.3940    19.9968     0.1006      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::resoudre:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      2.2766    18.9447     0.0940      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::resoudre_Factorisation_et_DR:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0227     0.0128     0.0099      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::resoudre:KSPSetUp:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      2.2492    18.8976     0.0818      0.0000      0.0000        0 KB         0 KB         0 KB   50 x           SolveurLinPETSc::resoudre:KSPSolve:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0012     0.0092     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::CL+VecDDLs:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.1113     0.9797     0.0016      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::appliqueCorrectionAuProbleme:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0012     0.0096     0.0011      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPost:ReinterpolationVersContinu:avg_Phi_M_disc(#204)->avg_Phi_M(#208)_1MMasse.
+[0] Total      0.0010     0.0104     0.0011      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::projection_l2_Phi_M::postCalcul.
+[0] Total      6.1829    22.8959     0.3289      0.0000      0.0000    10540 KB     10536 KB     10540 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::projection_l2_Phi_P.
+[0] Total      6.1788    22.8609     0.3264      0.0000      0.0000    10540 KB     10536 KB     10540 KB   50 x       PP::projection_l2_Phi_P::preCalcul.
+[0] Total      6.1731    22.8456     0.3252      0.0000      0.0000    10540 KB     10536 KB     10540 KB   50 x        SolveurLinPETSc::resoudre:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.1012     0.1033     0.0094      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::init:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0993     0.0946     0.0074      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::initialise:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseNumerotation:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseObjetPETSc:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0969     0.0899     0.0069      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           MatricePETSc::asgnDimension(Options_ProjectionL2_2:18225x18225).
+[0] Total      0.0963     0.0895     0.0068      0.0000      0.0000        0 KB         0 KB         0 KB    1 x            MatricePETScCSR::creeObjet(Options_ProjectionL2_2:18225x18225).
+[0] Total      0.0457     0.0457     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x             MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_ReinterpolationVersContinu:avg_Phi_P_disc->avg_Phi_P_2MMasse_A_Solveur_ProjectionL2_2_:18225x18225).
+[0] Total      0.0003     0.0003     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecResidu:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0004     0.0003     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecResidu:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecCorrection:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0002     0.0000     0.0002      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecCorrection:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0011     0.0070     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPre:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      3.7377     3.7695     0.1426      0.0000      0.0000     1584 KB      1644 KB      1584 KB   50 x         SolveurLinPETSc::resoudre::ass:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0043     0.0036     0.0005      0.0000      0.0000        0 KB         4 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueChamp:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0077     0.0063     0.0014      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::debutAssemblage:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      1.3768     1.3618     0.0146      0.0000      0.0000        0 KB         4 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::assembleMatriceEtResidu:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      1.3749     1.3602     0.0144      0.0000      0.0000        0 KB         4 KB         0 KB   50 x           ProblemeEF::assemblePrive(Total):ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      1.3733     1.3589     0.0141      0.0000      0.0000        0 KB         4 KB         0 KB   50 x            ProblemeEF::assemblePrive(Domaine):ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      1.3709     1.3569     0.0136      0.0000      0.0000        0 KB         0 KB         0 KB   50 x             AssembleurEF::assembleElementBis():ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse[aAssembleurEF].
+[0] Total      0.0015     0.0012     0.0004      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::prepareAvantAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse[aAssembleurEF].
+[0] Total      0.0024     0.0021     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::nettoieApresAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse[aAssembleurEF].
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x          SolveurLinPETSc::faisAssemblagePrive::appliqueMatrice:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0008     0.0007     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueResidu:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0058     0.0051     0.0007      0.0000      0.0000        0 KB        16 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::finAssemblageReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      2.3266    18.9190     0.1703      0.0000      0.0000     8956 KB      8892 KB      8956 KB   50 x         SolveurLinPETSc::resoudre::resoudre:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      2.1777    17.8748     0.1349      0.0000      0.0000     8956 KB      8892 KB      8956 KB   50 x          SolveurLinPETSc::resoudre_Factorisation_et_DR:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0165     0.0110     0.0055      0.0000      0.0000     8956 KB      8892 KB      8956 KB    1 x           SolveurLinPETSc::resoudre:KSPSetUp:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      2.1565    17.8525     0.1281      0.0000      0.0000        0 KB         0 KB         0 KB   50 x           SolveurLinPETSc::resoudre:KSPSolve:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0011     0.0151     0.0020      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::CL+VecDDLs:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.1428     1.0062     0.0322      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::appliqueCorrectionAuProbleme:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0012     0.0032     0.0002      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPost:ReinterpolationVersContinu:avg_Phi_P_disc(#205)->avg_Phi_P(#209)_2MMasse.
+[0] Total      0.0011     0.0064     0.0011      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::projection_l2_Phi_P::postCalcul.
+[0] Total      6.5119    24.4891     0.3393      0.0000      0.0000    21088 KB     21088 KB     21088 KB   50 x      GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:DebutBoucleNlin::projection_l2_Phi_D.
+[0] Total      6.5075    24.4529     0.3366      0.0000      0.0000    21088 KB     21088 KB     21088 KB   50 x       PP::projection_l2_Phi_D::preCalcul.
+[0] Total      6.5007    24.4289     0.3344      0.0000      0.0000    21088 KB     21088 KB     21088 KB   50 x        SolveurLinPETSc::resoudre:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.1165     0.1131     0.0104      0.0000      0.0000     7552 KB      7620 KB      7552 KB   50 x         SolveurLinPETSc::resoudre::init:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.1148     0.1068     0.0091      0.0000      0.0000     7552 KB      7620 KB      7552 KB   50 x          SolveurLinPETSc::initialise:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseNumerotation:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0001     0.0000     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseObjetPETSc:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.1120     0.1032     0.0089      0.0000      0.0000     7552 KB      7620 KB      7552 KB    1 x           MatricePETSc::asgnDimension(Options_ProjectionL2_3:18225x18225).
+[0] Total      0.1113     0.1024     0.0088      0.0000      0.0000     7552 KB      7620 KB      7552 KB    1 x            MatricePETScCSR::creeObjet(Options_ProjectionL2_3:18225x18225).
+[0] Total      0.0428     0.0428     0.0000      0.0000      0.0000        0 KB        72 KB         0 KB    1 x             MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_ReinterpolationVersContinu:avg_Phi_D_disc->avg_Phi_D_3MMasse_A_Solveur_ProjectionL2_3_:18225x18225).
+[0] Total      0.0005     0.0005     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecResidu:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0004     0.0004     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecResidu:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:newVecCorrection:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0002     0.0002     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x           SolveurLinPETSc::initialise:initialiseVecCorrection:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0012     0.0113     0.0002      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPre:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      3.8964     3.8596     0.1704      0.0000      0.0000     4620 KB      4576 KB      4620 KB   50 x         SolveurLinPETSc::resoudre::ass:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0045     0.0039     0.0004      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueChamp:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0081     0.0063     0.0018      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::debutAssemblage:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      1.3879     1.3613     0.0264      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::assembleMatriceEtResidu:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      1.3860     1.3598     0.0260      0.0000      0.0000        0 KB         0 KB         0 KB   50 x           ProblemeEF::assemblePrive(Total):ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      1.3843     1.3586     0.0256      0.0000      0.0000        0 KB         0 KB         0 KB   50 x            ProblemeEF::assemblePrive(Domaine):ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      1.3819     1.3567     0.0250      0.0000      0.0000        0 KB         0 KB         0 KB   50 x             AssembleurEF::assembleElementBis():ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse[aAssembleurEF].
+[0] Total      0.0017     0.0012     0.0006      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::prepareAvantAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse[aAssembleurEF].
+[0] Total      0.0025     0.0022     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x              AssembleurEF::nettoieApresAssemblage(assembleElementBis):ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse[aAssembleurEF].
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x          SolveurLinPETSc::faisAssemblagePrive::appliqueMatrice:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0008     0.0007     0.0001      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::appliqueResidu:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0062     0.0053     0.0009      0.0000      0.0000        0 KB        20 KB         0 KB   50 x          SolveurLinPETSc::faisAssemblagePrive::finAssemblageReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      2.4800    20.3897     0.1477      0.0000      0.0000     8916 KB      8892 KB      8916 KB   50 x         SolveurLinPETSc::resoudre::resoudre:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      2.3496    19.3324     0.1343      0.0000      0.0000     8916 KB      8892 KB      8916 KB   50 x          SolveurLinPETSc::resoudre_Factorisation_et_DR:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0171     0.0143     0.0028      0.0000      0.0000     8916 KB      8892 KB      8916 KB    1 x           SolveurLinPETSc::resoudre:KSPSetUp:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      2.3271    19.2893     0.1310      0.0000      0.0000        0 KB         0 KB         0 KB   50 x           SolveurLinPETSc::resoudre:KSPSolve:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0011     0.0010     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::CL+VecDDLs:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.1244     0.9999     0.0101      0.0000      0.0000        0 KB         0 KB         0 KB   50 x          SolveurLinPETSc::appliqueCorrectionAuProbleme:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0012     0.0163     0.0011      0.0000      0.0000        0 KB         0 KB         0 KB   50 x         SolveurLinPETSc::resoudre::PPost:ReinterpolationVersContinu:avg_Phi_D_disc(#206)->avg_Phi_D(#210)_3MMasse.
+[0] Total      0.0011     0.0137     0.0021      0.0000      0.0000        0 KB         0 KB         0 KB   50 x       PP::projection_l2_Phi_D::postCalcul.
+[0] Total    392.0861   379.5025    11.2940      1.8421      2.2251   258692 KB    234272 KB    257848 KB   53 x      SolveurInstO1NlinThetaGear::faisAssemblages Solveur_inst(probDida).
+[0] Total      2.9917     2.8425     0.1488      0.0000      0.0000   233272 KB    233272 KB    233272 KB    1 x       MatricePETSc::asgnDimension(options_defaut_sol_residu_modifie_:217620x217620).
+[0] Total      2.9907     2.8415     0.1487      0.0000      0.0000   233272 KB    233272 KB    233272 KB    1 x        MatricePETScCSR::creeObjet(options_defaut_sol_residu_modifie_:217620x217620).
+[0] Total      2.4160     2.4048     0.0108      0.0000      0.0000        0 KB         0 KB         0 KB    1 x         MatricePETScCSR::definirStructureEtMettreAZeroAvecGIS(Matrice_probDida_MasseTempsPrec_Solveur_inst(probDida)_:217620x217620).
+[0] Total    426.2191  3386.2978    61.6068      0.0000      0.0000  1814388 KB    940456 KB   1415748 KB   53 x      SolveurInstNlinPETSc::resoudreSystemeLineaire Solveur_inst(probDida).
+[0] Total    425.1964  3384.7665    61.2743      0.0000      0.0000  1814388 KB    940456 KB   1415748 KB   53 x       SolveurLinPETSc::resoudre_Factorisation_et_DR:SolveurLin_Pour_Solveur_inst(probDida).
+[0] Total      9.2329    56.4735     0.7943      0.0000      0.0000  1809236 KB    948160 KB   1410596 KB    1 x        SolveurLinPETSc::resoudre:KSPSetUp:SolveurLin_Pour_Solveur_inst(probDida).
+[0] Total    415.9441  3328.0591    60.4633      0.0000      0.0000     8464 KB      4260 KB     13440 KB   53 x        SolveurLinPETSc::resoudre:KSPSolve:SolveurLin_Pour_Solveur_inst(probDida).
+[0] Total      0.0028     0.0253     0.0021      0.0000      0.0000        0 KB         0 KB         0 KB   53 x       SolveurLinPETSc::CL+VecDDLs:probDida.
+[0] Total      1.0084     1.4338     0.3263      0.0000      0.0000        0 KB         0 KB         0 KB   53 x       SolveurLinPETSc::appliqueCorrectionAuProbleme:probDida.
+[0] Total      0.1488     0.1424     0.0064      0.0000      0.0000        0 KB        64 KB         0 KB   53 x      AnalyseProcessusIteratif::CC:reqConvAtteinte:SolveurInstNlinPETSc::BoucleNonLinéaire: probDida.
+[0] Total     97.7178    51.3050     5.5999      0.0000      0.0000       32 KB        16 KB        28 KB   50 x     GestionPrePostTraitement::executePrePostTrait:GESTIONPREPOSTDEFAUT:FinPasDeTemps::pp_export.
+[0] Total      0.0000     0.0000     0.0000      0.0000      0.0000        0 KB         0 KB         0 KB    1 x   PP::lPPResoud_0_dans_section_actions_pour_solveur_Solveur_inst(probDida)::postCalcul.
+[0]Memoire VmSizeMin. mesure            : 1450172 KB
+[0]Memoire VmSizeMax. mesure            : 4379360 KB
+[0]Memoire (VmSizeMax-VmSizeMin) mesure : 2929188 KB
+[0]Memoire VmRSSMin. mesure             : 431464 KB
+[0]Memoire VmRSSMax. mesure             : 2352148 KB
+[0]Memoire VmHWM (véritable RSSMax)     : 2519924 KB
+[0]Memoire (VmRSSMax-VmRSSMin) mesure   : 1920684 KB
+[0]Memoire VmDataMin. mesure             : 232348 KB
+[0]Memoire VmDataMax. mesure             : 2697716 KB
+[0]Memoire (VmDataMax-VmDataMin) mesure   : 2465368 KB
+[0]Memoire VmPeak(Init). mesure         : 1450172 KB
+[0]Memoire VmPeak. mesure               : 4715464 KB
+[0]Memoire (VmPeak-VmPeak(Init)) mesure : 3265292 KB
 [0]Memoire VmExe mesure                 : 2956 KB
-[0]Memoire VmLib mesure                 : 812416 KB
+[0]Memoire VmLib mesure                 : 812608 KB

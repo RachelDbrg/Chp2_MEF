@@ -55,6 +55,8 @@ def setup_model_dependent_parameters(current_model):
         / coeff_diffusion_C
     )
 
+    temps_caracteristique = L**2/coeff_diffusion_C
+
     # ==========================================
     # Listes utilisées dans le GFC
     # ==========================================
@@ -73,7 +75,9 @@ def setup_model_dependent_parameters(current_model):
         "coeff_diffusion_P_norm",
         "coeff_diffusion_D_norm",
 
-        "advection_rate_D_norm"
+        "advection_rate_D_norm",
+
+        "temps_caracteristique"
     ]
 
     value_parm = [
@@ -90,11 +94,13 @@ def setup_model_dependent_parameters(current_model):
         coeff_diffusion_P_norm,
         coeff_diffusion_D_norm,
 
-        advection_rate_D_norm
+        advection_rate_D_norm,
+
+        temps_caracteristique
     ]
 
     # ==========================================
-    # Paramètres physiques (utile pour logging)
+    # Paramètres physiques
     # ==========================================
 
     physical_parameters = {

@@ -34,6 +34,7 @@ files_by_model = {
 
 ## Defini un modele (pas vraiment utile si ci theoretical or debug)
 ## C'etait qque chose utile si on faisait du Nelder-Mead pour choisir le modele sur lequel on faisait les comparaisons
+## utilise en mode empirical seulement
 current_model = "SM1"
 
 ## Écrit le carreRachel-collection.champs correspondant, pour convertir le .csv en .mail
@@ -46,7 +47,7 @@ with open(collection_file, "w") as fp:
     fp.write(
         f"convertisseurversgiref carreRachel "
         f"[{files_by_model[current_model].name}, "
-        f"GRILLESOMMETCSV, 2, Lin]\n"
+        f"GRILLESOMMETCSV, 2, Lin]\n",
     )
 
 
@@ -57,16 +58,30 @@ with open(collection_file, "w") as fp:
 ## Load the empirical data
 species_by_model = {
     "SM1": ["caribou", "wolf"],
-    "SM2": ["caribou", "moose"]
+    "SM2": ["caribou", "moose"],
+    "C"  : ["caribou"],
+    "M"  : ["moose"],
+    "P"  : ["wolf"],
+    "D"  : ["deer"],
+    "CM"  : ["caribou", "moose"],
+    "CP"  : ["caribou", "wolf"],
+    "CD"  : ["caribou", "deer"],
+    "CMP"  : ["caribou", "moose", "wolf"],
+    "CMPD"  : ["caribou", "moose", "wolf", "deer"]
+    
 }
 
 ## Ici on definit les CI que l'on veut  -- soit empirical soit theoretical, soit debug (pour verifier numeriquement nos équations)
-ci_type = "debug"
+ci_type = "theoretical"
 
-
-## Ecrit les conditions initiales dans un fichier ".champs" utilisées par MEF
-species, df, uds, empirical_ci = setup_initial_conditions(
-    current_model=current_model,
+## Ecrit le .champs avec les CI
+(species,
+    df,
+    uds,
+    initial_densities,
+    positions,
+    ci_description
+) = setup_initial_conditions(
     ci_type=ci_type,
     species_by_model=species_by_model,
     files_by_model=files_by_model
@@ -78,7 +93,7 @@ species, df, uds, empirical_ci = setup_initial_conditions(
 # =====================================================
 
 ## Definition de tous les parametres que l'on peut faire varier 
-param_groups = {
+all_param_groups = {
     "caribou": ["c1", "c2", "c3", "c4", "c5", "c6"],
     "moose":   ["m1", "m2", "m3", "m4", "m5", "m6"],
     "wolf":    ["p1", "p2", "p3", "p4", "p5", "p6"],
@@ -86,91 +101,143 @@ param_groups = {
 }
 
 
-parms_names = []
+
+## On attribue un budget global pour l'ensemble des mecanismes
 
 
+c_IFD = "c1", "c2"
+c_LOF = "c3", "c4", "c5", "c6"
+m_IFD = "m1", "m2"
+m_LOF = "m3", "m4", "m5", "m6"
+d_IFD = "d1", "d2"
+d_LOF = "d3", "d4", "d5", "d6"
 
-for sp in species:
-    params = param_groups[sp]
+parms_names = [
+    p
+    for params in all_param_groups.values()
+    for p in params
+]
 
-    ## Ajoute une exception si D pas présente, pas besoin de chercher ses parms
-    if "D" not in species:
-        params = [p for p in params if not p.endswith("6")]
 
-    parms_names.extend(params)
+n_scenarios = 1
+
+np.random.seed(69)
+theta_random = np.random.uniform(
+    0,
+    1,
+    size=(n_scenarios, len(parms_names))
+)
+
+# Met à 0 les paramètres des espèces absentes
+for i, p in enumerate(parms_names):
+
+    if p.startswith("c") and "caribou" not in species:
+        theta_random[:, i] = 0.0
+
+    elif p.startswith("m") and "moose" not in species:
+        theta_random[:, i] = 0.0
+
+    elif p.startswith("p") and "wolf" not in species:
+        theta_random[:, i] = 0.0
+
+    elif p.startswith("d") and "deer" not in species:
+        theta_random[:, i] = 0.0
+
+theta_scenarios = theta_random
 
 
 theta0 = np.zeros(len(parms_names))
 
-n_scenarios = 10
-
-np.random.seed(11)
-theta_random = np.random.uniform(
-    0,
-    10,
-    size=(n_scenarios, len(parms_names))
-)
 
 
-## Ajoute de scenarios 0 et 1 full
-theta_scenarios = np.vstack([
-    np.zeros(len(parms_names)),   # scénario 0
-    np.ones(len(parms_names)),    # scénario 1
-    theta_random                  # scénarios aléatoires
-])
+#####################
+def generate_species_parameters():
+
+    # budget total = 1
+    A_ifd, A_lof = np.random.dirichlet([1, 1])
+    #print(A_ifd, A_lof)
+
+    # partage interne (entre 0 et 1)
+    #ifd = A_ifd * np.random.dirichlet(np.ones(2))
+    #lof = A_lof * np.random.dirichlet(np.ones(4))
+
+## Plus de scenarios moyens
+    #ifd =  np.random.dirichlet(np.ones(2))
+    #lof =  np.random.dirichlet(np.ones(4))
+
+## Plus de scenarios extremes
+    ifd = np.random.dirichlet([0.2, 0.2])
+    lof = np.random.dirichlet([0.2, 0.2, 0.2, 0.2])
+
+    return np.concatenate([ifd, lof])
+
+
+theta_random = np.zeros((n_scenarios, len(parms_names)))
+
+for k in range(n_scenarios):
+
+    col = 0
+
+    for species_name in ["caribou", "moose", "wolf", "deer"]:
+
+        if species_name in species:
+            theta_random[k, col:col+6] = generate_species_parameters()
+        else:
+            theta_random[k, col:col+6] = 0.0
+
+        col += 6
+
+theta_scenarios = theta_random
+
+
+######################
+
+## Pour scenario i), tous les parms sont à 1 
+theta_scenarios = np.ones((n_scenarios, len(parms_names)))
+
+## Pour le scenario ii), variations des parms sauf les 6 (proies naives)
+
+## Pour le scenario ii), variations de tous les parms des proies
+
+## Pour le scenario iii), predateur a 1, parms qui donnent les meilleurs W pour C et M et 
+## variation des parms de d
+
+## Pour le scenario iv) et v) variation des parms de P + parms qui donnent les meilleurs W pour C et M
+## et pas de D
+
+## Pour le scenario iv) et v, parms qui donnent les meilleurs W pour M, C et D + variation de P 
+
+######################
+
+
+
+
+## Ici, on force seulement le 2nd scenario car il plante 
+#theta_scenarios = theta_scenarios[[2]]
 
 
 print(theta_scenarios)
 print(parms_names)
-print(theta0)
 
 
-### 2. Write these parameters in a .champs file that will be loaded before solving the PDE
-def write_parameters(gfc, theta):
 
-    for name, val in zip(parms_names, theta):
-        gfc.reqChamp(name).asgnValeur(val)
-        #theta_parms += f"scalaire {name} {val}\n"
+values_scenario_file = os.path.join(
+    os.path.dirname(__file__),
+    "values_scenario.champs"
+)
 
-    print(
-        "Parameters:",
-        dict(zip(parms_names, theta))
-    )
+# Initialisation du fichier avant la boucle avec des 0 partouts
+with open(values_scenario_file, "w") as f:
 
+    f.write("## Initial scenario\n\n")
+
+    for name, value in zip(parms_names, theta0):
+        f.write(f"scalaire {name} {value}\n")
 
 
 # =====================================================
-# 4. Adimensionnalize time and space
+# 4. Define output folders
 # =====================================================
-
-def apply_model_dependent_parameters(
-    gfc,
-    name_parm,
-    value_parm
-):
-
-    for name, value in zip(
-        name_parm,
-        value_parm
-    ):
-
-        gfc.reqChamp(name).asgnValeur(
-            value
-        )
-
-    print(
-        "Parametres dependant du modele:"
-    )
-
-    print(
-        dict(
-            zip(
-                name_parm,
-                value_parm
-            )
-        )
-    )
-
 
 ## Dossier dans lequel se trouvent les exports MEF
 export_dir = os.path.join(
@@ -189,12 +256,34 @@ results_root = os.path.join(
 os.makedirs(results_root, exist_ok=True)
 
 
+# =====================================================
+# 5. Obtain dimensionless parameters
+# =====================================================
 
 name_parm, value_parm, physical_parameters = (
-    setup_model_dependent_parameters(
-        current_model
-    ))
+    setup_model_dependent_parameters(current_model)
+)
 
+# Write dimensionless parameters in a .champs file
+parms_adim_file = os.path.join(
+    os.path.dirname(__file__),
+    "parms_adim.champs"
+)
+
+with open(parms_adim_file, "w") as f:
+
+    f.write("## Dimensionless parameters\n\n")
+
+    for name, value in zip(name_parm, value_parm):
+        f.write(f"scalaire {name} {value}\n")
+
+print(f"Dimensionless parameters written to: {parms_adim_file}")
+
+
+# =====================================================
+# 6. Define cleaning functions to remove files 
+# inbetween simulations
+# =====================================================
 
 ## Definition fonction de nettoyage 
 def clean_export_directory(export_dir):
@@ -206,7 +295,7 @@ def clean_export_directory(export_dir):
     for pattern in [
     "Null_NMP_*.vtu",
     "Null_NMP_*.pvtu",
-    "Null_NMP_*.pvd"
+    "Null_NMP_*.pvd",
     "Null_NMP_*.tex"
     ]:
         for f in glob.glob(
@@ -222,146 +311,29 @@ def clean_export_directory(export_dir):
 
 
 # =====================================================
-# 2. Loop the PDE solving over the scenarios
+# 7. Loop the PDE solving over the scenarios
 # =====================================================
 
 mefpp.initialise("carreRachel") 
 print("Initialisation du pb")
-
 
 collection = mefpp.reqCollectionDeCorps()
 collection.lisDonneesDeBase(["carreRachel"])
 corps = collection.reqCorps("carreRachel")
 gfc = corps.reqGFC()
 
-apply_model_dependent_parameters(gfc, name_parm, value_parm)
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 
 
-
-
-
-# for scenario_id, theta in enumerate(theta_scenarios):
-
-#     ## Fonction qui s'assure que le dossier avec les exportations de MEF est vide avant de lancer qque chose (supprime tous les fichiers)
-#     if rank == 0:
-#         clean_export_directory(export_dir)
-
-#     comm.Barrier()
-
-#     if rank == 0:
-#         print(
-#             f"\n===== Scenario {scenario_id:04d} ====="
-#         )
-#         print(
-#             dict(zip(parms_names, theta))
-#         )
-
-#     # diffusion MPI
-#     theta = comm.bcast(theta, root=0)
-
-#     # appliquer les paramètres
-#     write_parameters(gfc, theta)
-
-#     # lancer le PDE
-#     gfc.executeActionsRecursif()
-
-#     # attendre tous les ranks
-#     comm.Barrier()
-
-#     # export fichiers seulement par rank 0
-#     if rank == 0:
-
-#         scenario_dir = os.path.join(
-#             results_root,
-#             f"scenario_{scenario_id:04d}"
-#         )
-
-#         os.makedirs(
-#             scenario_dir,
-#             exist_ok=True
-#         )
-
-#         # export_dir = os.path.join(
-#         #     os.path.dirname(__file__),
-#         #     "simulations"
-#         # )
-
-#         # export_dir = os.path.join(
-#         # os.path.dirname(__file__),
-#         # "simulations",
-#         # "var_parms",
-#         # "i",
-#         # "Null_NMP_"
-#         # )
-        
-
-#         # déplacer tous les fichiers produits
-
-#         for ext in ["*.vtu", "*.pvtu", "*.pvd"]:
-
-#             for f in glob.glob(
-#                 os.path.join(export_dir, ext)
-#             ):
-
-#                 shutil.move(
-#                     f,
-#                     os.path.join(
-#                         scenario_dir,
-#                         os.path.basename(f)
-#                     )
-#                 )
-
-#         comm.Barrier()
-
-#         # sauvegarde paramètres
-
-#         with open(
-#             os.path.join(
-#                 scenario_dir,
-#                 "parameters.txt"
-#             ),
-#             "w"
-#         ) as fp:
-
-#             fp.write(
-#                 f"Scenario {scenario_id}\n\n"
-#             )
-
-#             fp.write(
-#                 "=== Parametres optimises ===\n"
-#             )
-
-#             for name, value in zip(
-#                 parms_names,
-#                 theta
-#             ):
-
-#                 fp.write(
-#                     f"{name} = {value}\n"
-#                 )
-
-#             fp.write(
-#                 "\n=== Parametres derives du modele ===\n"
-#             )
-
-#             for name, value in zip(
-#                 name_parm,
-#                 value_parm
-#             ):
-
-#                 fp.write(
-#                     f"{name} = {value}\n"
-#                 )
-
-
-
-
 for scenario_id, theta in enumerate(theta_scenarios):
 
+    pp_reinit = gfc.reqPP("pp_redemarre")
+    pp_reinit.execute()
+
+    
     # =====================================================
     # Nettoyage des exports précédents
     # =====================================================
@@ -378,7 +350,7 @@ for scenario_id, theta in enumerate(theta_scenarios):
             dict(zip(parms_names, theta))
         )
 
-    # attendre que le nettoyage soit terminé
+    # attendre que le nettoyage soit terminé (si on roule en //)
     comm.Barrier()
 
     # =====================================================
@@ -387,10 +359,34 @@ for scenario_id, theta in enumerate(theta_scenarios):
 
     theta = comm.bcast(theta, root=0)
 
-    write_parameters(
-        gfc,
-        theta
+    scenario_dir = os.path.join(
+                results_root,
+                f"scenario_{scenario_id:04d}"
+            )
+    
+    os.makedirs(
+                scenario_dir,
+                exist_ok=True
+            )
+
+
+
+    values_scenario_file = os.path.join(
+       os.path.dirname(__file__),
+       "values_scenario.champs"
     )
+
+    with open(values_scenario_file, "w") as f:
+
+        for name, value in zip(parms_names, theta):
+            f.write(f"scalaire {name} {value}\n")
+
+    print(f"Scenario {scenario_id} written")
+
+
+    ## Re-ecrit les champs selon le scenario actuel (hopefully)
+    for name, value in zip(parms_names, theta):
+        gfc.reqChamp(name).asgnValeur(value)
 
     # =====================================================
     # Résolution PDE
@@ -401,21 +397,44 @@ for scenario_id, theta in enumerate(theta_scenarios):
     # attendre que tous les ranks aient fini
     comm.Barrier()
 
+
     # =====================================================
     # Sauvegarde des résultats
     # =====================================================
 
     if rank == 0:
 
-        scenario_dir = os.path.join(
-            results_root,
-            f"scenario_{scenario_id:04d}"
+        # renomme les fichiers pour que les pas de temps soient tous les memes d'une simulation a l'autre
+        
+        # -------------------------------------------------
+        # Renommer les VTU avec des indices réguliers
+        # -------------------------------------------------
+
+        vtu_files = sorted(
+            glob.glob(
+                os.path.join(
+                    export_dir,
+                    "*.cont.vtu"
+                )
+            )
         )
 
-        os.makedirs(
-            scenario_dir,
-            exist_ok=True
+        for i, old_file in enumerate(vtu_files):
+
+            new_file = os.path.join(
+                export_dir,
+                f"snapshot_{i:04d}.cont.vtu"
+            )
+
+            os.rename(
+                old_file,
+                new_file
+            )
+
+        print(
+            f"{len(vtu_files)} VTU files renamed"
         )
+
 
         # déplacer tous les exports MEF++
         for ext in [
@@ -454,7 +473,7 @@ for scenario_id, theta in enumerate(theta_scenarios):
             )
 
             fp.write(
-                "=== Parametres optimises ===\n"
+                "=== Parametres utilises ===\n"
             )
 
             for name, value in zip(
@@ -485,3 +504,5 @@ for scenario_id, theta in enumerate(theta_scenarios):
 
     # attendre que le déplacement des fichiers soit terminé
     comm.Barrier()
+
+mefpp.finalise()

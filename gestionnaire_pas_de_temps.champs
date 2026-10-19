@@ -14,8 +14,14 @@ scalaire t0 0
 ## Interpretation physique de ce temps là t = t* * T, où T est le temps caractéristique et t* est le temps numerique: t* = delta_t*nombre_de_pas_de_temps
 
 ## Definition du pas de temps
-scalaire delta_t 0.001
+#scalaire delta_t 0.00001
 
 ## Definition du nombre de pas de temps
-scalaire nombre_de_pas_de_temps 10 
+#scalaire nombre_de_pas_de_temps 2
 
+## Simulation sur 15 ans (d'apres temps caractéristique: T = L^2/D_C)
+#scalaire delta_t                    1e-5
+#scalaire nombre_de_pas_de_temps     10000
+
+scalaire delta_t 0.01
+scalaire nombre_de_pas_de_temps 50

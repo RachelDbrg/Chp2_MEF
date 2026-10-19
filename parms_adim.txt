@@ -1,0 +1,18 @@
+=== PARAMETERS ===
+
+c1 = 0.5408090666303076
+c2 = 0.05842572446287375
+
+=== INITIAL DENSITIES ===
+
+caribou = 1
+moose = 0
+wolf = 0
+deer = 0
+
+=== DEBUG INITIAL CONDITIONS ===
+
+C0 = densiteInitC*exp(-etalementCloche*((x-0.5)^2+(y-0.5)^2))
+M0 = densiteInitM*exp(-etalementCloche*((x-0.5)^2+(y-0.5)^2))
+P0 = densiteInitP*exp(-etalementCloche*((x-0.5)^2+(y-0.5)^2))
+D0 = densiteInitD*exp(-etalementCloche*((x-0.5)^2+(y-0.5)^2))

@@ -4,7 +4,7 @@ empilementto2 no_diff_C    [coeff_diffusion_C_norm, coeff_diffusion_C_norm, coef
 #alias no_diff_M=no_diff_C no_diff_P=no_diff_C no_diff_D=no_diff_C
 empilementto2 no_diff_M    [coeff_diffusion_M_norm, coeff_diffusion_M_norm, coeff_diffusion_M_norm, Zero, Zero, Zero]
 empilementto2 no_diff_P    [coeff_diffusion_P_norm, coeff_diffusion_P_norm, coeff_diffusion_P_norm, Zero, Zero, Zero]
-empilementto2 no_diff_D   [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
+empilementto2 no_diff_D    [coeff_diffusion_D_norm, coeff_diffusion_D_norm, coeff_diffusion_D_norm, Zero, Zero, Zero]
 
 { decl_hugn_C
   alias U=grad_Phi_C
@@ -25,7 +25,7 @@ scalh_ugn hugn_M   decl_hugn_M
 scalh_ugn hugn_P   decl_hugn_P
 
 { decl_hugn_D
-  alias U=TD
+  alias U=grad_Phi_D
   booleen hugn_utilise_schema_const_pour_hugn_D faux
 }
 scalh_ugn hugn_D   decl_hugn_D
