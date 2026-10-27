@@ -29,6 +29,7 @@ script_dir = Path(__file__).resolve().parent
 # Choisit le .csv sur lequel sera fait les simulations
 files_by_model = {
     "SM1": script_dir / "UD_monthly_caribou_wolf_mars_2022.csv",
+    #"SM1": script_dir / "habitat_500m_normalized.csv",
     "SM2": script_dir / "UD_monthly_caribou_moose_avril_2023.csv",
 }
 
@@ -100,8 +101,6 @@ all_param_groups = {
     "deer":    ["d1", "d2", "d3", "d4", "d5", "d6"],
 }
 
-
-
 ## On attribue un budget global pour l'ensemble des mecanismes
 
 
@@ -153,24 +152,20 @@ theta0 = np.zeros(len(parms_names))
 #####################
 def generate_species_parameters():
 
-    # budget total = 1
-    A_ifd, A_lof = np.random.dirichlet([1, 1])
-    #print(A_ifd, A_lof)
+    A_ifd = np.random.uniform(0, 3)
+    A_lof = np.random.uniform(0, 3)
 
-    # partage interne (entre 0 et 1)
-    #ifd = A_ifd * np.random.dirichlet(np.ones(2))
-    #lof = A_lof * np.random.dirichlet(np.ones(4))
+    ifd = (
+        A_ifd *
+        np.random.dirichlet(np.ones(2))
+    )
 
-## Plus de scenarios moyens
-    #ifd =  np.random.dirichlet(np.ones(2))
-    #lof =  np.random.dirichlet(np.ones(4))
-
-## Plus de scenarios extremes
-    ifd = np.random.dirichlet([0.2, 0.2])
-    lof = np.random.dirichlet([0.2, 0.2, 0.2, 0.2])
+    lof = (
+        A_lof *
+        np.random.dirichlet(np.ones(4))
+    )
 
     return np.concatenate([ifd, lof])
-
 
 theta_random = np.zeros((n_scenarios, len(parms_names)))
 
@@ -178,10 +173,17 @@ for k in range(n_scenarios):
 
     col = 0
 
-    for species_name in ["caribou", "moose", "wolf", "deer"]:
+    for species_name in [
+        "caribou",
+        "moose",
+        "wolf",
+        "deer"
+    ]:
 
         if species_name in species:
-            theta_random[k, col:col+6] = generate_species_parameters()
+            theta_random[k, col:col+6] = (
+                generate_species_parameters()
+            )
         else:
             theta_random[k, col:col+6] = 0.0
 
@@ -189,13 +191,15 @@ for k in range(n_scenarios):
 
 theta_scenarios = theta_random
 
+theta_scenarios = np.ones((n_scenarios, len(parms_names)))
+
 
 ######################
 
 ## Pour scenario i), tous les parms sont à 1 
-theta_scenarios = np.ones((n_scenarios, len(parms_names)))
 
 ## Pour le scenario ii), variations des parms sauf les 6 (proies naives)
+
 
 ## Pour le scenario ii), variations de tous les parms des proies
 
@@ -423,7 +427,7 @@ for scenario_id, theta in enumerate(theta_scenarios):
 
             new_file = os.path.join(
                 export_dir,
-                f"snapshot_{i:04d}.cont.vtu"
+                f"snapshot_NMPD_{i:04d}.cont.vtu"
             )
 
             os.rename(

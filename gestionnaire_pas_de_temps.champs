@@ -1,8 +1,8 @@
 
 # Liste d'informations utiles au solveur:
 # Comprend le critère de convergence, le nombre d'itérations maximal ainsi que le temps initial.
-#scalaire ToleranceNlin 1e-7
-scalaire ToleranceNlin 1e-1
+scalaire ToleranceNlin 1e-5
+#scalaire ToleranceNlin 1e-1
 scalaire MaxItNlin 40
 
 ## Definition du temps initial
@@ -23,5 +23,14 @@ scalaire t0 0
 #scalaire delta_t                    1e-5
 #scalaire nombre_de_pas_de_temps     10000
 
+
+## Si on fait ca, il faut definir une frequence d'Exportation MEF sinon on va saturer le disque
+## On resout sur 153 and (temps caractéristique du caribou, a fine échelle temporelle)
 scalaire delta_t 0.01
-scalaire nombre_de_pas_de_temps 50
+scalaire nombre_de_pas_de_temps 100
+
+## Puis simule 153 ans reels, chaque pas de temps represente 0.001 * 153 ans, soit 0.153 ans
+## ce qui correspond a 56 jours
+
+## on fixe la frequence d'exportation a un snapshot tous les 3 ans 
+# donc une frequence d'exportation de 20 (1/20 resultat est exporté )

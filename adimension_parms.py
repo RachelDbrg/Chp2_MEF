@@ -1,4 +1,8 @@
+import numpy as np
+
 def setup_model_dependent_parameters(current_model):
+    
+
 
     # ==========================================
     # Taille du paysage
@@ -12,13 +16,16 @@ def setup_model_dependent_parameters(current_model):
     L = landscape_sizes[current_model]
 
     # ==========================================
-    # Paramètres biologiques
+    # Paramètres biologiques (en km)
     # ==========================================
 
     rayon_perception_C = 4.7
     rayon_perception_M = 1.0
-    rayon_perception_P = 0.2
+    #rayon_perception_P = 0.2
+    rayon_perception_P = 5
     rayon_perception_D = 1.0
+
+
 
     coeff_diffusion_C = 1073.1
     coeff_diffusion_M = 142.35
@@ -35,6 +42,11 @@ def setup_model_dependent_parameters(current_model):
     rayon_perception_M_norm = rayon_perception_M / L
     rayon_perception_P_norm = rayon_perception_P / L
     rayon_perception_D_norm = rayon_perception_D / L
+
+    rayon_perception_C_norm_Helmotz = (rayon_perception_C_norm/(2*np.sqrt(2)))**2
+    rayon_perception_M_norm_Helmotz = (rayon_perception_D_norm/(2*np.sqrt(2)))**2
+    rayon_perception_P_norm_Helmotz = (rayon_perception_P_norm/(2*np.sqrt(2)))**2
+    rayon_perception_D_norm_Helmotz = (rayon_perception_D_norm/(2*np.sqrt(2)))**2
 
     coeff_diffusion_C_norm = 1.0
 
@@ -77,7 +89,12 @@ def setup_model_dependent_parameters(current_model):
 
         "advection_rate_D_norm",
 
-        "temps_caracteristique"
+        "temps_caracteristique",
+
+        "rayon_perception_C_norm_Helmotz",
+        "rayon_perception_M_norm_Helmotz",
+        "rayon_perception_P_norm_Helmotz",
+        "rayon_perception_D_norm_Helmotz"
     ]
 
     value_parm = [
@@ -96,7 +113,12 @@ def setup_model_dependent_parameters(current_model):
 
         advection_rate_D_norm,
 
-        temps_caracteristique
+        temps_caracteristique,
+
+        rayon_perception_C_norm_Helmotz,
+        rayon_perception_M_norm_Helmotz,
+        rayon_perception_P_norm_Helmotz,
+        rayon_perception_D_norm_Helmotz
     ]
 
     # ==========================================
@@ -111,6 +133,8 @@ def setup_model_dependent_parameters(current_model):
         "advection_rate_D": advection_rate_D,
         "L": L,
     }
+
+    print(rayon_perception_C_norm_Helmotz)
 
     return (
         name_parm,

@@ -33,7 +33,6 @@ pp_filtrage_moyenne                 pp_moyenne_locale_Phi_D               [Phi_D
 
 
 
-
 ### Etape 2: Conversion de discret en continu
 ## Projection L2 pour convertir discret en continu
 ## La syntaxe du pp_projection_l2 est:                                  [champ_source, champ_destination, schema integration]

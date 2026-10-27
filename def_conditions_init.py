@@ -261,14 +261,6 @@ def setup_initial_conditions(
                 f"scalquad P0 densiteInitP*({theoretical_ci['P0']})\n"
             )
 
-            # fp.write(
-            #     "scalaire custom_D (y < 0.02)\n"
-            # )
-
-            # fp.write(
-            #     "scalquad D0 densiteInitD*custom_D\n"
-            # )
-
             fp.write(
             "scalaire sigma_D 0.02\n" 
             )
