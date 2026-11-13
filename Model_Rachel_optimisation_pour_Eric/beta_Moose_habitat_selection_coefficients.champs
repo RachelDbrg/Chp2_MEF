@@ -1,0 +1,13 @@
+scalaire M_landcover1 -11.5014
+scalaire M_landcover2 -0.0175195
+scalaire M_landcover3 -0.0850464
+scalaire M_landcover4 -0.412122
+scalaire M_landcover5 0.0792416
+scalaire M_landcover6 -0.751338
+scalaire M_landcover8 -0.0591082
+scalaire M_landcover9 -0.335359
+scalaire M_landcover11 -0.567181
+scalaire M_landcover12 -0.36842
+
+## Set landcover7 preference to 0 becauser this layer was used as the reference for iSSA
+scalaire M_landcover7 0

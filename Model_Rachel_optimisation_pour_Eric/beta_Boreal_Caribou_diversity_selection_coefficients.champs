@@ -1,0 +1,8 @@
+scalaire C_diversity1 -0.170382
+scalaire C_diversity2 0.0110051
+scalaire C_diversity4 -0.0331415
+scalaire C_diversity5 0.185597
+scalaire C_diversity6 1.72381
+
+## Set C_diversity3 preference to 0 becauser this layer was used as the reference for iSSA
+scalaire C_diversity3 0 

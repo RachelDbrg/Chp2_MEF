@@ -26,12 +26,13 @@ def setup_model_dependent_parameters(current_model):
     rayon_perception_D = 1.0
 
 
-
+    # km/an 
     coeff_diffusion_C = 1073.1
     coeff_diffusion_M = 142.35
     coeff_diffusion_P = 1051.25
     coeff_diffusion_D = coeff_diffusion_M
 
+    # km/an 
     advection_rate_D = 5
 
     # ==========================================
@@ -44,7 +45,7 @@ def setup_model_dependent_parameters(current_model):
     rayon_perception_D_norm = rayon_perception_D / L
 
     rayon_perception_C_norm_Helmotz = (rayon_perception_C_norm/(2*np.sqrt(2)))**2
-    rayon_perception_M_norm_Helmotz = (rayon_perception_D_norm/(2*np.sqrt(2)))**2
+    rayon_perception_M_norm_Helmotz = (rayon_perception_M_norm/(2*np.sqrt(2)))**2
     rayon_perception_P_norm_Helmotz = (rayon_perception_P_norm/(2*np.sqrt(2)))**2
     rayon_perception_D_norm_Helmotz = (rayon_perception_D_norm/(2*np.sqrt(2)))**2
 

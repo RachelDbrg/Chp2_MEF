@@ -1,0 +1,88 @@
+import numpy as np
+import pandas as pd
+
+# =====================================================
+# Configuration
+# =====================================================
+
+n_scenarios = 10
+seed = 69
+
+np.random.seed(seed)
+
+parms_names = [
+    "c1","c2","c3","c4","c5","c6",
+    "m1","m2","m3","m4","m5","m6",
+    "p1","p2","p3","p4","p5","p6",
+    "d1","d2","d3","d4","d5","d6"
+]
+
+# =====================================================
+# Paramètres d'une espèce
+# =====================================================
+
+def generate_species_parameters():
+
+    A_ifd = np.random.uniform(0, 3)
+    A_lof = np.random.uniform(0, 3)
+
+    ifd = (
+        A_ifd *
+        np.random.dirichlet(np.ones(2))
+    )
+
+    lof = (
+        A_lof *
+        np.random.dirichlet(np.ones(4))
+    )
+
+    return np.concatenate([ifd, lof])
+
+# =====================================================
+# Génération
+# =====================================================
+
+theta_master = np.zeros(
+    (n_scenarios, len(parms_names))
+)
+
+for k in range(n_scenarios):
+
+    col = 0
+
+    for species_name in [
+        "caribou",
+        "moose",
+        "wolf",
+        "deer"
+    ]:
+
+        theta_master[k, col:col+6] = (
+            generate_species_parameters()
+        )
+
+        col += 6
+
+# =====================================================
+# Sauvegarde
+# =====================================================
+
+df = pd.DataFrame(
+    theta_master,
+    columns=parms_names
+)
+
+df.insert(
+    0,
+    "scenario_id",
+    np.arange(n_scenarios)
+)
+
+df.to_csv(
+    "theta_master.csv",
+    index=False
+)
+
+print(
+    f"{n_scenarios} scenarios saved in theta_master.csv"
+)

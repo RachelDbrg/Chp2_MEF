@@ -57,7 +57,7 @@ def setup_initial_conditions(
     densiteInitC = 1
     densiteInitM = 1
     densiteInitP = 1
-    densiteInitD = 1
+    densiteInitD = 0.9 ## Pas sure de comprendre pourquoi mais maintenant si je mets ca a 1, ca plante
 
     initial_densities = {
     "caribou": densiteInitC,
@@ -65,6 +65,25 @@ def setup_initial_conditions(
     "wolf":    densiteInitP,
     "deer":    densiteInitD,
 }
+
+    scenario_name = ""
+
+    if densiteInitC > 0:
+        scenario_name += "C"
+
+    if densiteInitM > 0:
+        scenario_name += "M"
+
+    if densiteInitP > 0:
+        scenario_name += "P"
+
+    if densiteInitD > 0:
+        scenario_name += "D"
+
+    print(f"Scénario en cours : {scenario_name}")
+
+
+   
 
     active_species = [
     sp for sp, density in initial_densities.items()

@@ -42,7 +42,7 @@ scalaire         Tau_tM      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_M::
 ## Sans delta_t
 #scalaire          Tau_tM 1. / sqrt (4*norme2(V3D(decl_hugn_M::U))^2 / hugn_M^2  +  9.*16.*no_diff_M[00]^2 / hugn_M^4)
 
-fcts_supg       phi_M_supg [Tau_tM,M,decl_hugn_M::U]
+fcts_supg       phi_M_supg [Tau_tM,M,decl_hugn_M::U]  
 
 ## Avec delta_t
 scalaire         Tau_tP      1. / sqrt (4/delta_t^2 + 4*norme2(V3D(decl_hugn_P::U))^2  / hugn_P^2 + 9.*16.*no_diff_P[00]^2   / hugn_P^4  + 4/delta_t^2 + 1e-8)

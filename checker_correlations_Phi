@@ -1,0 +1,394 @@
+# ============================================================
+# COMPARAISON DES PAYSAGES PHI ENTRE SCENARIOS
+# ============================================================
+
+from scipy.stats import pearsonr
+import itertools
+import numpy as np
+import os
+import re
+import glob
+import itertools
+
+import vtk
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from vtk.util.numpy_support import vtk_to_numpy
+
+from matplotlib.lines import Line2D
+
+
+
+# ------------------------------------------------------------
+# Lecture d'un champ Phi
+# ------------------------------------------------------------
+
+def get_phi(filename, phi_name):
+
+    mesh = read_vtu(filename)
+    mesh = point_to_cell(mesh)
+
+    arr = mesh.GetCellData().GetArray(phi_name)
+
+    if arr is None:
+        raise ValueError(
+            f"{phi_name} absent dans {filename}"
+        )
+
+    return vtk_to_numpy(arr)
+
+def extract_time(filename):
+
+    m = re.search(
+        r"_(\d+)\.cont\.vtu$",
+        filename
+    )
+
+    return int(m.group(1))
+
+def read_vtu(filename):
+
+    reader = vtk.vtkXMLUnstructuredGridReader()
+    reader.SetFileName(filename)
+    reader.Update()
+
+    return reader.GetOutput()
+
+def point_to_cell(mesh):
+
+    filt = vtk.vtkPointDataToCellData()
+    filt.SetInputData(mesh)
+    filt.Update()
+
+    return filt.GetOutput()
+
+
+
+
+# ------------------------------------------------------------
+# Recuperation des fichiers finaux
+# ------------------------------------------------------------
+
+# ============================================================
+# DOSSIER DES SCENARIOS ALTERNATIFS CMP
+# ============================================================
+
+root_alt = (
+    "/users/rdubourg/Documents/Chp2_MEF/"
+    "simulations/ii/CMP_"
+)
+
+scenario_dirs = sorted(
+    glob.glob(
+        os.path.join(
+            root_alt,
+            "scenario_*"
+        )
+    )
+)
+
+scenario_phi_files = {}
+
+for scenario_dir in scenario_dirs:
+
+    scenario = os.path.basename(
+        scenario_dir
+    )
+
+    files = sorted(
+        glob.glob(
+            os.path.join(
+                scenario_dir,
+                "*.cont.vtu"
+            )
+        ),
+        key=extract_time
+    )
+
+    if len(files) == 0:
+        continue
+
+    scenario_phi_files[scenario] = files[-1]
+
+print(
+    f"{len(scenario_phi_files)} scenarios trouvés"
+)
+
+
+# ------------------------------------------------------------
+# Comparaison pairwise des Phi
+# ------------------------------------------------------------
+
+phi_species = [
+    "Phi_C",
+    "Phi_M",
+    "Phi_P",
+    "Phi_D"
+]
+
+# ============================================================
+# PRECHARGEMENT DE TOUS LES PHI
+# ============================================================
+
+phi_cache = {}
+
+for phi_name in phi_species:
+
+    print(f"Chargement de {phi_name}")
+
+    phi_cache[phi_name] = {}
+
+    for scenario, filename in scenario_phi_files.items():
+
+        phi_cache[phi_name][scenario] = get_phi(
+            filename,
+            phi_name
+        )
+
+# ============================================================
+# COMPARAISONS
+# ============================================================
+
+records = []
+
+for phi_name in phi_species:
+
+    scenarios = sorted(
+        scenario_phi_files.keys()
+    )
+
+    for sc1, sc2 in itertools.combinations(
+        scenarios,
+        2
+    ):
+
+        phi1 = phi_cache[phi_name][sc1]
+        phi2 = phi_cache[phi_name][sc2]
+
+        denom = np.linalg.norm(phi2)
+
+        if denom < 1e-15:
+            rel_diff = np.nan
+        else:
+            rel_diff = (
+                np.linalg.norm(
+                    phi1 - phi2
+                )
+                /
+                denom
+            )
+
+        denom = np.linalg.norm(phi2)
+
+        if denom < 1e-15:
+            rel_diff = np.nan
+        else:
+            rel_diff = (
+                np.linalg.norm(
+                    phi1 - phi2
+                )
+                /
+                denom
+            )
+
+        corr = pearsonr(
+            phi1,
+            phi2
+        )[0]
+
+        records.append(
+            {
+                "phi": phi_name,
+                "scenario_1": sc1,
+                "scenario_2": sc2,
+                "relative_difference": rel_diff,
+                "correlation": corr
+            }
+        )
+
+# ------------------------------------------------------------
+# Tableau complet
+# ------------------------------------------------------------
+
+df_phi = pd.DataFrame(records)
+
+print("\n")
+print("=" * 80)
+print("COMPARAISON DES CARTES PHI")
+print("=" * 80)
+
+print(df_phi.head())
+
+# ------------------------------------------------------------
+# Resume statistique
+# ------------------------------------------------------------
+
+summary = (
+    df_phi
+    .groupby("phi")[
+        ["relative_difference", "correlation"]
+    ]
+    .agg(["min", "mean", "max"])
+)
+
+print(summary)  
+
+print("\n")
+print("=" * 80)
+print("RESUME")
+print("=" * 80)
+
+print(summary)
+
+# ------------------------------------------------------------
+# Sauvegarde
+# ------------------------------------------------------------
+
+df_phi.to_csv(
+    "phi_pairwise_comparison.csv",
+    index=False
+)
+
+# ------------------------------------------------------------
+# Heatmap des differences relatives
+# ------------------------------------------------------------
+
+for phi_name in phi_species:
+
+    scenarios = sorted(
+        scenario_phi_files.keys()
+    )
+
+    n = len(scenarios)
+
+    mat = np.zeros(
+        (n, n)
+    )
+
+    
+
+    for i, sc1 in enumerate(scenarios):
+
+        for j, sc2 in enumerate(scenarios):
+
+            phi1 = phi_cache[phi_name][sc1]
+            phi2 = phi_cache[phi_name][sc2]
+
+            denom = np.linalg.norm(phi2)
+
+            if denom < 1e-15:
+                mat[i, j] = np.nan
+
+            else:
+
+                mat[i, j] = (
+                    np.linalg.norm(
+                        phi1 - phi2
+                    )
+                    /
+                    denom
+                )
+
+    plt.figure(
+        figsize=(8, 6)
+    )
+
+    plt.imshow(
+        mat,
+        cmap="viridis"
+    )
+
+    plt.colorbar(
+        label="Relative Phi difference"
+    )
+
+    plt.xticks(
+        range(n),
+        scenarios,
+        rotation=90
+    )
+
+    plt.yticks(
+        range(n),
+        scenarios
+    )
+
+    plt.title(
+        f"{phi_name}"
+    )
+
+    plt.tight_layout()
+
+    plt.show()
+
+# ------------------------------------------------------------
+# Heatmap des correlations
+# ------------------------------------------------------------
+
+for phi_name in phi_species:
+
+    scenarios = sorted(
+        scenario_phi_files.keys()
+    )
+
+    n = len(scenarios)
+
+    mat = np.zeros(
+        (n, n)
+    )
+
+    phi_cache = {}
+
+    for sc in scenarios:
+
+        phi_cache[sc] = get_phi(
+            scenario_phi_files[sc],
+            phi_name
+        )
+
+    for i, sc1 in enumerate(scenarios):
+
+        for j, sc2 in enumerate(scenarios):
+
+            phi1 = phi_cache[phi_name][sc1]
+            phi2 = phi_cache[phi_name][sc2]
+
+            mat[i, j] = pearsonr(
+                phi1,
+                phi2
+            )[0]
+
+    plt.figure(
+        figsize=(8, 6)
+    )
+
+    plt.imshow(
+        mat,
+        cmap="coolwarm",
+        vmin=-1,
+        vmax=1
+    )
+
+    plt.colorbar(
+        label="Pearson correlation"
+    )
+
+    plt.xticks(
+        range(n),
+        scenarios,
+        rotation=90
+    )
+
+    plt.yticks(
+        range(n),
+        scenarios
+    )
+
+    plt.title(
+        f"{phi_name}"
+    )
+
+    plt.tight_layout()
+
+    plt.show()

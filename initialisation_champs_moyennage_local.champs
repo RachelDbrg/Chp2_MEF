@@ -1,4 +1,11 @@
 
+scalconstelem M1_C_reinterpol 0
+scalconstelem M2_C_reinterpol 0
+scalconstelem M1_M_reinterpol 0
+scalconstelem M2_M_reinterpol 0
+scalconstelem M1_D_reinterpol 0
+scalconstelem M2_D_reinterpol 0
+
 scalconstelem Phi_C_reinterpol 0
 scalconstelem Phi_M_reinterpol 0
 scalconstelem Phi_P_reinterpol 0
@@ -6,10 +13,24 @@ scalconstelem Phi_D_reinterpol 0
 
 
 
+scalconstelem avg_M1_C_disc 0
+scalconstelem avg_M2_C_disc 0
+scalconstelem avg_M1_M_disc 0
+scalconstelem avg_M2_M_disc 0
+scalconstelem avg_M1_D_disc 0
+scalconstelem avg_M2_D_disc 0
+
 scalconstelem avg_Phi_C_disc 0
 scalconstelem avg_Phi_M_disc 0
 scalconstelem avg_Phi_P_disc 0
 scalconstelem avg_Phi_D_disc 0
+
+scallin avg_M1_C 0
+scallin avg_M2_C 0
+scallin avg_M1_M 0
+scallin avg_M2_M 0
+scallin avg_M1_D 0
+scallin avg_M2_D 0
 
 scallin avg_Phi_C 0
 scallin avg_Phi_M 0
