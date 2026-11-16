@@ -16,8 +16,6 @@ from matplotlib.lines import Line2D
 # ============================================================
 # PARAMETRES
 # ============================================================
-
-
 ## Noms des espèces du système utilisés pour les overlaps entre espèces animales
 species_names = [
     "C",
@@ -511,8 +509,11 @@ for experiment in sorted(os.listdir(root)):
 
 
             ## Cherche dans le sous-dossier ii) pour lequel on a fait varier les parms 
-            elif experiment == "ii":
-                experiment_type = "alternative"
+            elif experiment == "ii_native_naive":
+                experiment_type = "ii_native_naive"
+
+            elif experiment == "ii_native_non_naive":
+                            experiment_type = "ii_native_non_naive"
 
             else:
                 continue
@@ -569,8 +570,8 @@ for sim_info in simulation_sets:
 
 
     # =========== MODE TEST
-    if experiment_type == "alternative":
-        scenario_list = scenario_list[:2]
+#    if experiment_type == "alternative":
+#        scenario_list = scenario_list[:2]
     # =========== MODE TEST
 
  
@@ -769,10 +770,6 @@ for sim_info in simulation_sets:
                     )
 
                 
-
-
-
-
 
 df = pd.DataFrame(results)
 
@@ -1040,6 +1037,43 @@ df_wide["SC_label"] = (
 )
 
 
+# ============================================================
+# Couleurs fixes par scénario
+# ============================================================
+
+unique_sc = sorted(df_wide["SC"].unique())
+
+cmap = plt.cm.tab20
+
+scenario_colors = {
+    sc: cmap(i / max(1, len(unique_sc)-1))
+    for i, sc in enumerate(unique_sc)
+}
+
+# ============================================================
+# Style selon le type d'expérience
+# ============================================================
+
+experiment_styles = {
+    "baseline": {
+        "linestyle": "-",
+        "alpha": 1.0,
+        "lw": 3
+    },
+    "ii_native_naive": {
+        "linestyle": "--",
+        "alpha": 0.8,
+        "lw": 2
+    },
+    "ii_native_non_naive": {
+        "linestyle": ":",
+        "alpha": 0.8,
+        "lw": 2
+    }
+}
+
+
+
 print(
     df_wide[
         ["parameter_set","simulation"]
@@ -1297,8 +1331,12 @@ fig, axes = plt.subplots(
 
 for ax, pair in zip(axes, pairs):
 
-    for (sim, sc), sub in (
-    df_wide.groupby(["simulation", "SC"])
+    for (sim, sc, exp_type), sub in (
+    df_wide.groupby(
+        ["simulation",
+         "SC",
+         "experiment_type"]
+    )
 ):
 
         sub = sub.sort_values("time")
@@ -1313,10 +1351,10 @@ for ax, pair in zip(axes, pairs):
         ax.plot(
             sub["time"],
             sub[pair],
-            color=colors[sim],
-            #linestyle="--" if exp_type == "baseline" else "-",
-            linewidth=2,
-            alpha=0.8
+            color=scenario_colors[sc],
+            linestyle=experiment_styles[exp_type]["linestyle"],
+            linewidth=experiment_styles[exp_type]["lw"],
+            alpha=experiment_styles[exp_type]["alpha"]
         )
 
         ax.text(
@@ -1326,12 +1364,12 @@ for ax, pair in zip(axes, pairs):
             fontsize=7
         )
 
-        ax.scatter(
-            sub["time"],
-            sub[pair],
-            color=colors[sim],
-            s=10
-        )
+        #ax.scatter(
+        #    sub["time"],
+        #    sub[pair],
+        #    color=scenario_colors[sc],
+        #    s=15
+        #)
 
     ax.set_title(
         pair.replace("_BC", "")
@@ -1349,36 +1387,26 @@ legend_items = [
 
     Line2D(
         [0],[0],
-        marker='o',
-        color='tab:blue',
-        linestyle='',
-        label='CMP'
+        color="black",
+        linestyle="-",
+        lw=3,
+        label="baseline"
     ),
 
     Line2D(
         [0],[0],
-        marker='^',
-        color='tab:red',
-        linestyle='',
-        label='CMPD'
+        color="black",
+        linestyle="--",
+        lw=2,
+        label="ii_native_naive"
     ),
 
     Line2D(
         [0],[0],
-        marker='o',
-        markerfacecolor='none',
-        markeredgecolor='black',
-        linestyle='',
-        label='Baseline'
-    ),
-
-    Line2D(
-        [0],[0],
-        marker='o',
-        markerfacecolor='black',
-        markeredgecolor='black',
-        linestyle='',
-        label='Alternative'
+        color="black",
+        linestyle=":",
+        lw=2,
+        label="ii_native_non_naive"
     )
 ]
 
@@ -1426,12 +1454,27 @@ merge_cols = [
     "time"
 ]
 
+# df_delta = alternative.merge(
+#     baseline,
+#     on=merge_cols,
+#     suffixes=("_alt", "_base"),
+#     validate="one_to_one"
+# )
+
+
 df_delta = alternative.merge(
-    baseline,
-    on=merge_cols,
+    baseline.drop(columns=["experiment_type"]),
+    on=[
+        "scenario",
+        "simulation",
+        "time"
+    ],
     suffixes=("_alt", "_base"),
-    validate="one_to_one"
+    validate="many_to_one"
 )
+
+
+
 
 ## Verification de si ce truc n'est pas vide
 print(df_delta.shape)
@@ -1991,11 +2034,11 @@ for col in df_wide.columns:
 
 
 
-color_map = {
-    ("CMP", "baseline"): "tab:blue",
-    ("CMP", "alternative"): "tab:cyan",
-    ("CMPD", "baseline"): "tab:red",
-}
+# color_map = {
+#     ("CMP", "baseline"): "tab:blue",
+#     ("CMP", "alternative"): "tab:cyan",
+#     ("CMPD", "baseline"): "tab:red",
+# }
 
 
 alignments = [
@@ -2025,9 +2068,11 @@ legend_handles = {}
 
 for ax, var in zip(axes, alignments):
 
-    for (sim, exp_type), sub_all in (
+    for (sim, exp_type, sc), sub_all in (
     df_wide.groupby(
-        ["simulation", "experiment_type"]
+        ["simulation",
+         "experiment_type",
+         "SC"]
     )
 ):
 
@@ -2040,9 +2085,10 @@ for ax, var in zip(axes, alignments):
             line = ax.plot(
                 sub["time"],
                 sub[var],
-                alpha=1,
-                linewidth=1,
-                color=color_map[(sim, exp_type)]
+                color=scenario_colors[sc],
+                linestyle=experiment_styles[exp_type]["linestyle"],
+                linewidth=experiment_styles[exp_type]["lw"],
+                alpha=experiment_styles[exp_type]["alpha"]
             )[0]
 
             ax.text(
@@ -2139,10 +2185,10 @@ legend_elements = [
     Line2D([0], [0], color="black", lw=2, linestyle=":", label="P+M+D")
 ]
 
-colors = {
-    "CMP": "tab:blue",
-    "CMPD": "tab:red"
-}
+# colors = {
+#     "CMP": "tab:blue",
+#     "CMPD": "tab:red"
+# }
 
 linestyles = {
     "P": "-",
@@ -2155,6 +2201,11 @@ for (pset, sim, scen), sub in df_wide.groupby(
     ["parameter_set", "simulation", "scenario"]
 ):
 
+
+    exp_type = sub["experiment_type"].iloc[0]
+
+    sc = sub["SC"].iloc[0]
+
     sub = sub.sort_values("time")
 
     lw = (
@@ -2164,25 +2215,28 @@ for (pset, sim, scen), sub in df_wide.groupby(
     ax.plot(
         sub["time"],
         sub["C_ratio_P"],
-        color=colors[sim],
-        linestyle=linestyles["P"],
-        linewidth=lw
+        color=scenario_colors[sc],
+        linestyle="-",
+        linewidth=experiment_styles[exp_type]["lw"],
+        alpha=experiment_styles[exp_type]["alpha"]
     )
 
     ax.plot(
         sub["time"],
         sub["C_ratio_PM"],
-        color=colors[sim],
-        linestyle=linestyles["PM"],
-        linewidth=lw
+        color=scenario_colors[sc],
+        linestyle="--",
+        linewidth=experiment_styles[exp_type]["lw"],
+        alpha=experiment_styles[exp_type]["alpha"]
     )
 
     ax.plot(
         sub["time"],
         sub["C_ratio_PMD"],
-        color=colors[sim],
-        linestyle=linestyles["PMD"],
-        linewidth=lw
+        color=scenario_colors[sc],
+        linestyle=":",
+        linewidth=experiment_styles[exp_type]["lw"],
+        alpha=experiment_styles[exp_type]["alpha"]
     )
 
     ax.text(
@@ -2224,22 +2278,23 @@ fig, axes = plt.subplots(
     sharey=False
 )
 
-colors = {
-    ("CMP", "baseline"): "tab:blue",
-    ("CMP", "alternative"): "tab:cyan",
-    ("CMPD", "baseline"): "tab:red",
-    ("CMPD", "alternative"): "tab:orange",
-}
+# colors = {
+#     ("CMP", "baseline"): "tab:blue",
+#     ("CMP", "alternative"): "tab:cyan",
+#     ("CMPD", "baseline"): "tab:red",
+#     ("CMPD", "alternative"): "tab:orange",
+# }
 
 
 for ax, var, title in zip(axes, variables, titles):
 
-    for (sim, exp_type, scen), sub in (
+    for (sim, exp_type, scen, sc), sub in (
     df_wide.groupby(
         [
             "simulation",
             "experiment_type",
-            "scenario"
+            "scenario",
+            "SC"
         ]
     )
 ):
@@ -2249,8 +2304,10 @@ for ax, var, title in zip(axes, variables, titles):
         ax.plot(
             sub["time"],
             sub[var],
-            color=colors[(sim, exp_type)],
-            linewidth=1
+            color=scenario_colors[sc],
+            linestyle=experiment_styles[exp_type]["linestyle"],
+            linewidth=experiment_styles[exp_type]["lw"],
+            alpha=experiment_styles[exp_type]["alpha"]
         )
 
         ax.text(
@@ -2272,10 +2329,30 @@ axes[0].set_ylabel(
 from matplotlib.lines import Line2D
 
 legend_elements = [
-    Line2D([0], [0], color="tab:blue", label="CMP baseline"),
-    Line2D([0], [0], color="tab:cyan", label="CMP alternatif"),
-    Line2D([0], [0], color="tab:red", label="CMPD baseline"),
-    Line2D([0], [0], color="tab:orange", label="CMPD alternatif"),
+
+    Line2D(
+        [0],[0],
+        color="black",
+        linestyle="-",
+        lw=3,
+        label="baseline"
+    ),
+
+    Line2D(
+        [0],[0],
+        color="black",
+        linestyle="--",
+        lw=2,
+        label="ii_native_naive"
+    ),
+
+    Line2D(
+        [0],[0],
+        color="black",
+        linestyle=":",
+        lw=2,
+        label="ii_native_non_naive"
+    )
 ]
 
 axes[-1].legend(handles=legend_elements)

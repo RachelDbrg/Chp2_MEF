@@ -15,18 +15,14 @@ scalaire t0 0
 ## Interpretation physique de ce temps là t = t* * T, où T est le temps caractéristique et t* est le temps numerique: t* = delta_t*nombre_de_pas_de_temps
 
 ## Definition du pas de temps
-scalaire delta_t 0.00001
+#scalaire delta_t 0.00001
 ## Pas de temps pour lequel gros coefs ont l'air de passer
 
 
-
-scalaire tf 1
-
+#scalaire tf 1
 
 ## Definition du nombre de pas de temps
 #scalaire nombre_de_pas_de_temps 2
-
-
 
 
 ## Si on fait ca, il faut definir une frequence d'Exportation MEF sinon on va saturer le disque
@@ -40,3 +36,13 @@ scalaire tf 1
 
 ## on fixe la frequence d'exportation a un snapshot tous les 3 ans 
 # donc une frequence d'exportation de 20 (1/20 resultat est exporté )
+
+
+
+
+## =================== Simu sur les 2 premieres annees "temps physique" pour voir les transient dynamics
+scalaire tf 0.0131  
+## permet de simuler 2 ans physiques
+scalaire delta_t 0.0001
+## un pas reprsente delta_t*t* = 0.0153 an soit 5.6 jours
+## pour représenter 2 ans, soit 24 mois 
