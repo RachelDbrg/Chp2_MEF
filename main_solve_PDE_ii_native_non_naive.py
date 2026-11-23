@@ -326,8 +326,8 @@ rank = comm.Get_rank()
 
 
 # Cas particulier pour skiper le 1er scenario (deja fait)
-#for scenario_id, theta in enumerate(theta_scenarios[1:], start=1):
-for scenario_id, theta in enumerate(theta_scenarios):
+for scenario_id, theta in enumerate(theta_scenarios[1:], start=1):
+#for scenario_id, theta in enumerate(theta_scenarios):
 
     pp_reinit = gfc.reqPP("pp_redemarre")
     pp_reinit.execute()

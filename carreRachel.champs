@@ -606,14 +606,16 @@ pp_reinitialise_solveur pp_redemarre [Solveur_inst(probDida)]
   
   permet_ecrasement_fichiers true
 
-  prefixe_sorties $CheminAccesExport$/simulations/ii_native_non_naive_2_first_years/TMP_CMPD/CMPD_
+  #prefixe_sorties $CheminAccesExport$/simulations/iii_var_invasive_SC7_caribou_SC9_moose/TMP_CMPD/CMPD_
+  prefixe_sorties $CheminAccesExport$/simulations/iv_var_pred_SC7_caribou_SC9_moose/TMP_CMP/CMP_
   #prefixe_sorties $CheminAccesExport$/simulations/validation_bio/CMPD_diffusion/CMPD_
   
   #prefixe_sorties $CheminAccesExport$/simulations/validation_bio/CMPD_diffusion/CMPD_
 }
 
 ## Forcer la premiere exportation (initiale)
-pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/ii_native_non_naive_2_first_years/TMP_CMPD/CMPD_", 1  , true, true]
+#pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/iii_var_invasive_SC7_caribou_SC9_moose/TMP_CMPD/CMPD_", 1  , true, true]
+pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/iv_var_pred_SC7_caribou_SC9_moose/TMP_CMP/CMP_", 1  , true, true]
 #pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/validation_bio/CMPD_diffusion/CMPD_", 1  , true, true]
 
 

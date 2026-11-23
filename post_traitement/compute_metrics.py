@@ -328,6 +328,7 @@ def compute_resource_alignment(
 
     results = []
 
+    # Alignements individuels
     for sp, resources in resource_map.items():
 
         sp_array = vtk_to_numpy(
@@ -336,9 +337,7 @@ def compute_resource_alignment(
 
         for resource in resources:
 
-            arr = cell_data.GetArray(
-                resource
-            )
+            arr = cell_data.GetArray(resource)
 
             if arr is None:
                 continue
@@ -353,12 +352,43 @@ def compute_resource_alignment(
 
             results.append(
                 {
-                    "pair":
-                        f"{sp}-{resource}",
-                    "ALIGN":
-                        align
+                    "pair": f"{sp}-{resource}",
+                    "ALIGN": align
                 }
             )
+
+    # -------------------------------------------------
+    # Ressources IFD = M1 + M2
+    # -------------------------------------------------
+
+    for sp in ["C", "M", "D"]:
+
+        sp_array = vtk_to_numpy(
+            cell_data.GetArray(sp)
+        )
+
+        resource_ifd = (
+            vtk_to_numpy(
+                cell_data.GetArray(f"M1_{sp}")
+            )
+            +
+            vtk_to_numpy(
+                cell_data.GetArray(f"M2_{sp}")
+            )
+        )
+
+        align_ifd = resource_alignment(
+            sp_array,
+            resource_ifd,
+            areas
+        )
+
+        results.append(
+            {
+                "pair": f"{sp}-IFDresource",
+                "ALIGN": align_ifd
+            }
+        )
 
     predator_pairs = {
 
@@ -374,20 +404,28 @@ def compute_resource_alignment(
         "C": {
             "riskP": ["P"],
             "riskPM": ["P", "M"],
+            "riskPD": ["P", "D"],
             "riskPMD": ["P", "M", "D"]
         },
 
         "M": {
             "riskP": ["P"],
             "riskPC": ["P", "C"],
+            "riskPD": ["P", "D"],
             "riskPCD": ["P", "C", "D"]
         },
 
         "D": {
             "riskP": ["P"],
             "riskPM": ["P", "M"],
-            "riskPMC": ["P", "M", "C"]
+            "riskPC": ["P", "C"],
+            "riskPCM": ["P", "C", "M"]
+        },
+
+        "P": {
+            "riskP":["P"]
         }
+        
     }
 
     for prey, predator in predator_pairs.items():
@@ -481,9 +519,6 @@ for experiment in sorted(os.listdir(root)):
             if experiment == "i":
                 experiment_type = "baseline"
 
-            # elif experiment == "test_figures":
-            #     experiment_type = "alternative"
-
 
             ## Cherche dans le sous-dossier ii) pour lequel on a fait varier les parms 
             elif experiment == "ii_native_naive":
@@ -491,6 +526,11 @@ for experiment in sorted(os.listdir(root)):
 
             elif experiment == "ii_native_non_naive":
                             experiment_type = "ii_native_non_naive"
+
+            ## Cherche dans le sous-dossier iii) pour lequel on a fait varier les parms de la proie invasive
+            elif experiment == "iii_var_invasive":
+                experiment_type = "iii_var_invasive"
+
 
             else:
                 continue
@@ -604,18 +644,30 @@ for sim_info in simulation_sets:
             + params.get("m4",0)
             + params.get("m5",0)
             + params.get("m6",0)
-    )
+        )
 
         p_ifd = (
                 params.get("p1",0)
                 + params.get("p2",0)
-            )
+        )
         
         p_lof = (
             params.get("p3",0)
             + params.get("p4",0)
             + params.get("p5",0)
             + params.get("p6",0)
+        )
+
+        d_ifd = (
+            params.get("d1",0)
+            + params.get("d2",0)
+        )
+
+        d_lof = (
+            params.get("d3",0)
+            + params.get("d4",0)
+            + params.get("d5",0)
+            + params.get("d6",0)
         )
 
 
@@ -732,7 +784,10 @@ for sim_info in simulation_sets:
                             "m_lof": m_lof,
 
                             "p_ifd": p_ifd,
-                            "p_lof": p_lof
+                            "p_lof": p_lof,
+
+                            "d_ifd": d_ifd,
+                            "d_lof": d_lof
                         }
                     )
 
@@ -762,7 +817,10 @@ for sim_info in simulation_sets:
                             "m_lof": m_lof,
 
                             "p_ifd": p_ifd,
-                            "p_lof": p_lof
+                            "p_lof": p_lof,
+
+                            "d_ifd": d_ifd,
+                            "d_lof": d_lof
                         }
                     )
 
@@ -923,7 +981,9 @@ index_cols = [
     "m_ifd",
     "m_lof",
     "p_ifd",
-    "p_lof"
+    "p_lof",
+    "d_ifd",
+    "d_lof"
 ]
 
 
@@ -1010,10 +1070,83 @@ df_wide = (
 ## Verification
 print(df_wide["simulation"].value_counts())
 
+# ====================================================
+# Alignement ressources fondamentales / risque
+# ====================================================
+
+df_wide["C_IFD_ratio_P"] = (
+    df_wide["C-IFDresource_ALIGN"]
+    /
+    df_wide["C-riskP_ALIGN"]
+)
+
+df_wide["M_IFD_ratio_P"] = (
+    df_wide["M-IFDresource_ALIGN"]
+    /
+    df_wide["M-riskP_ALIGN"]
+)
+
+df_wide["D_IFD_ratio_P"] = (
+    df_wide["D-IFDresource_ALIGN"]
+    /
+    df_wide["D-riskP_ALIGN"]
+)
+
+# Caribou
+df_wide["C_IFD_ratio_PM"] = (
+    df_wide["C-IFDresource_ALIGN"]
+    /
+    df_wide["C-riskPM_ALIGN"]
+)
+
+df_wide["C_IFD_ratio_PMD"] = (
+    df_wide["C-IFDresource_ALIGN"]
+    /
+    df_wide["C-riskPMD_ALIGN"]
+)
+
+# Moose
+df_wide["M_IFD_ratio_PC"] = (
+    df_wide["M-IFDresource_ALIGN"]
+    /
+    df_wide["M-riskPC_ALIGN"]
+)
+
+df_wide["M_IFD_ratio_PCD"] = (
+    df_wide["M-IFDresource_ALIGN"]
+    /
+    df_wide["M-riskPCD_ALIGN"]
+)
+
+# Deer
+df_wide["D_IFD_ratio_PM"] = (
+    df_wide["D-IFDresource_ALIGN"]
+    /
+    df_wide["D-riskPM_ALIGN"]
+)
+
+df_wide["D_IFD_ratio_PCM"] = (
+    df_wide["D-IFDresource_ALIGN"]
+    /
+    df_wide["D-riskPCM_ALIGN"]
+)
+
 
 df_wide["c_ratio"] = np.where(
     df_wide["c_lof"] > 0,
     df_wide["c_ifd"] / df_wide["c_lof"],
+    np.nan
+)
+
+df_wide["m_ratio"] = np.where(
+    df_wide["m_lof"] > 0,
+    df_wide["m_ifd"] / df_wide["m_lof"],
+    np.nan
+)
+
+df_wide["d_ratio"] = np.where(
+    df_wide["d_lof"] > 0,
+    df_wide["d_ifd"] / df_wide["d_lof"],
     np.nan
 )
 
@@ -1029,19 +1162,19 @@ print(
 
 ## Calcul de plusieurs ratio selon comment est considere le risque de predation
 ### Caribou
-df_wide["C_ratio_P"] = (
+df_wide["C_PHI_ratio_P"] = (
     df_wide["C-Phi_C_ALIGN"]
     /
     df_wide["C-riskP_ALIGN"]
 )
 
-df_wide["C_ratio_PM"] = (
+df_wide["C_PHI_ratio_PM"] = (
     df_wide["C-Phi_C_ALIGN"]
     /
     df_wide["C-riskPM_ALIGN"]
 )
 
-df_wide["C_ratio_PMD"] = (
+df_wide["C_PHI_ratio_PMD"] = (
     df_wide["C-Phi_C_ALIGN"]
     /
     df_wide["C-riskPMD_ALIGN"]
@@ -1049,47 +1182,54 @@ df_wide["C_ratio_PMD"] = (
 
 
 ### Orignal
-df_wide["M_ratio_P"] = (
+df_wide["M_PHI_ratio_P"] = (
     df_wide["M-Phi_M_ALIGN"]
     /
     df_wide["M-riskP_ALIGN"]
 )
 
-df_wide["M_ratio_PC"] = (
+df_wide["M_PHI_ratio_PC"] = (
     df_wide["M-Phi_M_ALIGN"]
     /
     df_wide["M-riskPC_ALIGN"]
 )
 
-df_wide["M_ratio_PCD"] = (
+df_wide["M_PHI_ratio_PCD"] = (
     df_wide["M-Phi_M_ALIGN"]
     /
     df_wide["M-riskPCD_ALIGN"]
 )
 
 ### Cerf
-df_wide["D_ratio_P"] = (
+df_wide["D_PHI_ratio_P"] = (
     df_wide["D-Phi_D_ALIGN"]
     /
     df_wide["D-riskP_ALIGN"]
 )
 
-df_wide["D_ratio_PM"] = (
+df_wide["D_PHI_ratio_PM"] = (
     df_wide["D-Phi_D_ALIGN"]
     /
     df_wide["D-riskPM_ALIGN"]
 )
 
-df_wide["D_ratio_PMC"] = (
+df_wide["D_PHI_ratio_PMC"] = (
     df_wide["D-Phi_D_ALIGN"]
     /
-    df_wide["D-riskPMC_ALIGN"]
+    df_wide["D-riskPCM_ALIGN"]
 )
+
+
+
+
+
+
 
 df_wide["log_ratio"] = np.log10(
     df_wide["c_ifd"] /
     df_wide["c_lof"]
 )
+
 
 
 df_wide.to_csv(
@@ -1140,19 +1280,44 @@ scenario_order = (
     .index
 )
 
+#
+# SC pour les expériences non-baseline
+#
 scenario_map = {
     scen: f"SC{int(scen.split('_')[1])}"
-    for scen in df_wide["scenario"].unique()
+    for scen in (
+        df_wide.loc[
+            df_wide["experiment_type"] != "baseline",
+            "scenario"
+        ]
+        .unique()
+    )
 }
 
-print(scenario_map) 
+df_wide["SC"] = np.nan
 
+#
+# scénarios expérimentaux
+#
+mask = (
+    df_wide["experiment_type"]
+    != "baseline"
+)
 
-
-df_wide["SC"] = (
-    df_wide["scenario"]
+df_wide.loc[mask, "SC"] = (
+    df_wide.loc[mask, "scenario"]
     .map(scenario_map)
 )
+
+#
+# baseline
+#
+df_wide.loc[
+    ~mask,
+    "SC"
+] = "BASELINE"
+
+print(df_wide["SC"].value_counts())
 
 df_wide["SC_label"] = (
     df_wide["simulation"]

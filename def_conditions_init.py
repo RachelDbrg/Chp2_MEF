@@ -57,7 +57,7 @@ def setup_initial_conditions(
     densiteInitC = 1
     densiteInitM = 1
     densiteInitP = 1
-    densiteInitD = 0.9 ## Pas sure de comprendre pourquoi mais maintenant si je mets ca a 1, ca plante
+    densiteInitD = 0 ## Pas sure de comprendre pourquoi mais maintenant si je mets ca a 1, ca plante
 
     initial_densities = {
     "caribou": densiteInitC,

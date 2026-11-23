@@ -152,9 +152,9 @@ for col in deer_cols:
 
 
 ## On prend les parms optimaux qui viennent des simulations précédentes pour C et M
-## scn_0002 pour C et sc_0009 pour M
+## scn_0007 pour C et sc_0009 pour M
 
-caribou_id = 2
+caribou_id = 7
 moose_id   = 9
 
 caribou = (
@@ -219,7 +219,7 @@ with open(values_scenario_file, "w") as f:
 sim_root = os.path.join(
     os.path.dirname(__file__),
     "simulations",
-    "iv_var_pred"
+    "iv_var_pred_SC7_caribou_SC9_moose"
 )
 
 export_dir = os.path.join(
@@ -329,8 +329,8 @@ rank = comm.Get_rank()
 
 
 # Cas particulier pour skiper le 1er scenario (deja fait)
-#for scenario_id, theta in enumerate(theta_scenarios[1:], start=1):
-for scenario_id, theta in enumerate(theta_scenarios):
+for scenario_id, theta in enumerate(theta_scenarios[1:], start=1):
+#for scenario_id, theta in enumerate(theta_scenarios):
 
     pp_reinit = gfc.reqPP("pp_redemarre")
     pp_reinit.execute()

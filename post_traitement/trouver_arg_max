@@ -1,0 +1,180 @@
+# # ====================== Get the maximizing parameters 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+
+
+# ====================== LECTURE DES DONNEES ======================
+df = pd.read_pickle(
+    "outputs/Bhattacharyya_long.pkl"
+)
+
+df_wide = pd.read_pickle(
+    "outputs/Bhattacharyya_wide.pkl"
+)
+
+df_spread = pd.read_pickle(
+    "outputs/spread_results.pkl"
+)
+
+df_dist = pd.read_pickle(
+    "outputs/distribution_results.pkl"
+)
+
+df_wide = pd.read_pickle(
+    "outputs/Bhattacharyya_wide.pkl"
+)
+
+df_wide["SC_label"] = (
+    df_wide["simulation"]
+    + "_"
+    + df_wide["SC"]
+)
+
+df_spread["SC"] = (
+    "SC"
+    + df_spread["scenario"]
+        .str.replace("scenario_", "", regex=False)
+        .astype(int)
+        .astype(str)
+)
+
+
+print(
+    df_wide[
+        ["scenario","SC","experiment_type"]
+    ]
+    .drop_duplicates()
+    .sort_values("SC")
+)
+
+
+unique_sc = sorted(
+    df_wide["SC"].unique()
+)
+
+## ======================================================================================================
+## ARG MAX POUR CARIBOU ET MOOSE, BASED ON SCENARIOS ii) 
+## ======================================================================================================
+# On se place au temps final
+
+tmax = df_wide["time"].max()
+
+## Pour le caribou et le moose, on regarde entre baseline, et les scenarios ii)
+df_CM = df_wide[
+    (df_wide["time"] == tmax)
+    &
+    (
+        df_wide["experiment_type"].isin([
+            "baseline",
+            "ii_native_naive",
+            "ii_native_non_naive"
+        ])
+    )
+].copy()
+
+
+## Pour le caribou, quel scenario maximise le ratio d'alignement IFDressource /Predateur (P solo)
+best_C = df_CM.loc[
+    df_CM["C_IFD_ratio_P"].idxmax()
+]
+
+print(
+    best_C[
+        [
+            "experiment_type",
+            "scenario",
+            "simulation",
+            "C_IFD_ratio_P",
+            "C-IFDresource_ALIGN",
+            "C-riskP_ALIGN",
+            "c_ifd",
+            "c_lof"
+        ]
+    ]
+)
+
+## Pour le moose, quel scenario maximise le ratio d'alignement IFDressource /Predateur (P solo)
+best_M = df_CM.loc[
+    df_CM["M_IFD_ratio_P"].idxmax()
+]
+
+print(
+    best_M[
+        [
+            "experiment_type",
+            "scenario",
+            "simulation",
+            "M_IFD_ratio_P",
+            "M-IFDresource_ALIGN",
+            "M-riskP_ALIGN",
+            "m_ifd",
+            "m_lof"
+        ]
+    ]
+)
+
+
+# ======================
+## RESULTATS: 
+# ======================
+
+# ## Pour le caribou:
+# # ================
+# # C
+# # ================
+# # pair
+# # scenario         scenario_0002
+# # simulation                CMPD
+# # c_ratio               3.610343
+# # C_tradeoff            -0.29947
+# # C-Phi_C_ALIGN          0.49289
+# # C-riskP_ALIGN          0.79236
+
+
+# ## Pour l'orignal
+# # ================
+# # M
+# # ================
+# # pair
+# # scenario         scenario_0009
+# # simulation                CMPD
+# # c_ratio               1.169192
+# # M_tradeoff           -1.414257
+# # M-Phi_M_ALIGN        -0.538927
+# # M-riskP_ALIGN         0.875329
+
+
+
+
+## ======================================================================================================
+## ARG MAX POUR LE CERF, BASED ON SCENARIOS iii) 
+## ======================================================================================================
+
+df_D = df_wide[
+    (df_wide["time"] == tmax)
+    &
+    (df_wide["experiment_type"] == "iii_var_invasive")
+].copy()
+
+best_D = df_D.loc[
+    df_D["D_IFD_ratio_PCM"].idxmax()
+]
+
+print(
+    best_D[
+        [
+            "scenario",
+            "simulation",
+            "c_ratio",
+            "D_IFD_ratio_P",
+            "c_ifd",
+            "c_lof",
+            "m_ifd",
+            "m_lof",
+            "p_ifd",
+            "p_lof"
+        ]
+    ]
+)
