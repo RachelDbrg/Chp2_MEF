@@ -11,6 +11,7 @@ __pycache__/
 
 # Generated simulations
 simulations/
+simulations_from_rorqual/
 
 # Generated figures
 figures/

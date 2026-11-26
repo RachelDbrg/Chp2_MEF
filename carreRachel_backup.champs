@@ -1,0 +1,737 @@
+GIREF_MODE_VERBOSE_CHRONO 0
+
+
+#==========================================================================================================================================================================
+#             Simple and cross diffusion model - application to the wolf ungulate system
+#==========================================================================================================================================================================
+
+# ================================================= 0. INITIALISATION                                   ===================================================================
+
+# Spécification du champ géométrique à utiliser pour le problème (linéaire ou quadratique).
+# Nous prenons ici un champ géométrique linéaire:
+champgeolin champgeo
+
+## Le paysage utilisé est importé dans le fichier "collection", créé par le script Python selon le paysage utilisé
+
+## On recupere les valeurs des colonnes du .csv 
+scallin valeurs_paysage "carreRachel.habitat.cmefpp" 
+scallin valeurs_diversity "carreRachel.diversity.cmefpp" 
+
+
+## Definition de quelles espèces sont présentes initialement et à quelles positions
+#include position_densite_initiale.champs
+
+## Importation des CI, écrites par le python
+include initial_conditions.champs
+
+## Valeurs des parms qui changent a chaque iteration
+include values_scenario.champs
+
+## Declaration des inconnues 
+scalquad C 0
+scalquad M 0 
+scalquad P 0 
+scalquad D 0 
+
+
+## Declaration des inconnues moyennees
+## Seront issues de la convolution des inconnues par un noyau de largeur 
+## rayon_perception/(2*sqrt(2))^2
+
+scalquad C0_bar 0
+scalquad M0_bar 0 
+scalquad P0_bar 0 
+scalquad D0_bar 0 
+
+scalquad C_bar 0
+scalquad M_bar 0 
+scalquad P_bar 0 
+scalquad D_bar 0 
+
+
+## Attribution des distributions initiales des inconnues (utile pour remettre a zero les distributions entre les itérations)
+pp_reinterpole                      pp_reinitialise_dens_init_C                       [C,      C0]
+pp_reinterpole                      pp_reinitialise_dens_init_M                       [M,      M0]
+pp_reinterpole                      pp_reinitialise_dens_init_P                       [P,      P0]
+pp_reinterpole                      pp_reinitialise_dens_init_D                       [D,      D0]
+
+pp_reinterpole                      pp_reinitialise_dens_init_C_bar                   [C_bar,      C0_bar]
+pp_reinterpole                      pp_reinitialise_dens_init_M_bar                   [M_bar,      M0_bar]
+pp_reinterpole                      pp_reinitialise_dens_init_P_bar                   [P_bar,      P0_bar]
+pp_reinterpole                      pp_reinitialise_dens_init_D_bar                   [D_bar,      D0_bar]
+
+
+
+## Découpe le paysage en binaires en fct du type d'habitat
+include decoupe_paysage_binaire.champs
+
+## Initialisation de tous les champs intermediaires utilises pour le calcul des moyennages locaux
+include initialisation_champs_moyennage_local.champs
+
+## Ajoute tous les champs adimensionels
+include parms_adim.champs
+
+# -----------------------------------------------------------------------------
+# 2. Longueur de lissage
+# -----------------------------------------------------------------------------
+
+# "Diffusivité" du filtre : tenseur isotrope ell^2 * I
+## Nb: le "^2" est deja applique par le script python adimension_parms.py
+empilementto2 L_lissage_C  [rayon_perception_C_norm_Helmotz,rayon_perception_C_norm_Helmotz,rayon_perception_C_norm_Helmotz,Zero,Zero,Zero]
+empilementto2 L_lissage_M  [rayon_perception_M_norm_Helmotz,rayon_perception_M_norm_Helmotz,rayon_perception_M_norm_Helmotz,Zero,Zero,Zero]
+empilementto2 L_lissage_P  [rayon_perception_P_norm_Helmotz,rayon_perception_P_norm_Helmotz,rayon_perception_P_norm_Helmotz,Zero,Zero,Zero]
+empilementto2 L_lissage_D  [rayon_perception_D_norm_Helmotz,rayon_perception_D_norm_Helmotz,rayon_perception_D_norm_Helmotz,Zero,Zero,Zero]
+
+
+# -----------------------------------------------------------------------------
+# 3. Seconds membres : f = M - M_bar
+#    Le terme -M_bar joue le rôle du terme de "réaction" du filtre ; il dépend
+#    des inconnues et doit donc être linéarisé (voir la vérification plus bas).
+# -----------------------------------------------------------------------------
+scalaire f_C_bar  C - C_bar
+scalaire f_M_bar  M - M_bar
+scalaire f_P_bar  P - P_bar
+scalaire f_D_bar  D - D_bar
+
+
+
+
+# ================================================= 0.1 Définition du solveur instationnaire                                            ===================================
+
+# Liste d'informations utiles au solveur:
+include gestionnaire_pas_de_temps.champs
+
+
+# ================================================= 0.2 Definition du schema d'integration              ===================================================================
+
+# Paramètres qui serviront à créer un schéma d'intégration. Plus il y a de points, et plus la solution est
+# exacte. Il faut respecter certains critères lorsqu'on met des points (seulement certaines valeurs)
+# fonctionnent dépendamment du type d'élément:
+{ ParamSchema
+  scalaire ptintgarete               3
+  scalaire ptintgface3               3
+  scalaire ptintgface4               2
+  scalaire ptintgelement1d           3
+  scalaire ptintgtriangle            16
+  scalaire ptintgquadrangle          2
+  #scalaire ptintgtetra               5l
+  scalaire ptintgprismetri_legendre  2
+  scalaire ptintgprismetri_triangle  3
+  scalaire ptintghexa                2
+}
+
+# Création d'un schéma d'intégration selon les paramètres du "namespace" ParamSchema
+schemaintg schema_intg ParamSchema
+
+
+# ================================================= 0.3 Definition entite geométriques du domaine  =================================================================
+## La creation du maillage n'entraine pas la creation des entités, alors on fait ca nous meme
+## En gros, defini un carre de (0,1)^2
+include definition_domaine.champs
+
+
+cree_entite sous_domaine_cropped sous_domaine 
+
+
+# ================================================= 0.4 Importation les coefficients de selection qui viennent des iSSA ========================================================
+
+### For caribou
+include beta_Boreal_Caribou_habitat_selection_coefficients.champs
+include beta_Boreal_Caribou_diversity_selection_coefficients.champs
+include beta_Boreal_Caribou_conspecific_selection_coefficients.champs
+include beta_Boreal_Caribou_moose_selection_coefficients.champs
+include beta_Boreal_Caribou_wolf_selection_coefficients.champs
+include beta_Boreal_Caribou_deer_selection_coefficients.champs
+
+### For moose
+include beta_Moose_habitat_selection_coefficients.champs
+include beta_Moose_diversity_selection_coefficients.champs
+include beta_Moose_conspecific_selection_coefficients.champs
+include beta_Moose_other_prey_selection_coefficients.champs
+include beta_Moose_wolf_selection_coefficients.champs
+include beta_Moose_deer_selection_coefficients.champs
+
+### For wolf
+include beta_Gray_Wolf_habitat_selection_coefficients.champs
+include beta_Gray_Wolf_diversity_selection_coefficients.champs
+include beta_Gray_Wolf_conspecific_selection_coefficients.champs
+include beta_Gray_Wolf_caribou_selection_coefficients.champs
+include beta_Gray_Wolf_moose_selection_coefficients.champs
+include beta_Gray_Wolf_deer_selection_coefficients.champs
+
+## For deer
+include beta_Deer_habitat_selection_coefficients.champs
+include beta_Deer_diversity_selection_coefficients.champs
+include beta_Deer_conspecific_selection_coefficients.champs
+include beta_Deer_caribou_selection_coefficients.champs
+include beta_Deer_moose_selection_coefficients.champs
+include beta_Deer_wolf_selection_coefficients.champs
+
+
+
+# ==================================================================================================================================================================
+# ==================================================================================================================================================================
+
+#                                                      Definition des termes pour utiliser dans les termes de formulations  
+#                                                      tous les parametres sont normalisés dans le python, pas physiques    
+
+# ==================================================================================================================================================================
+# ==================================================================================================================================================================
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#                                                      ====       DIFFUSION SIMPLE      ====
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Creation des tenseurs 3D
+## C'est une matrice symetrique en 2D 3x3, qui a pour valeurs sur la diagonale les 3 premieres valeurs du tenseur, et en autres valeurs les 3 derniers termes du tenseur.
+empilementto2 DC                        [coeff_diffusion_C_norm,  coeff_diffusion_C_norm,   coeff_diffusion_C_norm,  Zero, Zero, Zero]
+empilementto2 DM                        [coeff_diffusion_M_norm,  coeff_diffusion_M_norm,   coeff_diffusion_M_norm,  Zero, Zero, Zero]
+empilementto2 DP                        [coeff_diffusion_P_norm,  coeff_diffusion_P_norm,   coeff_diffusion_P_norm,  Zero, Zero, Zero]
+empilementto2 DD                        [coeff_diffusion_D_norm,  coeff_diffusion_D_norm,   coeff_diffusion_D_norm,  Zero, Zero, Zero]
+
+
+## Creation du tenseur avec les coefficients d'advection pour D
+empilementto2 adv_rate_D                        [advection_rate_D_norm,  advection_rate_D_norm,   advection_rate_D_norm,  Zero, Zero, Zero]
+
+
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#                                                      ====       DIFFUSION CROISEE      ====
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------          Caribou                   -------------------------------------------------------------------
+
+
+## Defini comme la somme de toutes les densites initiales
+scalaire K_C           5
+#scalaire mult_c        2 * coeff_diffusion_C_norm
+scalaire mult_c        1
+scalaire chi_C         (1 - C/K_C+1e-16)
+
+
+
+scalaire    M1_C       c1 * (C_landcover1       * Z1 + C_landcover2 * Z2 + C_landcover3 * Z3 + C_landcover4 * Z4 + C_landcover5 * Z5 + C_landcover6 * Z6 + C_landcover7 * Z7 + C_landcover8 * Z8 + C_landcover9 * Z9 + C_landcover11 * Z11 + C_landcover12 * Z12  ) 
+scalaire    M2_C       c2 * (C_diversity1       * Y1 + C_diversity2 * Y2 + C_diversity3 * Y3 + C_diversity4 * Y4 + C_diversity5 * Y5 + C_diversity6 * Y6) 
+scalaire    M3_C       c3 * C_cons_dens         * C_bar
+scalaire    M4_C       c4 * C_moose_dens        * M_bar
+scalaire    M5_C       c5 * C_wolf_dens         * P_bar 
+scalaire    M6_C       c6 * C_WTD_dens          * D_bar
+
+
+
+
+#scalaire    Phi_C      2 * coeff_diffusion_C_norm * (M1_C + M2_C + M3_C + M4_C + M5_C + M6_C)
+scalaire    Phi_C     2 * coeff_diffusion_C_norm * (avg_M1_C + avg_M2_C + M3_C + M4_C + M5_C + M6_C ) 
+
+
+gradient    grad_Phi_C  Phi_C 
+
+
+
+
+# ------------------------------------------------------------------          Moose                   -------------------------------------------------------------------
+
+## Defini comme la somme de toutes les densites initiales
+scalaire    K_M         5
+#scalaire    mult_m      2 * coeff_diffusion_M_norm
+scalaire mult_m 1 
+scalaire    chi_M       (1 - M/K_M+1e-16)
+
+scalaire    M1_M        m1 * (M_landcover1      * Z1 + M_landcover2 * Z2 + M_landcover3 * Z3 + M_landcover4 * Z4 + M_landcover5 * Z5 + M_landcover6 * Z6 + M_landcover7 * Z7 + M_landcover8 * Z8 + M_landcover9 * Z9 + M_landcover11 * Z11 + M_landcover12 * Z12  ) 
+scalaire    M2_M        m2 * (M_diversity1      * Y1 + M_diversity2 * Y2 + M_diversity3 * Y3 + M_diversity4 * Y4 + M_diversity5 * Y5 + M_diversity6 * Y6) 
+scalaire    M3_M        m3 * M_cons_dens        * M_bar
+scalaire    M4_M        m4 * M_other_prey_dens  * C_bar
+scalaire    M5_M        m5 * M_wolf_dens        * P_bar 
+scalaire    M6_M        m6 * M_WTD_dens         * D_bar
+
+
+#scalaire    Phi_M       2 * coeff_diffusion_M_norm * (M1_M + M2_M + M3_M + M4_M + M5_M + M6_M)
+scalaire    Phi_M       2 * coeff_diffusion_M_norm * (avg_M1_M + avg_M2_M + M3_M + M4_M + M5_M + M6_M)
+#scalaire    Phi_M       2 * coeff_diffusion_M_norm * (M3_M + M4_M + M5_M + M6_M)
+#scalaire    Phi_M        0
+
+gradient    grad_Phi_M  Phi_M 
+
+
+
+# ------------------------------------------------------------------          Wolf                   -------------------------------------------------------------------
+
+## Defini comme la somme de toutes les densites initiales
+scalaire    K_P          1
+#scalaire    mult_p       2 * coeff_diffusion_P_norm
+scalaire    mult_p      1
+scalaire    chi_P       (1 - P/K_P+1e-16)
+
+
+scalaire    M1_P        p1 * (P_landcover1      * Z1 + P_landcover2 * Z2 + P_landcover3 * Z3 + P_landcover4 * Z4 + P_landcover5 * Z5 + P_landcover6 * Z6 + P_landcover7 * Z7 + P_landcover8 * Z8 + P_landcover9 * Z9 + P_landcover11 * Z11 + P_landcover12 * Z12  ) 
+scalaire    M2_P        p2 * (P_diversity1      * Y1 + P_diversity2 * Y2 + P_diversity3 * Y3 + P_diversity4 * Y4 + P_diversity5 * Y5 + P_diversity6 * Y6) 
+scalaire    M3_P        p3 * P_cons_dens        * P_bar
+scalaire    M4_P        p4 * P_caribou_dens     * C_bar
+scalaire    M5_P        p5 * P_moose_dens       * M_bar
+scalaire    M6_P        p6 * P_WTD_dens         * D_bar
+
+
+scalaire    Phi_P       2 * coeff_diffusion_P_norm * (avg_M1_P + avg_M2_P + M3_P + M4_P + M5_P + M6_P)
+
+gradient    grad_Phi_P  Phi_P
+
+
+
+# ------------------------------------------------------------------          WTD                   -------------------------------------------------------------------
+
+scalaire    K_D          1
+#scalaire    mult_d       (2 * coeff_diffusion_D_norm)
+scalaire    mult_d       1
+scalaire    chi_D       (1 - D/K_D+1e-16)
+
+scalaire    M1_D        d1 * (D_landcover1      * Z1 + D_landcover2 * Z2 + D_landcover3 * Z3 + D_landcover4 * Z4 + D_landcover5 * Z5 + D_landcover6 * Z6 + D_landcover7 * Z7 + D_landcover8 * Z8 + D_landcover9 * Z9 + D_landcover11 * Z11 + D_landcover12 * Z12  ) 
+scalaire    M2_D        d2 * (D_diversity1      * Y1 + D_diversity2 * Y2 + D_diversity3 * Y3 + D_diversity4 * Y4 + D_diversity5 * Y5 + D_diversity6 * Y6) 
+scalaire    M3_D        d3 * D_cons_dens        * D_bar
+scalaire    M4_D        d4 * D_caribou_dens     * C_bar
+scalaire    M5_D        d5 * D_wolf_dens        * P_bar 
+scalaire    M6_D        d6 * D_moose_dens       * M_bar
+
+
+#scalaire    Phi_D       2 * coeff_diffusion_D_norm * (M1_D) 
+scalaire    Phi_D       2 * coeff_diffusion_D_norm * (avg_M1_D + avg_M2_D + M3_D + M4_D + M5_D + M6_D)
+#scalaire    Phi_D       M1_D + M2_D
+#scalaire    Phi_D       0
+
+gradient    grad_Phi_D  Phi_D
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#                                                      ====       ADVECTION      ====
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Definition de la direction du vecteur w_D, dont on fixe la norme a 1 et qui pointe selon un y positif (vers le haut)
+vectoriel3D w_D [0, 1, 0]
+
+
+#==========================================================================================================================================================================
+#==========================================================================================================================================================================
+
+# ================================================= 2. PREPARATION DES EQUATIONS POUR RESOLUTION                                               ============================
+
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.1 Definition d'un probleme element fini pour MEF  ===================================================================
+
+
+problemeef probDida
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.2 Definition des Pré et Post PostTraitements      ===================================================================
+
+# On définit ici les fonctions (~actions), qui seront roulées en court de résolution des PDE. On décide ensuite l'ordre de leur execution a la fin du script. 
+
+#include def_pre_post_traitements.champs
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.4 Définition des termes de formulation (TF)                                       ===================================
+
+##### ------------ Ajout de SUPG pour eviter que ca saute si on a + de transport que de diffusion
+
+include stabilisation_supg.champs
+
+
+{ probDida
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.1 TF de C                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  ### ----------------------------- Termes de diffusion simple
+  ## on veut resoudre l'equation de la diffusion seulement dans le domaine qui n'est pas l'obstacle (sous-domaine)
+  #tfdiffusion                    tfDiffusionC                                   [champgeo, C, C, DC, schema_intg, defaut::sous_domaine_cropped]
+  #tfdiffusion                    tfDiffusionC                                  [champgeo, C, C, DC, schema_intg]
+
+  
+
+  ## ---------------------------- Termes de diffusion croisée
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels C est sensible, pondérés par les facteurs c_i
+
+    
+  #formulation_transport_conservatif_diffusion_inst_supg          transport_C                [schema_intg, avg_Phi_C, (C , DC, mult_c)]
+  formulation_transport_conservatif_mobilite_diffusion_inst_supg                                  [schema_intg, Phi_C, (C, DC, mult_c, chi_C)]
+  
+  
+  ## Mise a jour de C_bar
+  formulation_diffusion_source [schema_intg,(C_bar, L_lissage_C, f_C_bar)]  
+
+
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.2 TF de M                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ### ----------------------------- Termes de diffusion 
+  #tfdiffusion                    tfDiffusionM                                [champgeo, M, M, DM, schema_intg]
+
+  empilementto2 no_diff_M    [petit_diff,petit_diff,petit_diff, Zero, Zero, Zero]
+
+  #tfdiffusion                    tfDiffusionM                                   [champgeo, M, M, no_diff_M, schema_intg]
+
+  
+
+
+  ## ---------------------------- Termes de diffusion croisée
+
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
+  #formulation_transport_diffusion_inst          transport_M                  [schema_intg, grad_Phi_M, (M, DM, mult_m)]
+  #formulation_transport_conservatif_diffusion_inst_supg          transport_M                [schema_intg, avg_Phi_M, (M, DM, mult_m)]
+
+  formulation_transport_conservatif_mobilite_diffusion_inst_supg            transport_M                      [schema_intg, Phi_M, (M, DM, mult_m, chi_M)]
+
+
+  ## Mise a jour de M_bar
+  formulation_diffusion_source [schema_intg,(M_bar, L_lissage_M,f_M_bar)]  
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.3 TF de P                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ### ----------------------------- Termes de diffusion 
+  #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg, defaut::sous_domaine_cropped]
+  #tfdffusion                    tfDiffusionP                                   [champgeo, P, P, DP, schema_intg]
+
+
+  empilementto2 no_diff_P    [petit_diff, petit_diff, petit_diff, Zero, Zero, Zero]
+
+  #tfdiffusion                    tfDiffusionP                                   [champgeo, P, P, no_diff_P, schema_intg]
+
+  
+  
+  ## ---------------------------- Termes de diffusion croisée
+
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels P est sensible, pondérés par les facteurs p_i
+  #formulation_transport_diffusion_inst          transport_P                  [schema_intg, grad_Phi_P, (P, DP, mult_p)]
+  #formulation_transport_conservatif_diffusion_inst_supg          transport_P                [schema_intg, avg_Phi_P, (P, DP, mult_p)]
+
+  formulation_transport_conservatif_mobilite_diffusion_inst_supg          transport_P               [schema_intg, Phi_P, (P, DP, mult_p, chi_P)]
+
+  ## Mise a jour de P_bar
+  formulation_diffusion_source [schema_intg,(P_bar, L_lissage_P,f_P_bar)]  
+
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------- 2.4.4 TF de D                                      -------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ### ----------------------------- Termes de diffusion 
+  #tfdiffusion                    tfDiffusionD                                [champgeo, D, D, DD, schema_intg]
+
+  
+  ## ---------------------------- Termes de diffusion croisée
+
+  ## Terme qui incorpore le gradient de l'ensemble des ressources i auxquels M est sensible, pondérés par les facteurs m_i
+  #formulation_transport_conservatif_diffusion_inst_supg          transport_D                  [schema_intg, avg_Phi_D, (D, DD, mult_d)]
+  
+  formulation_transport_conservatif_mobilite_diffusion_inst_supg          transport_D               [schema_intg, Phi_D, (D, DD, mult_d, chi_D)]
+
+
+  ## Terme de transport pour D
+  formulation_transport_conservatif_supg                                  advection_D  [schema_intg, (D, w_D, advection_rate_D_norm)]
+
+
+  #formulation_transport_conservatif_diffusion_inst_supg                   transport_D               [schema_intg, w_D, (D, adv_rate_D, Un)]
+
+
+
+
+
+  ### ----------------------------- Termes d'advection 
+  #tftransportconvectifscalaire_supg                             transportD                   [champgeo, D, D, w_D, advection_rate_D_norm, schema_intg, true]
+  #asgnFonctionsTestSUPG [transportD, phi_D_supg]
+
+  
+  ## Mise a jour de D_bar
+  formulation_diffusion_source [schema_intg,(D_bar, L_lissage_D, f_D_bar)]  
+
+}
+
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.8 Définition variables instationnaires pour résolution dans le temps              ===================================
+
+{ probDida_inst
+  tfmassegenscal  tfDCdtMasse   [champgeo, C, C, Un, schema_intg]
+  tfmassegenscal  tfDMdtMasse   [champgeo, M, M, Un, schema_intg]
+  tfmassegenscal  tfDPdtMasse   [champgeo, P, P, Un, schema_intg]
+  tfmassegenscal  tfDDdtMasse   [champgeo, D, D, Un, schema_intg]
+}
+
+
+
+
+
+## ================================================= Définition du solveur itératif PETc ===================================================================================
+## On peut ajuster les gmres restart et les atol et rtol pour jouer sur la tolerance du solveur (converge peut être + rapidement mais solution moins exacte?)
+## PETc
+{options_prefixees_petsc options_slin
+
+ksp_type fgmres
+#ksp_gmres_preallocate
+ksp_gmres_restart 50
+ksp_gmres_modifiedgrmschmidt 
+
+ksp_monitor
+ksp_view
+ksp_converged_reason
+
+
+ksp_monitor
+ksp_atol 1e-10
+ksp_rtol 1e-6
+
+ksp_view
+
+pc_type lu
+
+
+}
+
+
+## ================================================= Déclaration du solveur instationnaire ===================================================================================
+
+
+# Il y a plusieurs schémas (gear, eulerimplicit, etc.) possibles.
+
+
+{ solveur_inst_nlin Solveur_inst(probDida)
+   schema_temps gear
+#   #schema_temps euler_implicite
+
+  prefixe_options options_slin
+
+
+   # Assignation des paramètres pour les résolutions non-linéaires. Cette propriété accepte deux
+   # paramètres: le critère de convergence (réel) et le nombre maximum d'itérations (entier):
+   #nombre_iterations_maximum        MaxItNlin
+   criteres_convergence             [ToleranceNlin, MaxItNlin]
+   #parametres_nlin [ToleranceNlin, MaxItNlin]
+
+   # Les lignes suivantes indiquent au programme s'il devra, à chaque étape, recalculer
+   # la matrice de masse ou rigidité. C'est nécessaire seulement quand elles dépendent du temps.
+   # Deux choix: [f,f] : ne dépend pas du temps, ou [v,v]: dépend du temps.
+   parametres_matrice_masse    [v,v]
+   parametres_matrice_rigidite [v,v]
+
+  # À noter: le solveur s'appelle dorénavant Solveur_inst(probDida)
+}
+
+
+## Definit le pp pour reinitialiser le solveur - utile pour la boucle Python, pour que le solveur reinitialise son numero de pas de temps, temps final etc
+pp_reinitialise_solveur pp_redemarre [Solveur_inst(probDida)]
+
+
+
+{ exportation        probDida
+  format_exportation GIREF
+  format_exportation VTK
+  degre_interpolation LIN
+
+
+  ## Avec ca on, le premier pas de temps n'est pas exporté
+  ## Sauvegarde 1/n snapshots
+  #frequence_exportation  10
+  
+  ajoute_champ C
+  ajoute_champ valeurs_paysage
+  ajoute_champ valeurs_diversity
+  ajoute_champ M
+  ajoute_champ P
+  ajoute_champ D
+
+  ajoute_champ C_bar
+  ajoute_champ M_bar
+  ajoute_champ P_bar
+  ajoute_champ D_bar
+
+
+  ajoute_champ M1_C
+  ajoute_champ M2_C
+  ajoute_champ M3_C
+  ajoute_champ M4_C
+  ajoute_champ M5_C
+  ajoute_champ M6_C
+
+  ajoute_champ M1_M
+  ajoute_champ M2_M
+  ajoute_champ M3_M
+  ajoute_champ M4_M
+  ajoute_champ M5_M
+  ajoute_champ M6_M
+
+  ajoute_champ M3_P
+  ajoute_champ M4_P
+  ajoute_champ M5_P
+  ajoute_champ M6_P
+
+  ajoute_champ M1_D
+  ajoute_champ M2_D
+  ajoute_champ M3_D
+  ajoute_champ M4_D
+  ajoute_champ M5_D
+  ajoute_champ M6_D
+
+
+  ajoute_champ Phi_C
+  ajoute_champ Phi_M
+  ajoute_champ Phi_P
+  ajoute_champ Phi_D
+
+
+  ajoute_eq_latex probDida
+
+  
+  permet_ecrasement_fichiers true
+
+  #prefixe_sorties $CheminAccesExport$/simulations/iii_var_invasive_SC7_caribou_SC9_moose/TMP_CMPD/CMPD_
+  prefixe_sorties $CheminAccesExport$/simulations/iv_var_pred_SC7_caribou_SC9_moose/TMP_CMP/CMP_
+  #prefixe_sorties $CheminAccesExport$/simulations/validation_bio/CMPD_diffusion/CMPD_
+  
+  #prefixe_sorties $CheminAccesExport$/simulations/validation_bio/CMPD_diffusion/CMPD_
+}
+
+## Forcer la premiere exportation (initiale)
+#pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/iii_var_invasive_SC7_caribou_SC9_moose/TMP_CMPD/CMPD_", 1  , true, true]
+pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/iv_var_pred_SC7_caribou_SC9_moose/TMP_CMP/CMP_", 1  , true, true]
+#pp_exportation pp_export [probDida, "$CheminAccesExport$/simulations/validation_bio/CMPD_diffusion/CMPD_", 1  , true, true]
+
+
+#==========================================================================================================================================================================
+# ================================================= 2.6 Ajout des Pre-Post Traitements                                                  ===================================
+
+## Le chemim dans lequel doivent être storés les résultats a chaque itération
+
+
+{ probDida
+  
+#include active_pre_post_traitements.champs
+
+
+## Pour exporter tous les pas de temps
+#ajoutePrePostTraitement [pp_export, FinPasDeTemps]
+
+
+## Ici on ajoute des PP pour vérifier si la perte de constance de masse vient des gradients enviro trop sharps? 
+
+pp_reinterpole                      pp_reinterpole_M1_C                   [M1_C_reinterpol,      M1_C]
+pp_filtrage_moyenne                 pp_moyenne_locale_M1_C                [M1_C_reinterpol,      avg_M1_C_disc,        rayon_perception_C_norm]
+pp_projection_l2                    projection_l2_M1_C                    [avg_M1_C_disc,        avg_M1_C,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M2_C                   [M2_C_reinterpol,      M2_C]
+pp_filtrage_moyenne                 pp_moyenne_locale_M2_C                [M2_C_reinterpol,      avg_M2_C_disc,        rayon_perception_C_norm]
+pp_projection_l2                    projection_l2_M2_C                    [avg_M2_C_disc,        avg_M2_C,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M1_M                   [M1_M_reinterpol,      M1_M]
+pp_filtrage_moyenne                 pp_moyenne_locale_M1_M                [M1_M_reinterpol,      avg_M1_M_disc,        rayon_perception_M_norm]
+pp_projection_l2                    projection_l2_M1_M                    [avg_M1_M_disc,        avg_M1_M,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M2_M                   [M2_M_reinterpol,      M2_M]
+pp_filtrage_moyenne                 pp_moyenne_locale_M2_M                [M2_M_reinterpol,      avg_M2_M_disc,        rayon_perception_M_norm]
+pp_projection_l2                    projection_l2_M2_M                    [avg_M2_M_disc,        avg_M2_M,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M1_D                   [M1_D_reinterpol,      M1_D]
+pp_filtrage_moyenne                 pp_moyenne_locale_M1_D                [M1_D_reinterpol,      avg_M1_D_disc,        rayon_perception_D_norm]
+pp_projection_l2                    projection_l2_M1_D                    [avg_M1_D_disc,        avg_M1_D,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M2_D                   [M2_D_reinterpol,      M2_D]
+pp_filtrage_moyenne                 pp_moyenne_locale_M2_D                [M2_D_reinterpol,      avg_M2_D_disc,        rayon_perception_D_norm]
+pp_projection_l2                    projection_l2_M2_D                    [avg_M2_D_disc,        avg_M2_D,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M1_P                   [M1_P_reinterpol,      M1_P]
+pp_filtrage_moyenne                 pp_moyenne_locale_M1_P                [M1_P_reinterpol,      avg_M1_P_disc,        rayon_perception_P_norm]
+pp_projection_l2                    projection_l2_M1_P                    [avg_M1_P_disc,        avg_M1_P,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M2_P                   [M2_P_reinterpol,      M2_P]
+pp_filtrage_moyenne                 pp_moyenne_locale_M2_P                [M2_P_reinterpol,      avg_M2_P_disc,        rayon_perception_P_norm]
+pp_projection_l2                    projection_l2_M2_P     
+
+
+
+## Moyennage local du raster de vegetation et de diversité 
+
+ajoutePrePostTraitement [pp_reinterpole_M1_C, AvantPremierPasTemps]
+ajoutePrePostTraitement [pp_moyenne_locale_M1_C, AvantPremierPasTemps]
+ajoutePrePostTraitement [projection_l2_M1_C, AvantPremierPasTemps]
+
+
+ajoutePrePostTraitement [pp_reinterpole_M2_C, AvantPremierPasTemps]
+ajoutePrePostTraitement [pp_moyenne_locale_M2_C, AvantPremierPasTemps]
+ajoutePrePostTraitement [projection_l2_M2_C, AvantPremierPasTemps]
+
+ajoutePrePostTraitement [pp_reinterpole_M1_M, AvantPremierPasTemps]
+ajoutePrePostTraitement [pp_moyenne_locale_M1_M, AvantPremierPasTemps]
+ajoutePrePostTraitement [projection_l2_M1_M, AvantPremierPasTemps]
+
+
+ajoutePrePostTraitement [pp_reinterpole_M2_M, AvantPremierPasTemps]
+ajoutePrePostTraitement [pp_moyenne_locale_M2_M, AvantPremierPasTemps]
+ajoutePrePostTraitement [projection_l2_M2_M, AvantPremierPasTemps]
+
+ajoutePrePostTraitement [pp_reinterpole_M1_D, AvantPremierPasTemps]
+ajoutePrePostTraitement [pp_moyenne_locale_M1_D, AvantPremierPasTemps]
+ajoutePrePostTraitement [projection_l2_M1_D, AvantPremierPasTemps]
+
+
+ajoutePrePostTraitement [pp_reinterpole_M2_D, AvantPremierPasTemps]
+ajoutePrePostTraitement [pp_moyenne_locale_M2_D, AvantPremierPasTemps]
+ajoutePrePostTraitement [projection_l2_M2_D, AvantPremierPasTemps]
+
+
+
+}
+
+
+
+
+#==========================================================================================================================================================================
+#==========================================================================================================================================================================
+
+# ================================================= 2.  RESOLUTION DES EQUATIONS                                                               ============================
+## PP REBEL ##
+#pp_resolution_probleme              resoud_Rachel                  [Solveur_inst(probDida)]
+
+
+
+
+# A commenter si on roule sur Python, a decommenter si on roule sur MEF non local
+
+## 
+{ Actions
+## reinitialise le solveur instationnaire
+  pp_redemarre
+## reinitialise les positions des especes entre chaque simulation
+  pp_reinitialise_dens_init_C
+  pp_reinitialise_dens_init_M
+  pp_reinitialise_dens_init_P
+  pp_reinitialise_dens_init_D
+  pp_reinitialise_dens_init_C_bar
+  pp_reinitialise_dens_init_M_bar
+  pp_reinitialise_dens_init_P_bar
+  pp_reinitialise_dens_init_D_bar
+## Fait un premier export initial (import si frequence exportation ON)
+  pp_export
+## Resout boucle instationnaire
+  Solveur_inst(probDida)
+}
