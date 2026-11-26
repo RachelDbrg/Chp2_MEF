@@ -4,6 +4,8 @@
 
 # Large data files
 diversity_raster.csv
+*.csv
+*.pkl
 
 # Python
 __pycache__/
