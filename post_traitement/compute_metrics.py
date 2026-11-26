@@ -59,14 +59,76 @@ resource_map = {
 # UTILITAIRES
 # ============================================================
 
+
 def extract_time(filename):
 
+    base = os.path.basename(filename)
+
     m = re.search(
-        r"_(\d+)\.cont\.vtu$",
-        filename
+        r"_(\d+)\.cont\.(?:vtu|pvtu)$",
+        base
     )
 
+    if m is None:
+        raise ValueError(
+            f"Cannot extract time from {filename}"
+        )
+
     return int(m.group(1))
+
+
+def snapshot_order(filename, scenario_name):
+
+    base = os.path.basename(filename)
+
+    m = re.search(
+        r"_(\d+)\.cont\.(?:vtu|pvtu)$",
+        base
+    )
+
+    if m is None:
+        raise ValueError(
+            f"Cannot extract time from {filename}"
+        )
+
+    token = m.group(1)
+
+    scenario_id = int(
+        scenario_name.replace(
+            "scenario_",
+            ""
+        )
+    )
+
+    initial_token = str(
+        scenario_id * 10
+    )
+
+    # CMPD_30, CMPD_40, CMPD_50, ...
+    # = snapshot initial
+    if token == initial_token and scenario_id > 0:
+        return -1
+
+
+    print(
+    "scenario=",
+    scenario_name,
+    "scenario_id=",
+    scenario_id,
+    "initial_token=",
+    initial_token
+)
+
+    # CMPD_001, CMPD_030, CMPD_100, ...
+    return int(token)
+
+
+
+
+
+
+
+
 
 
 def bhattacharyya(pi, pj, areas):
@@ -130,9 +192,25 @@ def relative_l1_difference(
 # LECTURE VTU
 # ============================================================
 
+# def read_vtu(filename):
+
+#     reader = vtk.vtkXMLUnstructuredGridReader()
+#     reader.SetFileName(filename)
+#     reader.Update()
+
+#     return reader.GetOutput()
+
+
 def read_vtu(filename):
 
-    reader = vtk.vtkXMLUnstructuredGridReader()
+    if filename.endswith(".pvtu"):
+
+        reader = vtk.vtkXMLPUnstructuredGridReader()
+
+    else:
+
+        reader = vtk.vtkXMLUnstructuredGridReader()
+
     reader.SetFileName(filename)
     reader.Update()
 
@@ -493,7 +571,11 @@ def compute_resource_alignment(
 
 # ======================= LECTURE DES VTUs ==============================================
 
-root = "/users/rdubourg/Documents/Chp2_MEF/simulations"
+#root = "/users/rdubourg/Documents/Chp2_MEF/simulations"
+root = "../simulations"
+
+print("ROOT =", root)
+print("EXISTS =", os.path.exists(root))
 
 simulation_sets = []
 
@@ -521,15 +603,18 @@ for experiment in sorted(os.listdir(root)):
 
 
             ## Cherche dans le sous-dossier ii) pour lequel on a fait varier les parms 
-            elif experiment == "ii_native_naive":
+            elif experiment == "ii_native_naive_2_first_years":
                 experiment_type = "ii_native_naive"
 
-            elif experiment == "ii_native_non_naive":
+            elif experiment == "ii_native_non_naive_2_first_years":
                             experiment_type = "ii_native_non_naive"
 
             ## Cherche dans le sous-dossier iii) pour lequel on a fait varier les parms de la proie invasive
-            elif experiment == "iii_var_invasive":
-                experiment_type = "iii_var_invasive"
+            # elif experiment == "iii_var_invasive":
+            #     experiment_type = "iii_var_invasive"
+
+            # elif experiment == "iii_var_invasive_SC7_caribou_SC9_moose":
+            #     experiment_type = "iii_var_invasive"
 
 
             else:
@@ -543,6 +628,15 @@ for experiment in sorted(os.listdir(root)):
                     "experiment_type": experiment_type
                 }
             )
+
+
+## TEST POUR ALLER + VITE POUR DEBUG
+simulation_sets = [
+    s
+    for s in simulation_sets
+    if s["experiment_type"] == "ii_native_naive"
+    and s["simulation"] == "CMPD"
+]
 
 
 density_cache = []
@@ -609,15 +703,80 @@ for sim_info in simulation_sets:
             param_files[0]
         )
 
-        files = sorted(
-            glob.glob(
-                os.path.join(
-                    scenario_dir,
-                    "*.cont.vtu"
-                )
-            ),
-            key=extract_time
+
+        # pvtu_files = sorted(
+        #     glob.glob(
+        #         os.path.join(
+        #             scenario_dir,
+        #             "*.cont.pvtu"
+        #         )
+        #     ),
+        #     key=extract_time
+        # )
+
+        # if len(pvtu_files) > 0:
+
+        #     files = pvtu_files
+
+        # else:
+
+        #     files = sorted(
+        #         glob.glob(
+        #             os.path.join(
+        #                 scenario_dir,
+        #                 "*.cont.vtu"
+        #             )
+        #         ),
+        #         key=extract_time
+        #     )
+
+
+        pvtu_files = glob.glob(
+            os.path.join(
+                scenario_dir,
+                "*.cont.pvtu"
+            )
         )
+
+        if len(pvtu_files) > 0:
+
+            files = sorted(
+                pvtu_files,
+                key=lambda f: snapshot_order(
+                    f,
+                    scenario_name
+                )
+            )
+
+        else:
+
+            files = sorted(
+                glob.glob(
+                    os.path.join(
+                        scenario_dir,
+                        "*.cont.vtu"
+                    )
+                ),
+                key=lambda f: snapshot_order(
+                    f,
+                    scenario_name
+                )
+           )
+
+        print("\nORDER CHECK")
+
+        for f in files[:5]:
+            print(os.path.basename(f))
+
+
+
+        print("\n", scenario_name)
+
+        for f in files[:5]:
+            print(os.path.basename(f))
+
+
+
 
 
         ## On construit les metriques de LOF et d'IFD
@@ -672,11 +831,19 @@ for sim_info in simulation_sets:
 
 
 
-        for file in files:
-
-                t = extract_time(file)
+        for t, file in enumerate(files):
 
                 mesh = read_vtu(file)
+
+
+                ## verification qui donne le nombre de cellules
+                if t == 0:
+
+                    print(
+                         os.path.basename(file),
+                         mesh.GetNumberOfCells()
+                     )
+
 
                 mesh = point_to_cell(mesh)
 
@@ -710,6 +877,13 @@ for sim_info in simulation_sets:
                             cell_data.GetArray("D")
                         ).copy()
                     }
+                )
+
+                print(
+                    parameter_set,
+                    scenario_name,
+                    scen_type,
+                    t
                 )
 
                 for sp in ["C","M","P","D"]:
@@ -747,7 +921,7 @@ for sim_info in simulation_sets:
 
                 
                 ## Verification de si on obtient ou pas des trucs différents
-                if t == max(extract_time(f) for f in files):
+                if t == len(files) - 1:
                     print(
                         scen_type,
                         experiment_type,
@@ -824,9 +998,34 @@ for sim_info in simulation_sets:
                         }
                     )
 
+                    
 
-df_density = pd.DataFrame(
-    density_cache
+
+df_density = (
+    pd.DataFrame(density_cache)
+    .drop_duplicates(
+        subset=[
+            "parameter_set",
+            "experiment_type",
+            "scenario",
+            "simulation",
+            "time"
+        ]
+    )
+)
+
+print(
+    df_density.groupby(
+        [
+            "parameter_set",
+            "scenario",
+            "simulation",
+            "time"
+        ]
+    )
+    .size()
+    .reset_index(name="n")
+    .query("n > 1")
 )
 
 distribution_results = []
@@ -847,6 +1046,25 @@ cmpd = (
     df_density[
         df_density["simulation"] == "CMPD"
     ]
+)
+
+
+# Verification doublons
+print(
+    cmpd[
+        cmpd.duplicated(
+            ["parameter_set","scenario","time"],
+            keep=False
+        )
+    ][[
+        "parameter_set",
+        "experiment_type",
+        "scenario",
+        "time"
+    ]]
+    .sort_values(
+        ["parameter_set","scenario","time"]
+    )
 )
 
 df_pairs = cmp.merge(
@@ -1267,7 +1485,6 @@ alternative_cmpd = alternative[
 # Creation d'identifiants SC0, SC1, ..., SC9
 # ============================================================
 
-
 scenario_names = sorted(
     df_wide["scenario"].unique()
 )
@@ -1294,28 +1511,15 @@ scenario_map = {
     )
 }
 
-df_wide["SC"] = np.nan
 
 #
-# scénarios expérimentaux
+# Attribution des labels SC
 #
-mask = (
-    df_wide["experiment_type"]
-    != "baseline"
+df_wide["SC"] = np.where(
+    df_wide["experiment_type"] == "baseline",
+    "BASELINE",
+    df_wide["scenario"].map(scenario_map)
 )
-
-df_wide.loc[mask, "SC"] = (
-    df_wide.loc[mask, "scenario"]
-    .map(scenario_map)
-)
-
-#
-# baseline
-#
-df_wide.loc[
-    ~mask,
-    "SC"
-] = "BASELINE"
 
 print(df_wide["SC"].value_counts())
 
@@ -1324,6 +1528,7 @@ df_wide["SC_label"] = (
     + "_"
     + df_wide["SC"]
 )
+
 
 df_spread = pd.DataFrame(
     spread_results
@@ -1359,3 +1564,19 @@ df_dist.to_pickle(
 )
 
 print("Fichiers pickle sauvegardés.")
+
+for sc in ["SC0","SC1","SC2","SC3","SC6","SC8"]:
+    times = (
+        df_wide.loc[
+            df_wide["SC"] == sc,
+            "time"
+        ]
+        .unique()
+    )
+
+    print(
+        sc,
+        times.min(),
+        times.max(),
+        len(times)
+    )
