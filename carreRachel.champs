@@ -37,6 +37,7 @@ scalquad D 0
 ## Declaration des inconnues moyennees
 ## Seront issues de la convolution des inconnues par un noyau de largeur 
 ## rayon_perception/(2*sqrt(2))^2
+
 scalquad C0_bar 0
 scalquad M0_bar 0 
 scalquad P0_bar 0 
@@ -193,8 +194,7 @@ empilementto2 DD                        [coeff_diffusion_D_norm,  coeff_diffusio
 ## Creation du tenseur avec les coefficients d'advection pour D
 empilementto2 adv_rate_D                        [advection_rate_D_norm,  advection_rate_D_norm,   advection_rate_D_norm,  Zero, Zero, Zero]
 
-## Test pour supprimer la diffusion générée par la fomrulation transport
-#empilementto2 adv_rate_D                        [Zero,  Zero,   Zero,  Zero, Zero, Zero]
+
 
 
 
@@ -232,7 +232,6 @@ gradient    grad_Phi_C  Phi_C
 
 
 
-#scalaire f_M1_C_bar M1_C - M1_C_bar
 
 # ------------------------------------------------------------------          Moose                   -------------------------------------------------------------------
 
@@ -276,7 +275,7 @@ scalaire    M5_P        p5 * P_moose_dens       * M_bar
 scalaire    M6_P        p6 * P_WTD_dens         * D_bar
 
 
-scalaire    Phi_P       2 * coeff_diffusion_P_norm * (M3_P + M4_P + M5_P + M6_P)
+scalaire    Phi_P       2 * coeff_diffusion_P_norm * (avg_M1_P + avg_M2_P + M3_P + M4_P + M5_P + M6_P)
 
 gradient    grad_Phi_P  Phi_P
 
@@ -660,6 +659,13 @@ pp_reinterpole                      pp_reinterpole_M2_D                   [M2_D_
 pp_filtrage_moyenne                 pp_moyenne_locale_M2_D                [M2_D_reinterpol,      avg_M2_D_disc,        rayon_perception_D_norm]
 pp_projection_l2                    projection_l2_M2_D                    [avg_M2_D_disc,        avg_M2_D,             schema_intg]
 
+pp_reinterpole                      pp_reinterpole_M1_P                   [M1_P_reinterpol,      M1_P]
+pp_filtrage_moyenne                 pp_moyenne_locale_M1_P                [M1_P_reinterpol,      avg_M1_P_disc,        rayon_perception_P_norm]
+pp_projection_l2                    projection_l2_M1_P                    [avg_M1_P_disc,        avg_M1_P,             schema_intg]
+
+pp_reinterpole                      pp_reinterpole_M2_P                   [M2_P_reinterpol,      M2_P]
+pp_filtrage_moyenne                 pp_moyenne_locale_M2_P                [M2_P_reinterpol,      avg_M2_P_disc,        rayon_perception_P_norm]
+pp_projection_l2                    projection_l2_M2_P     
 
 
 
